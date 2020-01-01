@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:fillViewport="true"
+    tools:context=".LoginActivity">
+
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            >
+
+        <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        app:layout_constraintBottom_toTopOf="@+id/textView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="20dp"
+        android:src="@drawable/logo" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:textColor="#000"
+        android:textStyle="italic|bold"
+        android:text="شاهد . بيع . صلح .اشتري ..ببساطة"
+        android:textSize="20dp"
+        app:layout_constraintTop_toBottomOf="@id/imageView"
+        app:layout_constraintBottom_toTopOf="@+id/crd_facebook"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/crd_facebook"
+                        app:cardElevation="3dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="30dp"
+                        app:layout_constraintTop_toBottomOf="@id/textView"
+                        app:layout_constraintBottom_toTopOf="@id/login_button_gmail"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent" >
+
+
+    <com.facebook.login.widget.LoginButton
+        android:id="@+id/login_button_facebook"
+        android:layout_width="230dp"
+        android:layout_height="wrap_content"
+        />
+                    </androidx.cardview.widget.CardView>
+    <com.google.android.gms.common.SignInButton
+        android:id="@+id/login_button_gmail"
+        android:layout_width="230dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="20dp"
+        app:layout_constraintTop_toBottomOf="@id/crd_facebook"
+        app:layout_constraintBottom_toTopOf="@id/textView2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="أو"
+        app:layout_constraintBottom_toTopOf="@+id/btn_registration"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/login_button_gmail" />
+
+
+            <com.google.android.material.button.MaterialButton
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:textColor="@color/colorPrimary"
+                android:textSize="15sp"
+                app:backgroundTint="#fff"
+                app:cornerRadius="3dp"
+                app:rippleColor="#33AAAAAA"
+                app:strokeColor="@color/colorPrimary"
+                app:strokeWidth="1dp"
+                android:elevation="2dp"
+                android:id="@+id/btn_login"
+                android:layout_width="90dp"
+                android:layout_height="wrap_content"
+                android:background="#ffff"
+                android:layout_marginTop="20dp"
+                android:text="دخول"
+                android:layout_marginStart="25dp"
+                app:layout_constraintTop_toBottomOf="@id/textView2"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@id/btn_registration"/>
+
+
+
+            <!--        <androidx.cardview.widget.CardView-->
+<!--                android:id="@+id/crd_login"-->
+<!--                android:layout_width="90dp"-->
+<!--                app:cardElevation="3dp"-->
+<!--                android:layout_height="50dp"-->
+<!--                android:layout_marginTop="20dp"-->
+<!--                android:layout_marginStart="10dp"-->
+<!--                app:layout_constraintTop_toBottomOf="@id/textView2"-->
+<!--                app:layout_constraintEnd_toEndOf="parent"-->
+<!--                app:layout_constraintStart_toStartOf="@id/btn_registration"-->
+<!--                >-->
+
+<!--            <Button-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="match_parent"-->
+<!--                android:background="#ffff"-->
+<!--                android:text="دخول"-->
+<!--                />-->
+
+<!--</androidx.cardview.widget.CardView>-->
+
+
+
+            <com.google.android.material.button.MaterialButton
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:textColor="@color/colorPrimary"
+                android:textSize="15sp"
+                app:backgroundTint="#fff"
+                app:cornerRadius="3dp"
+                app:rippleColor="#33AAAAAA"
+                app:strokeColor="@color/colorPrimary"
+                app:strokeWidth="1dp"
+                android:elevation="2dp"
+                android:id="@+id/btn_registration"
+                android:layout_width="90dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:background="#ffff"
+                android:text="تسجيل"
+                android:layout_marginEnd="25dp"
+                app:layout_constraintTop_toBottomOf="@id/textView2"
+                app:layout_constraintEnd_toEndOf="@id/btn_login"
+                app:layout_constraintStart_toStartOf="parent"
+                />
+
+<!--            <Button-->
+<!--            android:id="@+id/btn_registration"-->
+<!--            android:layout_width="90dp"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginTop="20dp"-->
+<!--            android:background="#ffff"-->
+<!--            android:text="تسجيل"-->
+<!--            android:layout_marginEnd="10dp"-->
+<!--            app:layout_constraintTop_toBottomOf="@id/textView2"-->
+<!--            app:layout_constraintEnd_toEndOf="@id/crd_login"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--         />-->
+    <TextView
+        android:id="@+id/policy1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:text=" باستخدامك لهذا التطبيق فأنت توافق على "
+        app:layout_constraintBottom_toTopOf="@+id/policy2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn_registration" />
+
+            <TextView
+                android:id="@+id/policy2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="اتفاقية الاستخدام وسياسة الخصوصية"
+                app:layout_constraintBottom_toTopOf="@+id/next"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                android:textColor="@color/colorPrimary"
+                app:layout_constraintTop_toBottomOf="@+id/policy1" />
+
+            <com.google.android.material.button.MaterialButton
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:textColor="@color/white"
+                android:textSize="15sp"
+                app:cornerRadius="25dp"
+                app:rippleColor="#33AAAAAA"
+                android:id="@+id/next"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:layout_marginBottom="30dp"
+                android:text="تخطي"
+                android:elevation="4dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.875"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/policy2"/>
+
+
+            <!--            <Button-->
+<!--                android:id="@+id/next"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginTop="30dp"-->
+<!--                android:layout_marginBottom="30dp"-->
+<!--                android:text="تخطي"-->
+<!--                android:background="#ffff"-->
+<!--                app:layout_constraintBottom_toBottomOf="parent"-->
+<!--                app:layout_constraintEnd_toEndOf="parent"-->
+<!--                app:layout_constraintHorizontal_bias="0.875"-->
+<!--                app:layout_constraintStart_toStartOf="parent"-->
+<!--                app:layout_constraintTop_toBottomOf="@+id/policy2"-->
+<!--                 />-->
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>
