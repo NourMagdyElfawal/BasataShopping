@@ -74,7 +74,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:text="أو"
-        app:layout_constraintBottom_toTopOf="@+id/btn_registration"
+        app:layout_constraintBottom_toTopOf="@+id/txtV_registration"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/login_button_gmail" />
@@ -91,15 +91,14 @@
                 app:strokeWidth="1dp"
                 android:elevation="2dp"
                 android:id="@+id/btn_login"
-                android:layout_width="90dp"
-                android:layout_height="wrap_content"
+                android:layout_width="230dp"
+                android:layout_height="40dp"
                 android:background="#ffff"
                 android:layout_marginTop="20dp"
                 android:text="دخول"
-                android:layout_marginStart="25dp"
                 app:layout_constraintTop_toBottomOf="@id/textView2"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="@id/btn_registration"/>
+                app:layout_constraintStart_toStartOf="parent"/>
 
 
 
@@ -126,26 +125,18 @@
 
 
 
-            <com.google.android.material.button.MaterialButton
-                style="@style/Widget.AppCompat.Button.Borderless"
+            <TextView
                 android:textColor="@color/colorPrimary"
                 android:textSize="15sp"
-                app:backgroundTint="#fff"
-                app:cornerRadius="3dp"
-                app:rippleColor="#33AAAAAA"
-                app:strokeColor="@color/colorPrimary"
-                app:strokeWidth="1dp"
-                android:elevation="2dp"
-                android:id="@+id/btn_registration"
-                android:layout_width="90dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:background="#ffff"
-                android:text="تسجيل"
-                android:layout_marginEnd="25dp"
-                app:layout_constraintTop_toBottomOf="@id/textView2"
-                app:layout_constraintEnd_toEndOf="@id/btn_login"
+                android:id="@+id/txtV_registration"
+                android:layout_width="230dp"
+                android:layout_height="40dp"
+                android:text="ليس لديك حساب؟ سجل هنا"
+                app:layout_constraintTop_toBottomOf="@id/btn_login"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/policy1"
+                android:gravity="center"
                 />
 
 <!--            <Button-->
@@ -169,7 +160,7 @@
         app:layout_constraintBottom_toTopOf="@+id/policy2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btn_registration" />
+        app:layout_constraintTop_toBottomOf="@+id/txtV_registration" />
 
             <TextView
                 android:id="@+id/policy2"
@@ -193,7 +184,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="30dp"
                 android:layout_marginBottom="30dp"
-                android:text="تخطي"
+                android:text="الدخول كزائر"
                 android:elevation="4dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"

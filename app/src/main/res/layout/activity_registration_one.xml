@@ -133,7 +133,7 @@
                         android:ems="10"
                         android:textAlignment="viewEnd"
                         android:hint="الرقم السري"
-                        android:inputType="phone"
+                        android:inputType="textPassword"
                         android:maxLength="15" />
 
                 </LinearLayout>
@@ -230,6 +230,23 @@
                 app:rippleColor="#33AAAAAA"
                 android:text="تسجيل"
                 android:elevation="4dp"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_BusinessMan"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="5dp"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:textColor="@color/white"
+                android:textSize="15sp"
+                app:cornerRadius="25dp"
+                app:rippleColor="#33AAAAAA"
+                android:text="اذا كنت صاحب محل برجاء الضغط هنا لاكمال باقي البيانات"
+                android:elevation="4dp"/>
+
 
         </LinearLayout>
     </ScrollView>

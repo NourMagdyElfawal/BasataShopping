@@ -1,4 +1,4 @@
-package com.souqmaftoh.basatashopping.fragments;
+package com.souqmaftoh.basatashopping.fragments.HomeFragment;
 
 import androidx.lifecycle.ViewModel;
 

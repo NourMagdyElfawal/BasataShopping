@@ -1,29 +1,39 @@
 package com.souqmaftoh.basatashopping;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
-import java.util.regex.Pattern;
+import java.io.IOException;
 
-public class RegistrationActivity extends AppCompatActivity implements View.OnClickListener {
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+public class RegistrationActivityOne extends AppCompatActivity implements View.OnClickListener {
     EditText et_reg_name,et_reg_email,et_reg_password,et_reg_rep_password;
-    Button btn_Register;
+    Button btn_Register,btn_BusinessMan;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_registration);
+        setContentView(R.layout.activity_registration_one);
         et_reg_name=findViewById(R.id.et_reg_name);
         et_reg_email=findViewById(R.id.et_reg_email);
         et_reg_password=findViewById(R.id.et_reg_password);
         et_reg_rep_password=findViewById(R.id.et_reg_rep_password);
         btn_Register=findViewById(R.id.btn_Register);
-        
+        btn_BusinessMan=findViewById(R.id.btn_BusinessMan);
+
         btn_Register.setOnClickListener(this);
+        btn_BusinessMan.setOnClickListener(this);
     }
 
     /**
@@ -37,6 +47,12 @@ public class RegistrationActivity extends AppCompatActivity implements View.OnCl
             case R.id.btn_Register:
                 SignUp();
                 break;
+
+            case R.id.btn_BusinessMan:
+                SignUp();
+                Intent intent_reg =new Intent(RegistrationActivityOne.this, RegistrationActivityTow.class);
+                startActivity(intent_reg);
+
 
         }
 }
@@ -70,8 +86,8 @@ public class RegistrationActivity extends AppCompatActivity implements View.OnCl
             et_reg_password.requestFocus();
             return;
         }
-        if (password.length()<6){
-            et_reg_password.setError("برجاء اختيار رقم سري مكون من 6 ارقام على الاقل");
+        if (password.length()<8){
+            et_reg_password.setError("برجاء اختيار رقم سري مكون من 8 ارقام على الاقل");
             et_reg_password.requestFocus();
             return;
 
@@ -89,7 +105,30 @@ public class RegistrationActivity extends AppCompatActivity implements View.OnCl
             return;
 
         }
+        Call<ResponseBody> call=RetrofitClient
+                .getInstance()
+                .getApi()
+                .createUser(name,email,password,repPassword);
 
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
+
+                try {
+                    String s=response.body().string();
+                    Toast.makeText(RegistrationActivityOne.this, s, Toast.LENGTH_SHORT).show();
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Toast.makeText(RegistrationActivityOne.this, t.getMessage(), Toast.LENGTH_SHORT).show();
+
+            }
+        });
 
     }
 }

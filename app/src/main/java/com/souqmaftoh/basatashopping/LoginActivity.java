@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.AccessToken;
@@ -35,14 +36,14 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private static final String TAG = "facebook";
     private FirebaseAuth mAuth;
     int RC_SIGN_IN=0;
-    Button registration,next,btnLogin;
-
+    Button next,btnLogin;
+    TextView registration;
     GoogleSignInClient mGoogleSignInClient;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        registration=findViewById(R.id.btn_registration);
+        registration=findViewById(R.id.txtV_registration);
         next=findViewById(R.id.next);
         btnLogin=findViewById(R.id.btn_login);
 
@@ -170,8 +171,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 Intent intent =new Intent(LoginActivity.this,MainActivity.class);
                 startActivity(intent);
                 break;
-            case R.id.btn_registration:
-                Intent intent_reg =new Intent(LoginActivity.this, RegistrationActivity.class);
+            case R.id.txtV_registration:
+                Intent intent_reg =new Intent(LoginActivity.this, RegistrationActivityOne.class);
                 startActivity(intent_reg);
                 break;
             case R.id.btn_login:

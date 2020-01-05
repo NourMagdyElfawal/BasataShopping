@@ -12,17 +12,19 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
+import com.google.firebase.auth.FirebaseAuth;
 import com.robertlevonyan.views.customfloatingactionbutton.FloatingActionButton;
-import com.souqmaftoh.basatashopping.fragments.HomeFragment;
+import com.souqmaftoh.basatashopping.fragments.HomeFragment.HomeFragment;
 import com.souqmaftoh.basatashopping.fragments.ItemsRecyclerFragment.ItemsRecyclerFragment;
-import com.souqmaftoh.basatashopping.fragments.MyAccountFragment;
+import com.souqmaftoh.basatashopping.fragments.myAccount.MyAccountFragment;
 import com.souqmaftoh.basatashopping.fragments.accessories.AccessoriesFragment;
 import com.souqmaftoh.basatashopping.fragments.addAdv.AddAdvFragment;
 import com.souqmaftoh.basatashopping.fragments.chat.ChatFragment;
@@ -33,12 +35,16 @@ import com.souqmaftoh.basatashopping.fragments.tablets.TabletsFragment;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+import static androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE;
+
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     FloatingActionButton fab;
     private TabLayout tabLayout;
     private ViewPager viewPager;
     private BottomNavigationView bottomNavigation;
+    private FirebaseAuth mAuth;
+    ImageView imgV_myAccount;
 
 
     @Override
@@ -46,11 +52,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
-
-//        getSupportFragmentManager().beginTransaction()
-//                .replace(R.id.container, new HomeFragment())
-//                .commit();
+        imgV_myAccount = findViewById(R.id.imgV_myAccount);
+        imgV_myAccount.setOnClickListener(this);
 
         viewPager = (ViewPager) findViewById(R.id.viewpager);
         setupViewPager(viewPager);
@@ -62,17 +65,13 @@ public class MainActivity extends AppCompatActivity {
         //bottom bar
         bottomNavigation = findViewById(R.id.bottom_navigation);
         bottomNavigation.setOnNavigationItemSelectedListener(navigationItemSelectedListener);
-    //    openFragment(HomeFragment.newInstance("", ""));
+        //    openFragment(HomeFragment.newInstance("", ""));
 
         fab = findViewById(R.id.fab);
 //        showFloatingActionButton();
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
-
-//                openFragment(AddAdvFragment.newInstance("", ""));
                 FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
                 transaction.add(R.id.main, AddAdvFragment.newInstance("", ""));
                 transaction.addToBackStack(null);
@@ -96,8 +95,18 @@ public class MainActivity extends AppCompatActivity {
             String personEmail = acct.getEmail();
             String personId = acct.getId();
             Uri personPhoto = acct.getPhotoUrl();
-            Toast.makeText(this, "gmailInfo"+personName+personGivenName+personFamilyName+personEmail+personId, Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "gmailInfo" + personName + personGivenName + personFamilyName + personEmail + personId, Toast.LENGTH_SHORT).show();
         }
+
+//        FirebaseUser user = mAuth.getCurrentUser();
+//        if(user!=null){
+//            String name=user.getDisplayName();
+//            String email=user.getEmail();
+//            String userId=user.getUid();
+//            Toast.makeText(this, "firebase"+name+email+userId, Toast.LENGTH_SHORT).show();
+//
+//        }
+
     }
 
     //app bar
@@ -144,16 +153,11 @@ public class MainActivity extends AppCompatActivity {
 //
 //    }
 
-    public void openFragment(Fragment fragment) {
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.main_content, fragment);
-        transaction.addToBackStack(null);
-        transaction.commit();
-    }
 
     BottomNavigationView.OnNavigationItemSelectedListener navigationItemSelectedListener =
             new BottomNavigationView.OnNavigationItemSelectedListener() {
-                @Override public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                @Override
+                public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                     switch (item.getItemId()) {
                         case R.id.navigation_stores:
                             openFragment(ItemsRecyclerFragment.newInstance("", ""));
@@ -164,17 +168,49 @@ public class MainActivity extends AppCompatActivity {
                         case R.id.navigation_notifications:
                             openFragment(NotificationFragment.newInstance("", ""));
                             return true;
-                        case R.id.navigation_Profile:
-                            openFragment(MyAccountFragment.newInstance("", ""));
+//                        case R.id.navigation_Profile:
+//                            openFragment(MyAccountFragment.newInstance("", ""));
+//                            return true;
+                        case R.id.navigation_home:
+                            openFragment(HomeFragment.newInstance("", ""));
                             return true;
 
                     }
                     return false;
                 }
             };
+    public void openFragment(Fragment fragment) {
+
+//        FragmentManager manager = getSupportFragmentManager();
+//        FragmentTransaction trans = manager.beginTransaction();
+//        trans.replace(R.id.main, fragment);
+//        manager.popBackStack(R.id.main, POP_BACK_STACK_INCLUSIVE);
+//
+//        trans.commit();
+
+
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.main, fragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
+    }
+
+    /**
+     * Called when a view has been clicked.
+     *
+     * @param v The view that was clicked.
+     */
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.imgV_myAccount:
+                openFragment(MyAccountFragment.newInstance("", ""));
+                break;
+
+        }
+    }
+
 }
-
-
 
 
 class ViewPagerAdapter extends FragmentPagerAdapter {

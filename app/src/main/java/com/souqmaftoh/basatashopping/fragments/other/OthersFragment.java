@@ -63,18 +63,18 @@ public class OthersFragment extends Fragment {
     private ArrayList<category> prepareImages() {
         // here you should give your image URLs and that can be a link from the Internet
         String imageUrls[] = {
-                "https://homepages.cae.wisc.edu/~ece533/images/airplane.png",
-                "https://homepages.cae.wisc.edu/~ece533/images/arctichare.png",
-                "https://homepages.cae.wisc.edu/~ece533/images/fruits.png",
+//                "https://homepages.cae.wisc.edu/~ece533/images/airplane.png",
+//                "https://homepages.cae.wisc.edu/~ece533/images/arctichare.png",
+//                "https://homepages.cae.wisc.edu/~ece533/images/fruits.png",
                 "https://homepages.cae.wisc.edu/~ece533/images/frymire.png",
                 "https://homepages.cae.wisc.edu/~ece533/images/girl.png",
                 "https://homepages.cae.wisc.edu/~ece533/images/monarch.png",
-                "https://homepages.cae.wisc.edu/~ece533/images/airplane.png",
-                "https://homepages.cae.wisc.edu/~ece533/images/arctichare.png",
-                "https://homepages.cae.wisc.edu/~ece533/images/boat.png",
-                "https://homepages.cae.wisc.edu/~ece533/images/monarch.png",
-                "https://homepages.cae.wisc.edu/~ece533/images/airplane.png",
-                "https://homepages.cae.wisc.edu/~ece533/images/arctichare.png",
+//                "https://homepages.cae.wisc.edu/~ece533/images/airplane.png",
+//                "https://homepages.cae.wisc.edu/~ece533/images/arctichare.png",
+//                "https://homepages.cae.wisc.edu/~ece533/images/boat.png",
+//                "https://homepages.cae.wisc.edu/~ece533/images/monarch.png",
+//                "https://homepages.cae.wisc.edu/~ece533/images/airplane.png",
+//                "https://homepages.cae.wisc.edu/~ece533/images/arctichare.png",
                 "https://homepages.cae.wisc.edu/~ece533/images/cat.png"};
 
         ArrayList<category> imageUrlList = new ArrayList<category>();
@@ -90,18 +90,18 @@ public class OthersFragment extends Fragment {
     private ArrayList<category> prepareTitles() {
         // here you should give your image titles and that can be a link from the Internet
         String itemTitles[] = {
-                "أبل",
-                "سامسونج",
-                "هواوي",
+//                "أبل",
+//                "سامسونج",
+//                "هواوي",
                 "اتش تي سي",
                 "سوني",
                 "ال جي",
-                "الكاتيل",
-                "اسوس",
-                "نوكيا",
-                "شاومي",
-                "اوبو",
-                "لينوفو",
+//                "الكاتيل",
+//                "اسوس",
+//                "نوكيا",
+//                "شاومي",
+//                "اوبو",
+//                "لينوفو",
                 "بلاك بيري",
         };
 
@@ -111,7 +111,7 @@ public class OthersFragment extends Fragment {
             imageTitle.setName(itemTitles[i]);
             imageTitleList.add(imageTitle);
         }
-        Log.d("AccessoriesFragment", "List count: " + imageTitleList.size());
+        Log.d("OthersFragment", "List count: " + imageTitleList.size());
         return imageTitleList;
 
     }

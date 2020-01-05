@@ -5,11 +5,13 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     >
-
+<ScrollView
+    android:layout_width="match_parent"
+    android:background="@color/white"
+    android:layout_height="wrap_content">
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/white"
 
         >
 
@@ -42,12 +44,11 @@
             android:id="@+id/layout_txt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="184dp"
+            android:layout_marginBottom="60dp"
             android:orientation="vertical"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/editProfile"
             app:layout_constraintEnd_toEndOf="parent"
-
-            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintTop_toBottomOf="@id/img_profile"
             app:layout_constraintStart_toStartOf="parent">
 
             <TextView
@@ -65,7 +66,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="رقم الهاتف" />
+                android:text="الايميل" />
 
             <EditText
                 android:layout_width="match_parent"
@@ -73,20 +74,22 @@
                 android:layout_marginBottom="20dp"
                 android:enabled="false"
                 android:textAlignment="textEnd"
-                android:text="001903903984" />
+                android:text="noor882005@gmail.com" />
 
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="الدولة" />
+                android:text="الرقم السري" />
 
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="20dp"
                 android:enabled="false"
-                android:text="مصر" />
+                android:textAlignment="viewEnd"
+                android:inputType="textPassword"
+                android:text="12345678" />
 
 
         </LinearLayout>
@@ -100,14 +103,35 @@
             android:id="@+id/editProfile"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="50dp"
             android:text="تعديل"
             android:elevation="4dp"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/btn_logout"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/layout_txt"/>
 
 
+
+        <com.google.android.material.button.MaterialButton
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:textColor="@color/white"
+            android:textSize="15sp"
+            app:cornerRadius="25dp"
+            app:rippleColor="#33AAAAAA"
+            android:id="@+id/btn_logout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="110dp"
+            android:layout_marginTop="60dp"
+            android:text="تسجيل خروج"
+            android:elevation="4dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/editProfile"/>
+
+
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+</ScrollView>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

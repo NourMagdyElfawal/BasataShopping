@@ -1,11 +1,10 @@
-package com.souqmaftoh.basatashopping.fragments;
+package com.souqmaftoh.basatashopping.fragments.HomeFragment;
 
 import androidx.lifecycle.ViewModelProviders;
 
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -98,12 +97,12 @@ public class HomeFragment extends Fragment {
                 "https://homepages.cae.wisc.edu/~ece533/images/airplane.png",
                 "https://homepages.cae.wisc.edu/~ece533/images/arctichare.png",
                 "https://homepages.cae.wisc.edu/~ece533/images/fruits.png",
-                "https://homepages.cae.wisc.edu/~ece533/images/frymire.png",
-                "https://homepages.cae.wisc.edu/~ece533/images/girl.png",
-                "https://homepages.cae.wisc.edu/~ece533/images/monarch.png",
-                "https://homepages.cae.wisc.edu/~ece533/images/airplane.png",
-                "https://homepages.cae.wisc.edu/~ece533/images/arctichare.png",
-                "https://homepages.cae.wisc.edu/~ece533/images/boat.png",
+//                "https://homepages.cae.wisc.edu/~ece533/images/frymire.png",
+//                "https://homepages.cae.wisc.edu/~ece533/images/girl.png",
+//                "https://homepages.cae.wisc.edu/~ece533/images/monarch.png",
+//                "https://homepages.cae.wisc.edu/~ece533/images/airplane.png",
+//                "https://homepages.cae.wisc.edu/~ece533/images/arctichare.png",
+//                "https://homepages.cae.wisc.edu/~ece533/images/boat.png",
                 "https://homepages.cae.wisc.edu/~ece533/images/monarch.png",
                 "https://homepages.cae.wisc.edu/~ece533/images/airplane.png",
                 "https://homepages.cae.wisc.edu/~ece533/images/arctichare.png",
@@ -125,12 +124,12 @@ public class HomeFragment extends Fragment {
                 "أبل",
                 "سامسونج",
                 "هواوي",
-                "اتش تي سي",
-                "سوني",
-                "ال جي",
-                "الكاتيل",
-                "اسوس",
-                "نوكيا",
+//                "اتش تي سي",
+//                "سوني",
+//                "ال جي",
+//                "الكاتيل",
+//                "اسوس",
+//                "نوكيا",
                 "شاومي",
                 "اوبو",
                 "لينوفو",
