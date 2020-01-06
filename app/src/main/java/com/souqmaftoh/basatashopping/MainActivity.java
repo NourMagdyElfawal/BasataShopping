@@ -35,6 +35,8 @@ import com.souqmaftoh.basatashopping.fragments.tablets.TabletsFragment;
 import java.util.ArrayList;
 import java.util.List;
 
+import static androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE;
+
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     FloatingActionButton fab;
@@ -166,17 +168,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         case R.id.navigation_notifications:
                             openFragment(NotificationFragment.newInstance("", ""));
                             return true;
-//                        case R.id.navigation_Profile:
-//                            openFragment(MyAccountFragment.newInstance("", ""));
-//                            return true;
                         case R.id.navigation_home:
-                            onBackPressed();
-
-//                            getFragmentManager().popBackStackImmediate();
-//                            for (Fragment fragment : getSupportFragmentManager().getFragments()) {
-//                                getSupportFragmentManager().beginTransaction().remove(fragment).commit();
-//                            }
-
+                            FragmentManager manager = getSupportFragmentManager();
+                            FragmentTransaction trans = manager.beginTransaction();
+                            manager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                            trans.commit();
                             return true;
 
                     }
@@ -184,15 +180,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
             };
     public void openFragment(Fragment fragment) {
-
-//        FragmentManager manager = getSupportFragmentManager();
-//        FragmentTransaction trans = manager.beginTransaction();
-//        trans.replace(R.id.main, fragment);
-//        manager.popBackStack(R.id.main, POP_BACK_STACK_INCLUSIVE);
-//
-//        trans.commit();
-
-
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.main, fragment);
         transaction.addToBackStack(null);

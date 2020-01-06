@@ -37,4 +37,14 @@
             <item name="colorAccent">@color/colorAccent</item>
         </style>
 
+
+    <style name="navTextInactive">
+        <item name="android:textSize">11sp</item>
+    </style>
+
+    <style name="navTextActive">
+        <item name="android:textSize">12sp</item>
+    </style>
+
+
 </resources>
