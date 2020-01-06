@@ -13,7 +13,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.souqmaftoh.basatashopping.fragments.HomeFragment.HomeViewModel;
+import com.souqmaftoh.basatashopping.fragments.MobileFragment.MobileViewModel;
 import com.souqmaftoh.basatashopping.MainActivity;
 import com.souqmaftoh.basatashopping.R;
 import com.souqmaftoh.basatashopping.design.CurvedBottomNavigationView;
@@ -26,7 +26,7 @@ public class ItemDetailsFragment extends Fragment implements BottomNavigationVie
 
     //    List<category> historicList = new ArrayList<>();
 
-    private HomeViewModel homeViewModel;
+    private MobileViewModel mobileViewModel;
     private RecyclerView recyclerView;
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER

@@ -8,12 +8,12 @@ import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.viewpager.widget.ViewPager;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.Switch;
 import android.widget.Toast;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -22,7 +22,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.robertlevonyan.views.customfloatingactionbutton.FloatingActionButton;
-import com.souqmaftoh.basatashopping.fragments.HomeFragment.HomeFragment;
+import com.souqmaftoh.basatashopping.fragments.MobileFragment.MobileFragment;
 import com.souqmaftoh.basatashopping.fragments.ItemsRecyclerFragment.ItemsRecyclerFragment;
 import com.souqmaftoh.basatashopping.fragments.myAccount.MyAccountFragment;
 import com.souqmaftoh.basatashopping.fragments.accessories.AccessoriesFragment;
@@ -34,8 +34,6 @@ import com.souqmaftoh.basatashopping.fragments.tablets.TabletsFragment;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -55,17 +53,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         imgV_myAccount = findViewById(R.id.imgV_myAccount);
         imgV_myAccount.setOnClickListener(this);
 
-        viewPager = (ViewPager) findViewById(R.id.viewpager);
+        viewPager =findViewById(R.id.viewpager);
         setupViewPager(viewPager);
 
-        tabLayout = (TabLayout) findViewById(R.id.tabs);
+        tabLayout = findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
 
 
         //bottom bar
         bottomNavigation = findViewById(R.id.bottom_navigation);
         bottomNavigation.setOnNavigationItemSelectedListener(navigationItemSelectedListener);
-        //    openFragment(HomeFragment.newInstance("", ""));
+        //    openFragment(MobileFragment.newInstance("", ""));
 
         fab = findViewById(R.id.fab);
 //        showFloatingActionButton();
@@ -115,7 +113,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         adapter.addFragment(new OthersFragment(), "اخرى");
         adapter.addFragment(new AccessoriesFragment(), "اكسسوارات");
         adapter.addFragment(new TabletsFragment(), "تابلت");
-        adapter.addFragment(new HomeFragment(), "جوالات");
+        adapter.addFragment(new MobileFragment(), "جوالات");
 
         viewPager.setAdapter(adapter);
 
@@ -172,7 +170,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //                            openFragment(MyAccountFragment.newInstance("", ""));
 //                            return true;
                         case R.id.navigation_home:
-                            openFragment(HomeFragment.newInstance("", ""));
+                            onBackPressed();
+
+//                            getFragmentManager().popBackStackImmediate();
+//                            for (Fragment fragment : getSupportFragmentManager().getFragments()) {
+//                                getSupportFragmentManager().beginTransaction().remove(fragment).commit();
+//                            }
+
                             return true;
 
                     }
@@ -206,7 +210,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.imgV_myAccount:
                 openFragment(MyAccountFragment.newInstance("", ""));
                 break;
-
+//            case R.id.fab:
+//                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+//                transaction.add(R.id.main, AddAdvFragment.newInstance("", ""));
+//                transaction.addToBackStack(null);
+//                transaction.commit();
+//                break;
         }
     }
 

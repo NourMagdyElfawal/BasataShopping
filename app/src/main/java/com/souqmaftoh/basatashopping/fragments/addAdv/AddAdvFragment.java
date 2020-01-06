@@ -1,13 +1,24 @@
 package com.souqmaftoh.basatashopping.fragments.addAdv;
 
+import android.Manifest;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 
@@ -18,12 +29,17 @@ import com.souqmaftoh.basatashopping.design.CurvedBottomNavigationView;
 
 import java.util.Objects;
 
-public class AddAdvFragment extends Fragment implements BottomNavigationView.OnNavigationItemSelectedListener {
+import static android.app.Activity.RESULT_OK;
+
+public class AddAdvFragment extends Fragment implements BottomNavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
 
     private SlideshowViewModel addAdvViewModel;
     CurvedBottomNavigationView mView;
     MainActivity mainActivity;
     CardView card_telephone,card_confirm;
+    ImageView addProductImg;
+    private static final int PICK_PHOTO_FOR_AVATAR = 0;
+
 //    List<category> historicList = new ArrayList<>();
 
     // TODO: Rename parameter arguments, choose names that match
@@ -69,6 +85,10 @@ public class AddAdvFragment extends Fragment implements BottomNavigationView.OnN
                 ViewModelProviders.of(this).get(SlideshowViewModel.class);
         View root = inflater.inflate(R.layout.fragment_addadv, container, false);
         setHasOptionsMenu(true);
+
+        addProductImg=root.findViewById(R.id.addProductImg);
+        addProductImg.setOnClickListener(this);
+
         card_telephone=root.findViewById(R.id.card_telephone);
         card_confirm=root.findViewById(R.id.card_AdvAddress);
         mView = root.findViewById(R.id.customBottomBar);
@@ -169,4 +189,100 @@ public class AddAdvFragment extends Fragment implements BottomNavigationView.OnN
         return false;
     }
 
+    /**
+     * Called when a view has been clicked.
+     *
+     * @param v The view that was clicked.
+     */
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.addProductImg:
+               pickImage() ;
+                break;
+            }
+
+        }
+
+    public void pickImage() {
+        try {
+            if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE}, PICK_PHOTO_FOR_AVATAR);
+            } else {
+
+                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                intent.setType("image/*");
+                startActivityForResult(intent, PICK_PHOTO_FOR_AVATAR);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    /**
+     * Callback for the result from requesting permissions. This method
+     * is invoked for every call on {@link #requestPermissions(String[], int)}.
+     * <p>
+     * <strong>Note:</strong> It is possible that the permissions request interaction
+     * with the user is interrupted. In this case you will receive empty permissions
+     * and results arrays which should be treated as a cancellation.
+     * </p>
+     *
+     * @param requestCode  The request code passed in {@link #requestPermissions(String[], int)}.
+     * @param permissions  The requested permissions. Never null.
+     * @param grantResults The grant results for the corresponding permissions
+     *                     which is either {@link PackageManager#PERMISSION_GRANTED}
+     *                     or {@link PackageManager#PERMISSION_DENIED}. Never null.
+     * @see #requestPermissions(String[], int)
+     */
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case PICK_PHOTO_FOR_AVATAR:
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Intent galleryIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore
+                            .Images.Media.EXTERNAL_CONTENT_URI);
+                    startActivityForResult(galleryIntent, PICK_PHOTO_FOR_AVATAR);
+                } else {
+                    //do something like displaying a message that he didn`t allow the app to access gallery and you wont be able to let him select from gallery
+                }
+                break;
+        }
+
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+//        if (requestCode == PICK_PHOTO_FOR_AVATAR && resultCode == Activity.RESULT_OK) {
+//            if (data == null) {
+//                //Display an error
+//                return;
+//            }
+//            InputStream inputStream = context.getContentResolver().openInputStream(data.getData());
+//            //Now you can do whatever you want with your inpustream, save it as file, upload to a server, decode a bitmap...
+//        }
+        if (requestCode == PICK_PHOTO_FOR_AVATAR && resultCode == RESULT_OK && null != data) {
+            Uri selectedImage = data.getData();
+//            String[] filePathColumn = { MediaStore.Images.Media.DATA };
+//
+//            Cursor cursor = getActivity().getContentResolver().query(selectedImage,
+//                    filePathColumn, null, null, null);
+//            cursor.moveToFirst();
+//
+//            int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+//            String picturePath = cursor.getString(columnIndex);
+//            cursor.close();
+//            Log.e("picturePath",picturePath);
+//            addProductImg.setImageBitmap(BitmapFactory.decodeFile(picturePath));
+            addProductImg.setImageURI(selectedImage);
+
+        }
+
+
+
+    }
 }

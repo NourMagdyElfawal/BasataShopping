@@ -34,7 +34,7 @@ public class TabletsFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.home_fragment, container, false);
+        View root = inflater.inflate(R.layout.mobile_fragment, container, false);
         recyclerView = (RecyclerView) root.findViewById(R.id.home_recycleviw);
 
 //        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -82,7 +82,7 @@ public class TabletsFragment extends Fragment {
             imageUrl.setImageUrl(imageUrls[i]);
             imageUrlList.add(imageUrl);
         }
-        Log.d("HomeFragment", "List count: " + imageUrlList.size());
+        Log.d("MobileFragment", "List count: " + imageUrlList.size());
         return imageUrlList;
     }
 

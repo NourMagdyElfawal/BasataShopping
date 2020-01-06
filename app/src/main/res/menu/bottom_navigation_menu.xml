@@ -15,7 +15,7 @@
 
     <item
         android:id="@+id/navigation_stores"
-        android:icon="@drawable/home"
+        android:icon="@drawable/store"
         android:title="متاجر" />
 
     <item

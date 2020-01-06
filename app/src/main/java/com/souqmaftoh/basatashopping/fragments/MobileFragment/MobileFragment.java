@@ -1,4 +1,4 @@
-package com.souqmaftoh.basatashopping.fragments.HomeFragment;
+package com.souqmaftoh.basatashopping.fragments.MobileFragment;
 
 import androidx.lifecycle.ViewModelProviders;
 
@@ -20,11 +20,11 @@ import com.souqmaftoh.basatashopping.R;
 
 import java.util.ArrayList;
 
-public class HomeFragment extends Fragment {
+public class MobileFragment extends Fragment {
 
 //    List<category> historicList = new ArrayList<>();
 
-    private HomeViewModel homeViewModel;
+    private MobileViewModel mobileViewModel;
     private RecyclerView recyclerView;
     HomeAdapter homeAdapter;
     // TODO: Rename parameter arguments, choose names that match
@@ -34,7 +34,7 @@ public class HomeFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-    public HomeFragment() {
+    public MobileFragment() {
         // Required empty public constructor
     }
     /**
@@ -46,8 +46,8 @@ public class HomeFragment extends Fragment {
      * @return A new instance of fragment SmsFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static HomeFragment newInstance(String param1, String param2) {
-        HomeFragment fragment = new HomeFragment();
+    public static MobileFragment newInstance(String param1, String param2) {
+        MobileFragment fragment = new MobileFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -67,9 +67,9 @@ public class HomeFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
-        homeViewModel =
-                ViewModelProviders.of(this).get(HomeViewModel.class);
-        View root = inflater.inflate(R.layout.home_fragment, container, false);
+        mobileViewModel =
+                ViewModelProviders.of(this).get(MobileViewModel.class);
+        View root = inflater.inflate(R.layout.mobile_fragment, container, false);
 //        Objects.requireNonNull(((AppCompatActivity) Objects.requireNonNull(getActivity())).getSupportActionBar()).show();
 
         recyclerView = (RecyclerView) root.findViewById(R.id.home_recycleviw);
@@ -114,7 +114,7 @@ public class HomeFragment extends Fragment {
             imageUrl.setImageUrl(imageUrls[i]);
             imageUrlList.add(imageUrl);
         }
-        Log.d("HomeFragment", "List count: " + imageUrlList.size());
+        Log.d("MobileFragment", "List count: " + imageUrlList.size());
         return imageUrlList;
     }
 
@@ -142,7 +142,7 @@ public class HomeFragment extends Fragment {
             imageTitle.setName(itemTitles[i]);
             imageTitleList.add(imageTitle);
         }
-        Log.d("HomeFragment", "List count: " + imageTitleList.size());
+        Log.d("MobileFragment", "List count: " + imageTitleList.size());
         return imageTitleList;
 
     }

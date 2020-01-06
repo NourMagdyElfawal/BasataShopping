@@ -35,7 +35,7 @@ public class OthersFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.home_fragment, container, false);
+        View root = inflater.inflate(R.layout.mobile_fragment, container, false);
         recyclerView = (RecyclerView) root.findViewById(R.id.home_recycleviw);
 
 //        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
