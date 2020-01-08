@@ -21,12 +21,18 @@ import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.souqmaftoh.basatashopping.Adapter.addAdvAdapter;
+import com.souqmaftoh.basatashopping.Interface.addAdvImageModelClass;
 import com.souqmaftoh.basatashopping.MainActivity;
 import com.souqmaftoh.basatashopping.R;
 import com.souqmaftoh.basatashopping.design.CurvedBottomNavigationView;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import static android.app.Activity.RESULT_OK;
@@ -39,6 +45,12 @@ public class AddAdvFragment extends Fragment implements BottomNavigationView.OnN
     CardView card_telephone,card_confirm;
     ImageView addProductImg;
     private static final int PICK_PHOTO_FOR_AVATAR = 0;
+    private static final int PICK_IMAGE_MULTIPLE = 1;
+    String imageEncoded;
+    List<String> imagesEncodedList;
+    ArrayList<addAdvImageModelClass> items = new ArrayList<>();
+    addAdvAdapter adapter;
+
 
 //    List<category> historicList = new ArrayList<>();
 
@@ -86,6 +98,24 @@ public class AddAdvFragment extends Fragment implements BottomNavigationView.OnN
         View root = inflater.inflate(R.layout.fragment_addadv, container, false);
         setHasOptionsMenu(true);
 
+
+
+        adapter = new addAdvAdapter(getActivity(), items);
+
+        RecyclerView recyclerView = root.findViewById(R.id.recycler_view);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
+
+        recyclerView.setAdapter(adapter);
+
+// let's create 10 random items
+
+        for (int i = 0; i < 10; i++) {
+            items.add(new addAdvImageModelClass(R.drawable.ic_add_image));
+            adapter.notifyDataSetChanged();
+        }
+
+
+
         addProductImg=root.findViewById(R.id.addProductImg);
         addProductImg.setOnClickListener(this);
 
@@ -93,7 +123,6 @@ public class AddAdvFragment extends Fragment implements BottomNavigationView.OnN
         card_confirm=root.findViewById(R.id.card_AdvAddress);
         mView = root.findViewById(R.id.customBottomBar);
         mView.setOnNavigationItemSelectedListener(AddAdvFragment.this);
-//        ((MainActivity) Objects.requireNonNull(getActivity())).hideFloatingActionButton();
 
         String item;
 //        if (getArguments() != null) {
@@ -210,9 +239,13 @@ public class AddAdvFragment extends Fragment implements BottomNavigationView.OnN
                 ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,
                         Manifest.permission.WRITE_EXTERNAL_STORAGE}, PICK_PHOTO_FOR_AVATAR);
             } else {
-
-                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                Intent intent = new Intent();
                 intent.setType("image/*");
+                intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+
+//                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+//                intent.setType("image/*");
                 startActivityForResult(intent, PICK_PHOTO_FOR_AVATAR);
             }
         } catch (Exception e) {
@@ -279,6 +312,11 @@ public class AddAdvFragment extends Fragment implements BottomNavigationView.OnN
 //            Log.e("picturePath",picturePath);
 //            addProductImg.setImageBitmap(BitmapFactory.decodeFile(picturePath));
             addProductImg.setImageURI(selectedImage);
+
+//            items.add(new addAdvImageModelClass(selectedImage));
+//            adapter.notifyDataSetChanged();
+
+
 
         }
 

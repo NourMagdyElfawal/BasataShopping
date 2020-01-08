@@ -20,22 +20,38 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
+<LinearLayout
+    android:id="@+id/addImg_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="10dp"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintBottom_toTopOf="@id/card_AddName"
+    app:layout_constraintTop_toTopOf="parent"
+    android:weightSum="5"
+    android:orientation="horizontal">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_view"
+            android:layout_width="0dp"
+            android:layout_weight="4"
+            android:layout_height="80dp" />
 
         <ImageView
             android:id="@+id/addProductImg"
-            android:layout_width="200dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_height="200dp"
-            app:layout_constraintBottom_toTopOf="@id/card_AddName"
-            app:layout_constraintTop_toTopOf="parent"
+            android:layout_width="0dp"
+            android:layout_height="80dp"
+            android:layout_weight="1"
+            android:layout_gravity="center"
             android:background="@drawable/ic_add_image" />
-
+</LinearLayout>
                 <androidx.cardview.widget.CardView
                     android:id="@+id/card_AddName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:layout_constraintTop_toBottomOf="@+id/addProductImg"
+                    app:layout_constraintTop_toBottomOf="@+id/addImg_layout"
                     app:cardCornerRadius="15dp"
                     android:layout_margin="8dp">
 
@@ -66,7 +82,7 @@
                 android:layout_height="wrap_content"
                 app:layout_constraintEnd_toEndOf="parent"
                 android:layout_marginTop="15dp"
-                android:text="اسم المنتج"
+                android:hint="اسم المنتج"
                 android:textAlignment="center"
                 app:layout_constraintTop_toBottomOf="@id/text_advName"
                 />
@@ -119,7 +135,7 @@
                     android:layout_height="wrap_content"
                     app:layout_constraintEnd_toEndOf="parent"
                     android:layout_marginTop="15dp"
-                    android:text="وصف المنتج"
+                    android:hint="وصف المنتج"
                     android:textAlignment="center"
                     app:layout_constraintTop_toBottomOf="@id/text_AdvDescription"
                     />
@@ -163,7 +179,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="15dp"
-                    android:text="العنوان"
+                    android:hint="العنوان"
                     android:textAlignment="center"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/text_AdvAddress" />
@@ -211,7 +227,7 @@
                     android:layout_height="wrap_content"
                     app:layout_constraintEnd_toEndOf="parent"
                     android:layout_marginTop="15dp"
-                    android:text="رقم الهاتف"
+                    android:hint="رقم الهاتف"
                     android:textAlignment="center"
                     app:layout_constraintTop_toBottomOf="@id/text_telephone"
                     />

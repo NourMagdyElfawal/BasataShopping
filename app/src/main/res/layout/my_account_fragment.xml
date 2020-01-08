@@ -91,6 +91,122 @@
                 android:inputType="textPassword"
                 android:text="12345678" />
 
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="اسم المحل التجاري" />
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                android:enabled="false"
+                android:textAlignment="viewEnd"
+                android:text="basata mobile" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="العنوان" />
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                android:enabled="false"
+                android:textAlignment="viewEnd"
+                android:text="انقره تركيا" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="الموقع" />
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                android:enabled="false"
+                android:textAlignment="viewEnd"
+                android:inputType="textPassword"
+                android:text="7 شارع اتاتورك" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="رقم الهاتف" />
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                android:enabled="false"
+                android:textAlignment="viewEnd"
+                android:text="12345678" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="وصف المحل" />
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                android:enabled="false"
+                android:textAlignment="viewEnd"
+                android:text="محل لبيع الموبيلات والتابلت واكسسوارات الموبيل" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginBottom="15dp"
+                android:text="روابط صفحات التواصل"
+                android:textAlignment="center"
+                />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/youtube"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:background="@drawable/youtube"
+                    app:layout_constraintEnd_toStartOf="@+id/instagram"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    />
+
+                <ImageView
+                    android:id="@+id/instagram"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:background="@drawable/instagram"
+                    app:layout_constraintEnd_toStartOf="@id/facebook"
+                    app:layout_constraintStart_toEndOf="@id/youtube"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+
+                    />
+
+                <ImageView
+                    android:id="@+id/facebook"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:background="@drawable/facebook"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/instagram"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+
+                    />
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
         </LinearLayout>
 
