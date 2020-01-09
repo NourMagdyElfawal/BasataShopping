@@ -26,6 +26,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.souqmaftoh.basatashopping.Adapter.addAdvAdapter;
+import com.souqmaftoh.basatashopping.Interface.Items;
 import com.souqmaftoh.basatashopping.Interface.addAdvImageModelClass;
 import com.souqmaftoh.basatashopping.MainActivity;
 import com.souqmaftoh.basatashopping.R;
@@ -103,15 +104,15 @@ public class AddAdvFragment extends Fragment implements BottomNavigationView.OnN
         adapter = new addAdvAdapter(getActivity(), items);
 
         RecyclerView recyclerView = root.findViewById(R.id.recycler_view);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, true));
 
         recyclerView.setAdapter(adapter);
 
 // let's create 10 random items
 
         for (int i = 0; i < 10; i++) {
-            items.add(new addAdvImageModelClass(R.drawable.ic_add_image));
-            adapter.notifyDataSetChanged();
+//            items.add(new addAdvImageModelClass(R.drawable.ic_add_image));
+//            adapter.notifyDataSetChanged();
         }
 
 
@@ -311,8 +312,9 @@ public class AddAdvFragment extends Fragment implements BottomNavigationView.OnN
 //            cursor.close();
 //            Log.e("picturePath",picturePath);
 //            addProductImg.setImageBitmap(BitmapFactory.decodeFile(picturePath));
-            addProductImg.setImageURI(selectedImage);
-
+//                                    addProductImg.setImageURI(selectedImage);
+            items.add(new addAdvImageModelClass(selectedImage));
+            adapter.notifyDataSetChanged();
 //            items.add(new addAdvImageModelClass(selectedImage));
 //            adapter.notifyDataSetChanged();
 

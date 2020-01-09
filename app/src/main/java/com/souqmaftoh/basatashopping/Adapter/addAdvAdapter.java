@@ -38,7 +38,7 @@ public class addAdvAdapter extends RecyclerView.Adapter<addAdvAdapter.CustomView
         @Override
         public void onBindViewHolder(@NonNull CustomViewHolder holder, int position) {
 //            holder.itemTitle.setText(items.get(position).getTitle());
-            holder.itemImage.setImageResource(items.get(position).getImage());
+            holder.itemImage.setImageURI(items.get(position).getImage());
             if(position==0){
             holder.itemImage.setOnClickListener(new View.OnClickListener() {
                 @Override

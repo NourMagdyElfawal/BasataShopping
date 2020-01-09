@@ -4,15 +4,15 @@ import android.net.Uri;
 
 public class addAdvImageModelClass {
 
-        private int image;
-        public addAdvImageModelClass(int image) {
+        private Uri image;
+        public addAdvImageModelClass(Uri image) {
             this.image = image;
         }
-        public int getImage() {
+        public Uri getImage() {
             return image;
         }
 
-    public void setImage(int image) {
+    public void setImage(Uri image) {
         this.image = image;
     }
 
