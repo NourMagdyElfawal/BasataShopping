@@ -26,6 +26,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.FirebaseAuth;
+import com.souqmaftoh.basatashopping.Fonts.LatoBLack;
 import com.souqmaftoh.basatashopping.LoginActivity;
 import com.souqmaftoh.basatashopping.R;
 
@@ -73,7 +74,7 @@ public class MyAccountFragment extends Fragment implements View.OnClickListener 
     }
 
 
-     MaterialButton btn_logout;
+     LatoBLack btn_pro_logout;
     private GoogleSignInClient mGoogleSignInClient;
 
 
@@ -82,8 +83,8 @@ public class MyAccountFragment extends Fragment implements View.OnClickListener 
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View view =inflater.inflate(R.layout.my_account_fragment, container, false);
-            btn_logout=view.findViewById(R.id.btn_logout);
-            btn_logout.setOnClickListener(this);
+        btn_pro_logout=view.findViewById(R.id.btn_pro_logout);
+        btn_pro_logout.setOnClickListener(this);
         return view;
     }
 
@@ -102,7 +103,7 @@ public class MyAccountFragment extends Fragment implements View.OnClickListener 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.btn_logout:
+            case R.id.btn_pro_logout:
                 logOut();
 
         }

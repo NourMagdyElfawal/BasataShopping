@@ -7,6 +7,10 @@ import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.Spinner;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -24,6 +28,7 @@ import com.souqmaftoh.basatashopping.R;
 import com.souqmaftoh.basatashopping.design.DividerItemDecoration;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import butterknife.BindView;
@@ -88,6 +93,40 @@ public class ItemsRecyclerFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.items_recycler_fragment, container, false);
+
+        // Spinner element
+        final Spinner spinner = (Spinner) view.findViewById(R.id.spinner_nav);
+        Button button=(Button)view.findViewById(R.id.button);
+
+        // Spinner click listener
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            public void onItemSelected(AdapterView<?> parent, View view,
+                                       int position, long id) {
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        // Spinner Drop down elements
+        List<String> categories = new ArrayList<String>();
+        categories.add("السعر: من الأعلى للأقل");
+        categories.add("السعر: من الأقل للأعلى");
+        categories.add("الاحدث");
+        categories.add("الأكثر تقييما");
+
+        // Creating adapter for spinner
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, categories);
+
+        // Drop down layout style - list view with radio button
+        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        // attaching data adapter to spinner
+        spinner.setAdapter(dataAdapter);
+
 
 
         ButterKnife.bind(this,view);

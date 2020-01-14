@@ -11,6 +11,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
 
 import okhttp3.ResponseBody;
@@ -113,15 +116,27 @@ public class RegistrationActivityOne extends AppCompatActivity implements View.O
         call.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
-
+                String s=null;
                 try {
-                    String s=response.body().string();
-                    Toast.makeText(RegistrationActivityOne.this, s, Toast.LENGTH_SHORT).show();
+                    s=response.body().string();
+//                    Toast.makeText(RegistrationActivityOne.this, s, Toast.LENGTH_SHORT).show();
 
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
+
+                if(s!=null){
+                    try {
+                        JSONObject jsonObject=new JSONObject(s);
+                        Toast.makeText(RegistrationActivityOne.this, jsonObject.getString("message"), Toast.LENGTH_SHORT).show();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+
             }
+
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {

@@ -51,7 +51,7 @@
                 android:padding="10dp"
                 android:ems="10"
                 android:hint="الايميل"
-                android:inputType="phone"
+                android:inputType="textEmailAddress"
                 android:textAlignment="viewEnd"
                 android:maxLength="15" />
 
@@ -88,7 +88,7 @@
 
 
         <com.souqmaftoh.basatashopping.Fonts.LatoBLack
-            android:id="@+id/btnForgot"
+            android:id="@+id/txtV_Forgot"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
@@ -101,7 +101,7 @@
 
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnContinue"
+                android:id="@+id/btn_loginByEmail"
                 android:layout_width="150dp"
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal"
@@ -120,13 +120,13 @@
 
 
         <RelativeLayout
-            android:id="@+id/btnRegister"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="10dp">
 
 
             <com.souqmaftoh.basatashopping.Fonts.LatoBLack
+                android:id="@+id/txtV_Register"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
