@@ -11,12 +11,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.souqmaftoh.basatashopping.Api.RetrofitClient;
+import com.souqmaftoh.basatashopping.Models.DefaultResponse;
 
-import java.io.IOException;
-
-import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -108,38 +105,24 @@ public class RegistrationActivityOne extends AppCompatActivity implements View.O
             return;
 
         }
-        Call<ResponseBody> call=RetrofitClient
+        Call<DefaultResponse> call= RetrofitClient
                 .getInstance()
                 .getApi()
                 .createUser(name,email,password,repPassword);
 
-        call.enqueue(new Callback<ResponseBody>() {
+        call.enqueue(new Callback<DefaultResponse>() {
             @Override
-            public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
-                String s=null;
-                try {
-                    s=response.body().string();
-//                    Toast.makeText(RegistrationActivityOne.this, s, Toast.LENGTH_SHORT).show();
+            public void onResponse(@NonNull Call<DefaultResponse> call, @NonNull Response<DefaultResponse> response) {
 
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
 
-                if(s!=null){
-                    try {
-                        JSONObject jsonObject=new JSONObject(s);
-                        Toast.makeText(RegistrationActivityOne.this, jsonObject.getString("message"), Toast.LENGTH_SHORT).show();
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-
-                }
-
+                DefaultResponse dr=response.body();
+                if (dr != null && dr.getMsg() != null)
+                    Toast.makeText(RegistrationActivityOne.this, dr.getMsg(), Toast.LENGTH_SHORT).show();
             }
 
 
             @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
+            public void onFailure(Call<DefaultResponse> call, Throwable t) {
                 Toast.makeText(RegistrationActivityOne.this, t.getMessage(), Toast.LENGTH_SHORT).show();
 
             }

@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.Switch;
 import android.widget.Toast;
 
@@ -28,7 +29,11 @@ import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.souqmaftoh.basatashopping.Fonts.LatoBLack;
 import com.souqmaftoh.basatashopping.LoginActivity;
+import com.souqmaftoh.basatashopping.LoginByEmailActivity;
+import com.souqmaftoh.basatashopping.MainActivity;
+import com.souqmaftoh.basatashopping.Models.User;
 import com.souqmaftoh.basatashopping.R;
+import com.souqmaftoh.basatashopping.Storage.SharedPrefManager;
 
 import java.util.Objects;
 
@@ -76,6 +81,7 @@ public class MyAccountFragment extends Fragment implements View.OnClickListener 
 
      LatoBLack btn_pro_logout;
     private GoogleSignInClient mGoogleSignInClient;
+    EditText et_pro_name,et_pro_email,et_pro_storeName,et_pro_address,et_pro_location,et_pro_phone,et_pro_storeDisc;
 
 
 
@@ -84,7 +90,22 @@ public class MyAccountFragment extends Fragment implements View.OnClickListener 
                              @Nullable Bundle savedInstanceState) {
         View view =inflater.inflate(R.layout.my_account_fragment, container, false);
         btn_pro_logout=view.findViewById(R.id.btn_pro_logout);
+        et_pro_name=view.findViewById(R.id.et_pro_name);
+        et_pro_email=view.findViewById(R.id.et_pro_email);
+        et_pro_storeName=view.findViewById(R.id.et_pro_storeName);
+        et_pro_address=view.findViewById(R.id.et_pro_address);
+        et_pro_location=view.findViewById(R.id.et_pro_location);
+        et_pro_phone=view.findViewById(R.id.et_pro_phone);
+        et_pro_storeDisc=view.findViewById(R.id.et_pro_storeDisc);
+
+
         btn_pro_logout.setOnClickListener(this);
+
+        User user=SharedPrefManager.getInstance(getActivity()).getUser();
+        et_pro_name.setText(user.getName());
+        et_pro_email.setText(user.getEmail());
+
+
         return view;
     }
 
@@ -139,4 +160,16 @@ public class MyAccountFragment extends Fragment implements View.OnClickListener 
         }
 
     }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        if(SharedPrefManager.getInstance(getActivity()).isLoggedIn()){
+            Intent intent_log =new Intent(getActivity(), MainActivity.class);
+            intent_log.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent_log);
+
+        }
+    }
+
 }

@@ -1,4 +1,4 @@
-package com.souqmaftoh.basatashopping;
+package com.souqmaftoh.basatashopping.Api;
 
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
