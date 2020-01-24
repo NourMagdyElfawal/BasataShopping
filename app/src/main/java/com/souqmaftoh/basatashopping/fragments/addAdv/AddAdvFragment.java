@@ -3,17 +3,24 @@ package com.souqmaftoh.basatashopping.fragments.addAdv;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Spinner;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -25,16 +32,27 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.button.MaterialButton;
+import com.google.gson.Gson;
 import com.souqmaftoh.basatashopping.Adapter.addAdvAdapter;
-import com.souqmaftoh.basatashopping.Interface.Items;
+import com.souqmaftoh.basatashopping.Api.RetrofitClient;
+import com.souqmaftoh.basatashopping.Interface.Advertise;
 import com.souqmaftoh.basatashopping.Interface.addAdvImageModelClass;
 import com.souqmaftoh.basatashopping.MainActivity;
+import com.souqmaftoh.basatashopping.Models.DefaultResponse;
+import com.souqmaftoh.basatashopping.Interface.User;
 import com.souqmaftoh.basatashopping.R;
 import com.souqmaftoh.basatashopping.design.CurvedBottomNavigationView;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -51,7 +69,8 @@ public class AddAdvFragment extends Fragment implements BottomNavigationView.OnN
     List<String> imagesEncodedList;
     ArrayList<addAdvImageModelClass> items = new ArrayList<>();
     addAdvAdapter adapter;
-
+    EditText et_advName,et_AdvDescription,et_AdvAddress,et_telephone;
+    String encodedImage;
 
 //    List<category> historicList = new ArrayList<>();
 
@@ -62,6 +81,7 @@ public class AddAdvFragment extends Fragment implements BottomNavigationView.OnN
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    MaterialButton btn_addAdv;
     public AddAdvFragment() {
         // Required empty public constructor
     }
@@ -98,6 +118,56 @@ public class AddAdvFragment extends Fragment implements BottomNavigationView.OnN
                 ViewModelProviders.of(this).get(SlideshowViewModel.class);
         View root = inflater.inflate(R.layout.fragment_addadv, container, false);
         setHasOptionsMenu(true);
+
+        et_advName=root.findViewById(R.id.et_advName);
+        et_AdvDescription=root.findViewById(R.id.et_AdvDescription);
+        et_AdvAddress=root.findViewById(R.id.et_AdvAddress);
+        et_telephone=root.findViewById(R.id.et_telephone);
+
+        btn_addAdv=root.findViewById(R.id.btn_addAdv);
+        btn_addAdv.setOnClickListener(this);
+
+
+
+
+
+
+
+        // Spinner element
+        final Spinner spinner = root.findViewById(R.id.spinner_nav);
+
+        // Spinner click listener
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            public void onItemSelected(AdapterView<?> parent, View view,
+                                       int position, long id) {
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        // Spinner Drop down elements
+        List<String> categories = new ArrayList<String>();
+        categories.add("جوالات");
+        categories.add("تابلت");
+        categories.add("اكسسوارات");
+        categories.add("أخرى");
+
+        // Creating adapter for spinner
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, categories);
+
+        // Drop down layout style - list view with radio button
+        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        // attaching data adapter to spinner
+        spinner.setAdapter(dataAdapter);
+
+
+
+
 
 
 
@@ -230,6 +300,10 @@ public class AddAdvFragment extends Fragment implements BottomNavigationView.OnN
             case R.id.addProductImg:
                pickImage() ;
                 break;
+
+            case R.id.btn_addAdv:
+                AddAdvertiseByApi();
+                break;
             }
 
         }
@@ -313,6 +387,25 @@ public class AddAdvFragment extends Fragment implements BottomNavigationView.OnN
 //            Log.e("picturePath",picturePath);
 //            addProductImg.setImageBitmap(BitmapFactory.decodeFile(picturePath));
 //                                    addProductImg.setImageURI(selectedImage);
+
+            try {
+
+                Bitmap bitmap = MediaStore.Images.Media.getBitmap(Objects.requireNonNull(getActivity()).getContentResolver(), selectedImage);
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos); //bm is the bitmap object
+                byte[] b = baos.toByteArray();
+
+                encodedImage = Base64.encodeToString(b, Base64.DEFAULT);
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+//            Bitmap bm = BitmapFactory.decodeFile(String.valueOf(selectedImage));
+
+
+
+
             items.add(new addAdvImageModelClass(selectedImage));
             adapter.notifyDataSetChanged();
 //            items.add(new addAdvImageModelClass(selectedImage));
@@ -325,4 +418,60 @@ public class AddAdvFragment extends Fragment implements BottomNavigationView.OnN
 
 
     }
+
+
+
+    private void AddAdvertiseByApi() {
+
+        String title=et_advName.getText().toString();
+        int price= Integer.parseInt(et_AdvAddress.getText().toString());
+        String description=et_AdvDescription.getText().toString();
+        int sub_category= Integer.parseInt(et_advName.getText().toString());
+        String main_image=encodedImage;
+        String item_condition="";
+
+
+
+        Call call= RetrofitClient.
+                getInstance()
+                .getApi()
+                .createAd   (title,price,description,sub_category,item_condition,main_image);
+        call.enqueue(new Callback() {
+            @Override
+            public void onResponse(Call call, Response response) {
+                Log.e("gson:create_ad", new Gson().toJson(response.body()) );
+
+                if(response.isSuccessful()){
+                    Log.e("res:create_ad","isSuccessful");
+                }
+
+
+//                DefaultResponse dr=response.body();
+//                if (dr != null && dr.getMessage() != null) {
+//                    Toast.makeText(getActivity(), dr.getMessage(), Toast.LENGTH_SHORT).show();
+//                    Log.e("res:create_ad", "Data"+dr.getData()+" "+"message"+dr.getMessage());
+//                    Advertise advertise=new Advertise(title,price,description,main_image,sub_category);
+//                    Intent intent_log =new Intent(getActivity(), MainActivity.class);
+//                    intent_log.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |Intent.FLAG_ACTIVITY_CLEAR_TASK);
+//                    startActivity(intent_log);
+//
+//
+//                }
+            }
+
+
+            @Override
+            public void onFailure(Call call, Throwable t) {
+//                Toast.makeText(RegistrationActivityOne.this, t, Toast.LENGTH_SHORT).show();
+                Log.e("RegByApi:onFailure", String.valueOf(t));
+
+            }
+        });
+
+
+
+
+
+    }
+
 }

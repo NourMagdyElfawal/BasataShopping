@@ -37,6 +37,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private FirebaseAuth mAuth;
     int RC_SIGN_IN=0;
     Button next,btnLogin;
+    String facebookEmail,facebookToken;
+
     TextView registration;
     GoogleSignInClient mGoogleSignInClient;
     @Override
@@ -77,6 +79,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             public void onSuccess(LoginResult loginResult) {
                 Log.d(TAG, "facebook:onSuccess:" + loginResult);
                 handleFacebookAccessToken(loginResult.getAccessToken());
+
             }
 
             @Override
@@ -142,6 +145,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithCredential:success");
                             FirebaseUser user = mAuth.getCurrentUser();
+                            if(user!=null){
+                                facebookEmail=user.getEmail();
+                                if (facebookEmail!=null&&token!=null) {
+                                    Log.e("facebookEmail", facebookEmail);
+                                    Log.e("facebookToken", String.valueOf(token.getToken()));
+                                }
+                            }
                             updateUI();
                         } else {
                             // If sign in fails, display a message to the user.
@@ -197,7 +207,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
             // Signed in successfully, show authenticated UI.
 
-            Intent intent =new Intent(LoginActivity.this,MainActivity.class);
+            Intent intent =new Intent(LoginActivity.this,RegistrationActivityOne.class);
             startActivity(intent);
         } catch (ApiException e) {
             // The ApiException status code indicates the detailed failure reason.

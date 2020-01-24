@@ -14,24 +14,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.Switch;
 import android.widget.Toast;
 
 import com.facebook.login.LoginManager;
-import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.common.api.Status;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.souqmaftoh.basatashopping.Fonts.LatoBLack;
 import com.souqmaftoh.basatashopping.LoginActivity;
-import com.souqmaftoh.basatashopping.LoginByEmailActivity;
 import com.souqmaftoh.basatashopping.MainActivity;
-import com.souqmaftoh.basatashopping.Models.User;
+import com.souqmaftoh.basatashopping.Interface.User;
 import com.souqmaftoh.basatashopping.R;
 import com.souqmaftoh.basatashopping.Storage.SharedPrefManager;
 
@@ -102,8 +94,19 @@ public class MyAccountFragment extends Fragment implements View.OnClickListener 
         btn_pro_logout.setOnClickListener(this);
 
         User user=SharedPrefManager.getInstance(getActivity()).getUser();
-        et_pro_name.setText(user.getName());
-        et_pro_email.setText(user.getEmail());
+        if(user!=null){
+           if( user.getEmail()!=null&&!user.getEmail().isEmpty()){
+                et_pro_email.setText(user.getEmail());
+
+            }
+
+            if( user.getName()!=null&&!user.getName().isEmpty()){
+                et_pro_name.setText(user.getName());
+
+            }
+
+        }
+
 
 
         return view;

@@ -1,13 +1,11 @@
 package com.souqmaftoh.basatashopping.Models;
 
-import com.google.gson.annotations.SerializedName;
-
-public class DefaultResponse {
+public class ForgetPassResponse {
 
     private String message;
     private String data;
 
-    public DefaultResponse(String message, String data) {
+    public ForgetPassResponse(String message, String data) {
         this.message = message;
         this.data = data;
     }

@@ -27,11 +27,11 @@
 
 
             <ImageView
-                android:id="@+id/Img_store"
+                android:id="@+id/img_store"
                 android:layout_width="189dp"
                 android:layout_height="178dp"
                 android:layout_marginTop="36dp"
-                android:background="@drawable/logo"
+                android:background="@drawable/ic_profile"
                 app:layout_constraintBottom_toTopOf="@id/llRegister"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -45,11 +45,11 @@
                 android:orientation="vertical"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/Img_store">
+                app:layout_constraintTop_toBottomOf="@id/img_store">
 
 
                 <EditText
-                    android:id="@+id/et_reg_name"
+                    android:id="@+id/et_reg_store_name"
                     android:layout_width="match_parent"
                     android:layout_height="55dp"
                     android:layout_marginStart="10dp"
@@ -69,7 +69,7 @@
 
 
                 <EditText
-                    android:id="@+id/et_reg_email"
+                    android:id="@+id/et_reg_address"
                     android:layout_width="match_parent"
                     android:layout_height="55dp"
                     android:layout_marginStart="10dp"
@@ -110,7 +110,7 @@
                     <!--                        app:ccp_showNameCode="false" />-->
 
                     <EditText
-                        android:id="@+id/et_reg_password"
+                        android:id="@+id/et_reg_location"
                         android:layout_width="match_parent"
                         android:layout_height="55dp"
                         android:background="@android:color/transparent"
@@ -155,7 +155,7 @@
 
 
                 <EditText
-                    android:id="@+id/et_reg_rep_password"
+                    android:id="@+id/et_reg_phone"
                     android:layout_width="match_parent"
                     android:layout_height="55dp"
                     android:layout_marginStart="10dp"
@@ -249,7 +249,7 @@
             </LinearLayout>
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn_Register"
+                android:id="@+id/btn_reg_storeRegist"
                 style="@style/Widget.AppCompat.Button.Borderless"
                 android:layout_width="150dp"
                 android:layout_height="wrap_content"

@@ -3,7 +3,7 @@ package com.souqmaftoh.basatashopping.Storage;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import com.souqmaftoh.basatashopping.Models.User;
+import com.souqmaftoh.basatashopping.Interface.User;
 
 public class SharedPrefManager {
 
@@ -48,8 +48,8 @@ public class SharedPrefManager {
     public User getUser(){
         SharedPreferences sharedPreferences=mCtx.getSharedPreferences(SHARED_PREF_NAME,Context.MODE_PRIVATE);
         return new User(
-                sharedPreferences.getString("name",null),
                 sharedPreferences.getString("email",null),
+                sharedPreferences.getString("name",null),
                 sharedPreferences.getString("image",null),
                 sharedPreferences.getString("market_name",null),
                 sharedPreferences.getString("address",null),
@@ -65,4 +65,5 @@ public class SharedPrefManager {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.clear();
     }
+
 }
