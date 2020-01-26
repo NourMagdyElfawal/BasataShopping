@@ -38,11 +38,15 @@ import com.souqmaftoh.basatashopping.Adapter.addAdvAdapter;
 import com.souqmaftoh.basatashopping.Api.RetrofitClient;
 import com.souqmaftoh.basatashopping.Interface.Advertise;
 import com.souqmaftoh.basatashopping.Interface.addAdvImageModelClass;
+import com.souqmaftoh.basatashopping.LoginActivity;
 import com.souqmaftoh.basatashopping.MainActivity;
 import com.souqmaftoh.basatashopping.Models.DefaultResponse;
 import com.souqmaftoh.basatashopping.Interface.User;
 import com.souqmaftoh.basatashopping.R;
+import com.souqmaftoh.basatashopping.Storage.SharedPrefManager;
 import com.souqmaftoh.basatashopping.design.CurvedBottomNavigationView;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -70,7 +74,7 @@ public class AddAdvFragment extends Fragment implements BottomNavigationView.OnN
     ArrayList<addAdvImageModelClass> items = new ArrayList<>();
     addAdvAdapter adapter;
     EditText et_advName,et_AdvDescription,et_AdvAddress,et_telephone;
-    String encodedImage;
+    String encodedImage,token;
 
 //    List<category> historicList = new ArrayList<>();
 
@@ -127,13 +131,19 @@ public class AddAdvFragment extends Fragment implements BottomNavigationView.OnN
         btn_addAdv=root.findViewById(R.id.btn_addAdv);
         btn_addAdv.setOnClickListener(this);
 
+        User user= SharedPrefManager.getInstance(getActivity()).getUser();
+        if(user!=null) {
+            if (user.getToken() != null && !user.getToken().isEmpty()) {
+                token = user.getToken();
+
+            }
+        }
 
 
 
 
 
-
-        // Spinner element
+            // Spinner element
         final Spinner spinner = root.findViewById(R.id.spinner_nav);
 
         // Spinner click listener
@@ -426,26 +436,43 @@ public class AddAdvFragment extends Fragment implements BottomNavigationView.OnN
         String title=et_advName.getText().toString();
         int price= Integer.parseInt(et_AdvAddress.getText().toString());
         String description=et_AdvDescription.getText().toString();
-        int sub_category= Integer.parseInt(et_advName.getText().toString());
+//        int sub_category= Integer.parseInt(et_advName.getText().toString());
         String main_image=encodedImage;
-        String item_condition="";
+        String item_condition="new";
 
 
 
         Call call= RetrofitClient.
                 getInstance()
                 .getApi()
-                .createAd   (title,price,description,sub_category,item_condition,main_image);
+                .createAd   (title,price,description,1,item_condition,main_image);
         call.enqueue(new Callback() {
             @Override
-            public void onResponse(Call call, Response response) {
-                Log.e("gson:create_ad", new Gson().toJson(response.body()) );
+            public void onResponse(@NotNull Call call, @NotNull Response response) {
+                if(response!=null) {
 
-                if(response.isSuccessful()){
-                    Log.e("res:create_ad","isSuccessful");
+                    if(response.body()!=null){
+                        Log.e("gson:create_ad", new Gson().toJson(response.errorBody()) );
+
+                    } else if (response.errorBody() != null) {
+                        try {
+                            Log.e("gson:create_ad", response.errorBody().string());
+                            if(response.errorBody().string().equalsIgnoreCase("Unauthenticated.")){
+                                Intent i = new Intent(getActivity(), LoginActivity.class);
+                                startActivity(i);
+
+                            }
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+
+                    if (response.isSuccessful()) {
+                        Log.e("res:create_ad", "isSuccessful");
+                    }
+
                 }
-
-
 //                DefaultResponse dr=response.body();
 //                if (dr != null && dr.getMessage() != null) {
 //                    Toast.makeText(getActivity(), dr.getMessage(), Toast.LENGTH_SHORT).show();

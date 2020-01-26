@@ -179,6 +179,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="15dp"
+                    android:inputType="number"
                     android:hint="السعر"
                     android:textAlignment="center"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -228,6 +229,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     android:layout_marginTop="15dp"
                     android:hint="رقم الهاتف"
+                    android:inputType="phone"
                     android:textAlignment="center"
                     app:layout_constraintTop_toBottomOf="@id/text_telephone"
                     />

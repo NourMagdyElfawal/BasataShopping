@@ -32,7 +32,8 @@ public class User {
 
     ArrayList<Object> social_links = new ArrayList<Object>();
 
-    public User(String name, String email, String image, boolean is_merchant, String market_name, String address, String lat, String lng, String phone, String description) {
+    public User(String token,String name, String email, String image, boolean is_merchant, String market_name, String address, String lat, String lng, String phone, String description) {
+        this.token=token;
         this.name = name;
         this.email = email;
         this.image = image;

@@ -132,6 +132,7 @@
                     android:background="@drawable/xml_textbox_bg"
                     android:inputType="textPassword"
                     android:text="12345678"
+                    android:enabled="false"
                     android:textAlignment="textEnd"
                     android:ems="10" />
 

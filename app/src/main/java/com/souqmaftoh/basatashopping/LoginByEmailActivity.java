@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Paint;
 import android.os.Bundle;
+import android.provider.Settings;
+import android.service.autofill.SaveCallback;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
@@ -17,10 +19,19 @@ import com.google.android.material.button.MaterialButton;
 import com.google.gson.Gson;
 import com.souqmaftoh.basatashopping.Api.RetrofitClient;
 import com.souqmaftoh.basatashopping.Fonts.LatoBLack;
+import com.souqmaftoh.basatashopping.Interface.User;
 import com.souqmaftoh.basatashopping.Models.ForgetPassResponse;
 import com.souqmaftoh.basatashopping.Models.LoginDefault;
 import com.souqmaftoh.basatashopping.Models.LoginResponse;
 import com.souqmaftoh.basatashopping.Storage.SharedPrefManager;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.lang.reflect.GenericArrayType;
+import java.text.ParseException;
+import java.util.ArrayList;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -32,6 +43,8 @@ public class LoginByEmailActivity extends AppCompatActivity implements View.OnCl
     MaterialButton btn_loginByEmail;
     EditText et_login_email, et_login_pass;
     LatoBLack txtV_Forgot;
+    String device_id,device_token;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +55,12 @@ public class LoginByEmailActivity extends AppCompatActivity implements View.OnCl
         txtV_Register = findViewById(R.id.txtV_Register);
         btn_loginByEmail = findViewById(R.id.btn_loginByEmail);
         txtV_Forgot=findViewById(R.id.txtV_Forgot);
+//device id
+        device_id = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
+//device token
+
+
+//        device_token=(String) ParseInstallation.getCurrentInstallation().get("deviceToken");
 
 
         txtV_Register.setOnClickListener(this);
@@ -148,7 +167,7 @@ public class LoginByEmailActivity extends AppCompatActivity implements View.OnCl
         Call call= RetrofitClient.
                 getInstance()
                 .getApi()
-                .userLogin(email,password);
+                .userLogin(email,password,"1","1");
         call.enqueue(new Callback() {
             @Override
             public void onResponse(Call call, Response response) {
@@ -156,7 +175,56 @@ public class LoginByEmailActivity extends AppCompatActivity implements View.OnCl
 
                 if(response.isSuccessful()){
                     Log.e("res:login","isSuccessful");
+                    Intent intent_log =new Intent(LoginByEmailActivity.this, MainActivity.class);
+                    intent_log.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(intent_log);
+
                 }
+
+
+                try {
+                    JSONObject jsonObject = new JSONObject(new Gson().toJson(response.body()));
+                    JSONObject data = jsonObject.getJSONObject("data");
+                    String token=data.getString("token");
+                    String name=data.getString("name");
+                    String email=data.getString("email");
+                    String image=data.getString("image");
+                    Boolean is_merchant=data.getBoolean("is_merchant");
+                    String market_name=data.getString("market_name");
+                    String address=data.getString("address");
+                    String lat=data.getString("lat");
+                    String lng=data.getString("lng");
+                    String phone=data.getString("phone");
+                    String description=data.getString("description");
+                    JSONArray social_links=data.getJSONArray("social_links") ;
+
+                    int length = social_links .length();
+//                    ArrayList<Object>  socialLinks = new ArrayList<>();
+                    for(int i=0; i<length; i++)
+                    {
+                        JSONObject links=social_links.getJSONObject(i);
+                        String type=links.getString("type");
+                        String link=links.getString("link");
+                        Log.e("social_links",type+"  "+link);
+
+                    }
+
+                    User user = new User(token, name,email,image,is_merchant,market_name,address,lat,lng,phone,description);
+
+
+                    if (data != null) {
+                    SharedPrefManager.getInstance(LoginByEmailActivity.this)
+                            .saveUser(user);
+                    Intent intent_log =new Intent(LoginByEmailActivity.this, MainActivity.class);
+                    intent_log.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(intent_log);
+                }
+
+
+                    } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
 
 //                LoginDefault loginResponse= response.body();
 

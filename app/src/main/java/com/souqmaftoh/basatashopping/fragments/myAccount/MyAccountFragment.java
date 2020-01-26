@@ -4,12 +4,14 @@ import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProviders;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,6 +30,8 @@ import com.souqmaftoh.basatashopping.R;
 import com.souqmaftoh.basatashopping.Storage.SharedPrefManager;
 
 import java.util.Objects;
+
+import static com.facebook.FacebookSdk.getApplicationContext;
 
 public class MyAccountFragment extends Fragment implements View.OnClickListener {
 
@@ -105,6 +109,16 @@ public class MyAccountFragment extends Fragment implements View.OnClickListener 
 
             }
 
+            if( user.getMarket_name()!=null&&!user.getMarket_name().isEmpty()){
+                et_pro_storeName.setText(user.getMarket_name());
+
+            }
+
+            if( user.getAddress()!=null&&!user.getAddress().isEmpty()){
+                et_pro_address.setText(user.getName());
+
+            }
+
         }
 
 
@@ -130,11 +144,22 @@ public class MyAccountFragment extends Fragment implements View.OnClickListener 
             case R.id.btn_pro_logout:
                 logOut();
 
+
         }
 
     }
 
     private void logOut() {
+
+
+
+        SharedPrefManager.getInstance(getActivity()).clear();
+        Toast.makeText(getActivity(), "User Sign out!", Toast.LENGTH_SHORT).show();
+        startActivity(new Intent(getActivity(), LoginActivity.class));
+        Objects.requireNonNull(getFragmentManager()).popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+
+
+
         FirebaseAuth.getInstance().signOut();
         LoginManager.getInstance().logOut();
 

@@ -327,44 +327,31 @@ public class RegistrationActivityOne extends AppCompatActivity implements View.O
 
 
     private void RegistrationByApi(String name, String email, String password,String repPassword) {
-//        Call<RegisterationUserResponse> call= RetrofitClient
-//                .getInstance()
-//                .getApi()
-//                .createUser(name,email,password,repPassword);
-//
-//        call.enqueue(new Callback<RegisterationUserResponse>() {
-//            @Override
-//            public void onResponse(@NonNull Call<RegisterationUserResponse> call, @NonNull Response<RegisterationUserResponse> response) {
-//                if(response.isSuccessful()){
-//                    Log.e("res:register","successful");
-//                }
-
         Call call= RetrofitClient.
                 getInstance().getApi()
                 .createUser(name,email,password,repPassword);
         call.enqueue(new Callback() {
-            @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) {
-                Log.e("gson:register", new Gson().toJson(response.body()) );
+                         @Override
+                         public void onResponse(@NotNull Call call, @NotNull Response response) {
+                             try {
+                                 JSONObject jsonObject = new JSONObject(new Gson().toJson(response.body()));
+                                 String msg = jsonObject.getString("message");
+                                 if (msg != null) {
+                                     Toast.makeText(RegistrationActivityOne.this, msg, Toast.LENGTH_SHORT).show();
+                                     User user = new User(email, name);
+                                     SharedPrefManager.getInstance(RegistrationActivityOne.this)
+                                             .saveUser(user);
+                                     Intent intent_log = new Intent(RegistrationActivityOne.this, MainActivity.class);
+                                     intent_log.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                     startActivity(intent_log);
+                                 }
 
-                if(response.isSuccessful()){
-                    Log.e("res:register","isSuccessful");
-                }
+
+                             } catch (JSONException e) {
+                                 e.printStackTrace();
+                             }
 
 
-//                RegisterationUserResponse dr=response.body();
-//                if (dr != null && dr.getMessage() != null) {
-////                    Toast.makeText(RegistrationActivityOne.this, dr.getMessage(), Toast.LENGTH_SHORT).show();
-//                    Log.e("res:register", "Data"+dr.getData()+" "+"message"+dr.getMessage());
-//                    User user=new User(email,name);
-//                    SharedPrefManager.getInstance(RegistrationActivityOne.this)
-//                            .saveUser(user);
-//                    Intent intent_log =new Intent(RegistrationActivityOne.this, MainActivity.class);
-//                    intent_log.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |Intent.FLAG_ACTIVITY_CLEAR_TASK);
-//                    startActivity(intent_log);
-//
-//
-//                }
             }
 
 
