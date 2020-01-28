@@ -26,6 +26,7 @@ public class SharedPrefManager {
         return mInstance;
     }
 
+
     public static SharedPrefManager getInstance() {
         if(mInstance ==null){
             mInstance=new SharedPrefManager();

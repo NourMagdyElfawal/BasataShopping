@@ -30,6 +30,8 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.souqmaftoh.basatashopping.Interface.User;
+import com.souqmaftoh.basatashopping.Storage.SharedPrefManager;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
     CallbackManager mCallbackManager;
@@ -45,6 +47,18 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        User user= SharedPrefManager.getInstance(this).getUser();
+        if(user!=null) {
+            if (user.getToken() != null && !user.getToken().isEmpty()) {
+                Intent intent_log =new Intent(LoginActivity.this, MainActivity.class);
+                intent_log.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent_log);
+
+            }
+        }
+
+
         registration=findViewById(R.id.txtV_registration);
         next=findViewById(R.id.next);
         btnLogin=findViewById(R.id.btn_login);

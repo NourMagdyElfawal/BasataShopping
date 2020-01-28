@@ -23,6 +23,7 @@ import com.souqmaftoh.basatashopping.Interface.User;
 import com.souqmaftoh.basatashopping.Models.ForgetPassResponse;
 import com.souqmaftoh.basatashopping.Models.LoginDefault;
 import com.souqmaftoh.basatashopping.Models.LoginResponse;
+import com.souqmaftoh.basatashopping.Services.MyFirebaseMessagingService;
 import com.souqmaftoh.basatashopping.Storage.SharedPrefManager;
 
 import org.json.JSONArray;
@@ -43,7 +44,7 @@ public class LoginByEmailActivity extends AppCompatActivity implements View.OnCl
     MaterialButton btn_loginByEmail;
     EditText et_login_email, et_login_pass;
     LatoBLack txtV_Forgot;
-    String device_id,device_token;
+    String device_id,push_token;
 
 
     @Override
@@ -57,11 +58,14 @@ public class LoginByEmailActivity extends AppCompatActivity implements View.OnCl
         txtV_Forgot=findViewById(R.id.txtV_Forgot);
 //device id
         device_id = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
+        if(device_id!=null)Log.e("device_id",device_id);
+
 //device token
 
 
 //        device_token=(String) ParseInstallation.getCurrentInstallation().get("deviceToken");
-
+        push_token= MyFirebaseMessagingService.getToken(this);
+        if(push_token!=null)Log.e("push_token",push_token);
 
         txtV_Register.setOnClickListener(this);
         btn_loginByEmail.setOnClickListener(this);
@@ -167,7 +171,7 @@ public class LoginByEmailActivity extends AppCompatActivity implements View.OnCl
         Call call= RetrofitClient.
                 getInstance()
                 .getApi()
-                .userLogin(email,password,"1","1");
+                .userLogin(email,password,device_id,push_token);
         call.enqueue(new Callback() {
             @Override
             public void onResponse(Call call, Response response) {

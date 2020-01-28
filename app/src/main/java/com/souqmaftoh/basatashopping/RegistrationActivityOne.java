@@ -34,6 +34,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 
 import retrofit2.Call;
@@ -333,25 +334,57 @@ public class RegistrationActivityOne extends AppCompatActivity implements View.O
         call.enqueue(new Callback() {
                          @Override
                          public void onResponse(@NotNull Call call, @NotNull Response response) {
-                             try {
-                                 JSONObject jsonObject = new JSONObject(new Gson().toJson(response.body()));
-                                 String msg = jsonObject.getString("message");
-                                 if (msg != null) {
-                                     Toast.makeText(RegistrationActivityOne.this, msg, Toast.LENGTH_SHORT).show();
-                                     User user = new User(email, name);
-                                     SharedPrefManager.getInstance(RegistrationActivityOne.this)
-                                             .saveUser(user);
-                                     Intent intent_log = new Intent(RegistrationActivityOne.this, MainActivity.class);
-                                     intent_log.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                     startActivity(intent_log);
+                             if(response!=null) {
+
+                                 if (response.body() != null) {
+                                     Log.e("gson:registration", new Gson().toJson(response.body()));
+                                     try {
+                                         JSONObject jsonObject = new JSONObject(new Gson().toJson(response.body()));
+                                         String msg = jsonObject.getString("message");
+                                         if (msg != null) {
+                                             Toast.makeText(RegistrationActivityOne.this, msg, Toast.LENGTH_SHORT).show();
+                                             User user = new User(email, name);
+                                             SharedPrefManager.getInstance(RegistrationActivityOne.this)
+                                                     .saveUser(user);
+                                             Intent intent_log = new Intent(RegistrationActivityOne.this, MainActivity.class);
+                                             intent_log.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                             startActivity(intent_log);
+                                         }
+
+
+                                     } catch (JSONException e) {
+                                         e.printStackTrace();
+                                     }
+
+
+                                 } else if (response.errorBody() != null) {
+                                     try {
+                                         Log.e("gson:registration", response.errorBody().string());
+                                         Toast.makeText(RegistrationActivityOne.this, response.errorBody().string(), Toast.LENGTH_SHORT).show();
+                                     } catch (IOException e) {
+                                         e.printStackTrace();
+                                     }
                                  }
 
-
-                             } catch (JSONException e) {
-                                 e.printStackTrace();
+//                                 try {
+//                                     JSONObject jsonObject = new JSONObject(new Gson().toJson(response.body()));
+//                                     String msg = jsonObject.getString("message");
+//                                     if (msg != null) {
+//                                         Toast.makeText(RegistrationActivityOne.this, msg, Toast.LENGTH_SHORT).show();
+//                                         User user = new User(email, name);
+//                                         SharedPrefManager.getInstance(RegistrationActivityOne.this)
+//                                                 .saveUser(user);
+//                                         Intent intent_log = new Intent(RegistrationActivityOne.this, MainActivity.class);
+//                                         intent_log.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+//                                         startActivity(intent_log);
+//                                     }
+//
+//
+//                                 } catch (JSONException e) {
+//                                     e.printStackTrace();
+//                                 }
+//
                              }
-
-
             }
 
 

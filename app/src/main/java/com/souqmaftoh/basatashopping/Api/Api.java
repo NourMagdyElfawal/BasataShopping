@@ -32,10 +32,7 @@ public interface Api {
         @Field("password_confirmation") String password_confirmation
     );
 
-    @Headers({
-            "Accept: application/json",
-            "Content-Type: application/json",
-    })
+    @Headers({"Accept: application/json"})
     @FormUrlEncoded
     @POST("login")
     Call<Object> userLogin(
@@ -76,13 +73,12 @@ public interface Api {
 
     @Headers({
             "Accept: application/json",
-            "Content-Type: application/json"
+//            "Content-Type: application/json"
 //            "Authorization: Bearer token"
     })
     @FormUrlEncoded
     @POST("create_ad")
     Call<Object> createAd(
-//            @Header("Authorization") String token,
             @Field("title") String title,
             @Field("price") int price,
             @Field("description") String description,

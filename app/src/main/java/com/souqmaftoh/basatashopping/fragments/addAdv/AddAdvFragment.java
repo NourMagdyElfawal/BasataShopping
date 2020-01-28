@@ -131,6 +131,8 @@ public class AddAdvFragment extends Fragment implements BottomNavigationView.OnN
         btn_addAdv=root.findViewById(R.id.btn_addAdv);
         btn_addAdv.setOnClickListener(this);
 
+
+
         User user= SharedPrefManager.getInstance(getActivity()).getUser();
         if(user!=null) {
             if (user.getToken() != null && !user.getToken().isEmpty()) {
@@ -445,18 +447,18 @@ public class AddAdvFragment extends Fragment implements BottomNavigationView.OnN
         Call call= RetrofitClient.
                 getInstance()
                 .getApi()
-                .createAd   (title,price,description,1,item_condition,main_image);
+                .createAd(title,price,description,1,item_condition,main_image);
         call.enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) {
                 if(response!=null) {
 
                     if(response.body()!=null){
-                        Log.e("gson:create_ad", new Gson().toJson(response.errorBody()) );
+                        Log.e("gson:create_ad", new Gson().toJson(response.body()) );
 
                     } else if (response.errorBody() != null) {
                         try {
-                            Log.e("gson:create_ad", response.errorBody().string());
+                            Log.e("gson_Error:create_ad", response.errorBody().string());
                             if(response.errorBody().string().equalsIgnoreCase("Unauthenticated.")){
                                 Intent i = new Intent(getActivity(), LoginActivity.class);
                                 startActivity(i);
@@ -494,11 +496,8 @@ public class AddAdvFragment extends Fragment implements BottomNavigationView.OnN
 
             }
         });
-
-
-
-
-
     }
+
+
 
 }

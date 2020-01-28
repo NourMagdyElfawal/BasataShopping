@@ -8,6 +8,7 @@ import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.viewpager.widget.ViewPager;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -40,7 +41,7 @@ import static androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-    FloatingActionButton fab;
+     FloatingActionButton fab;
     private TabLayout tabLayout;
     private ViewPager viewPager;
     private BottomNavigationView bottomNavigation;
@@ -69,7 +70,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //    openFragment(MobileFragment.newInstance("", ""));
 
         fab = findViewById(R.id.fab);
-//        showFloatingActionButton();
+        showFloatingActionButton();
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -77,6 +78,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 transaction.add(R.id.main, AddAdvFragment.newInstance("", ""));
                 transaction.addToBackStack(null);
                 transaction.commit();
+                hideFloatingActionButton();
 
 
             }
@@ -109,6 +111,51 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //
 //        }
 
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                switch (position) {
+                    case 0:
+                        showFloatingActionButton();
+                        break;
+                    case 1:
+                        showFloatingActionButton();
+                        break;
+                    case 3:
+                        showFloatingActionButton();
+                        break;
+                    default:
+                        showFloatingActionButton();
+                        break;
+                }
+
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+
+    }
+
+    /**
+     * Called when the activity has detected the user's press of the back
+     * key. The {@link #getOnBackPressedDispatcher() OnBackPressedDispatcher} will be given a
+     * chance to handle the back button before the default behavior of
+     * {@link Activity#onBackPressed()} is invoked.
+     *
+     * @see #getOnBackPressedDispatcher()
+     */
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        showFloatingActionButton();
     }
 
     //app bar
@@ -124,13 +171,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
 
-//    public void showFloatingActionButton() {
-//        fab.show();
-//    }
-//
-//    public void hideFloatingActionButton() {
-//        fab.hide();
-//    }
+    public void showFloatingActionButton() {
+        fab.setVisibility(View.VISIBLE);
+    }
+
+    public void hideFloatingActionButton() {
+        fab.setVisibility(View.GONE);
+    }
 
 
 //    private void createKeyHash() {
@@ -163,18 +210,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     switch (item.getItemId()) {
                         case R.id.navigation_stores:
                             openFragment(ItemsRecyclerFragment.newInstance("", ""));
+                            showFloatingActionButton();
                             return true;
                         case R.id.navigation_sms:
                             openFragment(ChatFragment.newInstance("", ""));
+                            showFloatingActionButton();
                             return true;
                         case R.id.navigation_notifications:
                             openFragment(NotificationFragment.newInstance("", ""));
+                            showFloatingActionButton();
                             return true;
                         case R.id.navigation_home:
                             FragmentManager manager = getSupportFragmentManager();
                             FragmentTransaction trans = manager.beginTransaction();
                             manager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
                             trans.commit();
+                            showFloatingActionButton();
                             return true;
 
                     }
@@ -198,13 +249,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         switch (v.getId()) {
             case R.id.imgV_myAccount:
                 openFragment(MyAccountFragment.newInstance("", ""));
+                showFloatingActionButton();
                 break;
-//            case R.id.fab:
-//                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-//                transaction.add(R.id.main, AddAdvFragment.newInstance("", ""));
-//                transaction.addToBackStack(null);
-//                transaction.commit();
-//                break;
         }
     }
 

@@ -154,6 +154,8 @@ public class ItemsRecyclerFragment extends Fragment {
         new Handler().postDelayed(() -> {
             //prepare data and show loading
 //            CommonUtils.hideLoading();
+
+            //TODO Fix bug not attached to a context.
             ArrayList<Items> mSports = new ArrayList<>();
             String[] sportsList = getResources().getStringArray(R.array.sports_titles);
             String[] sportsInfo = getResources().getStringArray(R.array.sports_info);
