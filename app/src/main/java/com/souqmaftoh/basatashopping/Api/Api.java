@@ -20,8 +20,8 @@ public interface Api {
 
             @Headers({
             "Accept: application/json",
-            "Content-Type: application/json",
-            "Authorization: Bearer token"
+//            "Content-Type: application/json",
+//            "Authorization: Bearer token"
     })
     @FormUrlEncoded
     @POST("register")
@@ -29,8 +29,15 @@ public interface Api {
         @Field("name") String name,
         @Field("email") String email,
         @Field("password") String password,
-        @Field("password_confirmation") String password_confirmation
-    );
+        @Field("password_confirmation") String password_confirmation,
+        @Field("market_name") String market_name,
+        @Field("address") String address,
+        @Field("lat") String lat,
+        @Field("lng") String lng,
+        @Field("phone") String phone,
+        @Field("description") String description
+
+        );
 
     @Headers({"Accept: application/json"})
     @FormUrlEncoded
@@ -44,7 +51,7 @@ public interface Api {
 
     @Headers({
             "Accept: application/json",
-            "Content-Type: application/json",
+//            "Content-Type: application/json",
     })
     @FormUrlEncoded
     @POST("forget_password")
@@ -54,7 +61,7 @@ public interface Api {
 
     @Headers({
             "Accept: application/json",
-            "Content-Type: application/json",
+//            "Content-Type: application/json",
             "Authorization: Bearer token"
     })
     @FormUrlEncoded

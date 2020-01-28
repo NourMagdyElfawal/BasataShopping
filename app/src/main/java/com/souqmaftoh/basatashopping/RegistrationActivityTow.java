@@ -27,7 +27,12 @@ import com.souqmaftoh.basatashopping.Models.ForgetPassResponse;
 import com.souqmaftoh.basatashopping.Models.RegistrationStoreResponse;
 import com.souqmaftoh.basatashopping.Storage.SharedPrefManager;
 
+import org.jetbrains.annotations.NotNull;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 
 import retrofit2.Call;
@@ -35,7 +40,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class RegistrationActivityTow extends AppCompatActivity implements View.OnClickListener {
-        String email,name;
+        String email,name,password,repPassword;
         EditText et_reg_store_name,et_reg_address,et_reg_location,et_reg_phone,et_reg_disc;
         MaterialButton btn_reg_storeRegist;
         ImageView img_profile;
@@ -59,20 +64,30 @@ public class RegistrationActivityTow extends AppCompatActivity implements View.O
 
 
 
-        User user= SharedPrefManager.getInstance(this).getUser();
-        if(user!=null){
-            if( user.getEmail()!=null&&!user.getEmail().isEmpty()){
-                email=user.getEmail();
+//        User user= SharedPrefManager.getInstance(this).getUser();
+//        if(user!=null){
+//            if( user.getEmail()!=null&&!user.getEmail().isEmpty()){
+//                email=user.getEmail();
+//
+//            }
+//
+//            if( user.getName()!=null&&!user.getName().isEmpty()){
+//                name=user.getName();
+//
+//            }
+//
+//        }
+//get data from RegistrationActivityOne
 
-            }
-
-            if( user.getName()!=null&&!user.getName().isEmpty()){
-                name=user.getName();
-
-            }
+        Bundle bundle = new Bundle();
+        bundle = getIntent().getExtras();
+        if (bundle != null) {
+            name = bundle.getString("name");
+            email = bundle.getString("email");
+            password = bundle.getString("password");
+            repPassword = bundle.getString("repPassword");
 
         }
-
 
 
     }
@@ -164,7 +179,7 @@ public class RegistrationActivityTow extends AppCompatActivity implements View.O
 
     private void signUpAsStore() {
 
-        String store_name=et_reg_store_name.getText().toString();
+        String market_name=et_reg_store_name.getText().toString();
         String address=et_reg_address.getText().toString();
         String phone=et_reg_phone.getText().toString();
         String description=et_reg_disc.getText().toString();
@@ -172,67 +187,139 @@ public class RegistrationActivityTow extends AppCompatActivity implements View.O
         String lng="321";
 
 
-        if(store_name.isEmpty()){
+        if(market_name.isEmpty()){
             et_reg_store_name.setError("هذا الحقل مطلوب");
             et_reg_store_name.requestFocus();
             return;
         }
 
-        RegistrationStoreByApi(name,email,store_name,address,lat,lng,phone,description);
+        RegistrationStoreByApi(name,email,password,repPassword,market_name,address,lat,lng,phone,description);
 
 
 
 
     }
 
-    private void RegistrationStoreByApi(String name, String email, String store_name, String address, String lat, String lng, String phone, String description) {
 
-        Call<String> call= RetrofitClient.
-                getInstance()
-                .getApi()
-                .createStore(name,"ahmed_mohamedxyz@yahoo.com",store_name,address,lat,lng,phone,description);
-        call.enqueue(new Callback<String>() {
+
+    private void RegistrationStoreByApi(String name, String email, String password, String repPassword,
+                                        String market_name, String address, String lat, String lng, String phone, String description) {
+        Call call= RetrofitClient.
+                getInstance().getApi()
+                .createUser(name,email,password,repPassword,market_name,address,lat,lng,phone,description);
+        call.enqueue(new Callback() {
             @Override
-            public void onResponse(Call<String> call, Response<String> response) {
+            public void onResponse(@NotNull Call call, @NotNull Response response) {
+                if(response!=null) {
 
-                String urJson  = response.body() ;
+                    if (response.body() != null) {
+                        Log.e("gson:registration", new Gson().toJson(response.body()));
+                        try {
+                            JSONObject jsonObject = new JSONObject(new Gson().toJson(response.body()));
+                            String msg = jsonObject.getString("message");
+                            if (msg != null) {
+                                Toast.makeText(RegistrationActivityTow.this, msg, Toast.LENGTH_SHORT).show();
+                                if(msg.equalsIgnoreCase("تم التسجيل بنجاح, ستصلك رسالة على البريد المسجل لتفعيل الحساب")) {
+                                    User user = new User(email, name, market_name, address, lat, lng, phone, description);
+                                    SharedPrefManager.getInstance(RegistrationActivityTow.this)
+                                            .saveUser(user);
+                                    Intent intent_log = new Intent(RegistrationActivityTow.this, MainActivity.class);
+                                    intent_log.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                    startActivity(intent_log);
+                                }
+                            }
 
-                Log.e("gson:edit_profile", urJson );
 
-                if(response.isSuccessful()){
-                    Log.e("res:edit_profile","isSuccessful");
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+
+                    } else if (response.errorBody() != null) {
+                        try {
+                            Log.e("gson:registration", response.errorBody().string());
+                            Toast.makeText(RegistrationActivityTow.this, response.errorBody().string(), Toast.LENGTH_SHORT).show();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+//                                 try {
+//                                     JSONObject jsonObject = new JSONObject(new Gson().toJson(response.body()));
+//                                     String msg = jsonObject.getString("message");
+//                                     if (msg != null) {
+//                                         Toast.makeText(RegistrationActivityOne.this, msg, Toast.LENGTH_SHORT).show();
+//                                         User user = new User(email, name);
+//                                         SharedPrefManager.getInstance(RegistrationActivityOne.this)
+//                                                 .saveUser(user);
+//                                         Intent intent_log = new Intent(RegistrationActivityOne.this, MainActivity.class);
+//                                         intent_log.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+//                                         startActivity(intent_log);
+//                                     }
+//
+//
+//                                 } catch (JSONException e) {
+//                                     e.printStackTrace();
+//                                 }
+//
                 }
-
-
-//                RegistrationStoreResponse dr=response.body();
-//                if (dr != null && dr.getMessage() != null) {
-//                 //   Toast.makeText(RegistrationActivityTow.this, dr.getMessage(), Toast.LENGTH_SHORT).show();
-//                    Log.e("res:edit_profile", "Data"+dr.getData()+" "+"message"+dr.getMessage());
-//                    String image="";
-//                    Boolean is_merchant=true;
-//                    User user=new User(email,name,image,is_merchant,store_name,address,lat,lng,phone,description);
-//                    SharedPrefManager.getInstance(RegistrationActivityTow.this)
-//                            .saveUser(user);
-//                    Intent intent_log =new Intent(RegistrationActivityTow.this, MainActivity.class);
-//                    intent_log.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |Intent.FLAG_ACTIVITY_CLEAR_TASK);
-//                    startActivity(intent_log);
-
-
-//                }
             }
 
 
             @Override
-            public void onFailure(Call<String> call, Throwable t) {
+            public void onFailure(Call call, Throwable t) {
 //                Toast.makeText(RegistrationActivityOne.this, t, Toast.LENGTH_SHORT).show();
-                Log.e("RegByApiTow:onFailure", String.valueOf(t));
+                Log.e("RegByApi:onFailure", String.valueOf(t));
 
             }
         });
 
-
-
-
-
     }
+
+
+//    private void RegistrationStoreByApi(String name, String email, String store_name, String address, String lat, String lng, String phone, String description) {
+//
+//        Call<String> call= RetrofitClient.
+//                getInstance()
+//                .getApi()
+//                .createStore(name,"ahmed_mohamedxyz@yahoo.com",store_name,address,lat,lng,phone,description);
+//        call.enqueue(new Callback<String>() {
+//            @Override
+//            public void onResponse(Call<String> call, Response<String> response) {
+//
+//                String urJson  = response.body() ;
+//
+//                Log.e("gson:edit_profile", urJson );
+//
+//                if(response.isSuccessful()){
+//                    Log.e("res:edit_profile","isSuccessful");
+//                }
+//
+//
+////                RegistrationStoreResponse dr=response.body();
+////                if (dr != null && dr.getMessage() != null) {
+////                 //   Toast.makeText(RegistrationActivityTow.this, dr.getMessage(), Toast.LENGTH_SHORT).show();
+////                    Log.e("res:edit_profile", "Data"+dr.getData()+" "+"message"+dr.getMessage());
+////                    String image="";
+////                    Boolean is_merchant=true;
+////                    User user=new User(email,name,image,is_merchant,store_name,address,lat,lng,phone,description);
+////                    SharedPrefManager.getInstance(RegistrationActivityTow.this)
+////                            .saveUser(user);
+////                    Intent intent_log =new Intent(RegistrationActivityTow.this, MainActivity.class);
+////                    intent_log.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |Intent.FLAG_ACTIVITY_CLEAR_TASK);
+////                    startActivity(intent_log);
+//
+//
+////                }
+//            }
+//
+//
+//            @Override
+//            public void onFailure(Call<String> call, Throwable t) {
+////                Toast.makeText(RegistrationActivityOne.this, t, Toast.LENGTH_SHORT).show();
+//                Log.e("RegByApiTow:onFailure", String.valueOf(t));
+//
+//            }
+//        });
+//    }
 }

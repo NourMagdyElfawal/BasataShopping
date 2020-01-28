@@ -46,13 +46,13 @@ public class User {
         this.description = description;
     }
 
-    public User(String email, String name, String image, String market_name, String address, String lat, String phone, String description) {
+    public User(String email, String name, String market_name, String address, String lat,String lng, String phone, String description) {
         this.email = email;
         this.name = name;
-        this.image = image;
         this.market_name = market_name;
         this.address = address;
         this.lat = lat;
+        this.lng=lng;
         this.phone = phone;
         this.description = description;
     }

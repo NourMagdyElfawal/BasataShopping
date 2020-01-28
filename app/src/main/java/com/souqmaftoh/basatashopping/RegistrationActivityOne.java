@@ -185,91 +185,102 @@ public class RegistrationActivityOne extends AppCompatActivity implements View.O
 
 //TODO:unHash validation
 
-//        if(name.isEmpty()){
-//            et_reg_name.setError("هذا الحقل مطلوب");
-//            et_reg_name.requestFocus();
-//            return;
-//        }
+        if(name.isEmpty()){
+            et_reg_name.setError("هذا الحقل مطلوب");
+            et_reg_name.requestFocus();
+            return;
+        }
+
+        if(email.isEmpty()){
+            et_reg_email.setError("هذا الحقل مطلوب");
+            et_reg_email.requestFocus();
+            return;
+        }
+
+        if(!Patterns.EMAIL_ADDRESS.matcher(email).matches()){
+            et_reg_email.setError("برجاء اختيار ايميل صحيح");
+            et_reg_email.requestFocus();
+            return;
+        }
+        if(password.isEmpty()){
+            et_reg_password.setError("هذا الحقل مطلوب");
+            et_reg_password.requestFocus();
+            return;
+        }
+        if (password.length()<8){
+            et_reg_password.setError("برجاء اختيار رقم سري مكون من 8 ارقام على الاقل");
+            et_reg_password.requestFocus();
+            return;
+
+        }
+
+        if(repPassword.isEmpty()){
+            et_reg_rep_password.setError("هذا الحقل مطلوب");
+            et_reg_rep_password.requestFocus();
+            return;
+        }
+
+        if (!password.equals(repPassword)){
+            et_reg_rep_password.setError("الرقم السري غير متطابق");
+            et_reg_rep_password.requestFocus();
+            return;
+
+        }
+
+
+                        Intent intent = new Intent(RegistrationActivityOne.this, RegistrationActivityTow.class);
+                        intent.putExtra("name",name);
+                        intent.putExtra("email",email);
+                        intent.putExtra("password",password);
+                        intent.putExtra("repPassword",repPassword);
+                        startActivity(intent);
+
+
+
+//        Call call= RetrofitClient.
+//                getInstance().getApi()
+//                .createUser(name,email,password,repPassword);
+//        call.enqueue(new Callback() {
+//            @Override
+//            public void onResponse(@NotNull Call call, @NotNull Response response) {
+//                Log.e("gson:register", new Gson().toJson(response.body()) );
 //
-//        if(email.isEmpty()){
-//            et_reg_email.setError("هذا الحقل مطلوب");
-//            et_reg_email.requestFocus();
-//            return;
-//        }
+//                if(response.isSuccessful()){
+//                    Log.e("res:register","isSuccessful");
 //
-//        if(!Patterns.EMAIL_ADDRESS.matcher(email).matches()){
-//            et_reg_email.setError("برجاء اختيار ايميل صحيح");
-//            et_reg_email.requestFocus();
-//            return;
-//        }
-//        if(password.isEmpty()){
-//            et_reg_password.setError("هذا الحقل مطلوب");
-//            et_reg_password.requestFocus();
-//            return;
-//        }
-//        if (password.length()<8){
-//            et_reg_password.setError("برجاء اختيار رقم سري مكون من 8 ارقام على الاقل");
-//            et_reg_password.requestFocus();
-//            return;
 //
-//        }
+//                    try {
+//                        JSONObject jsonObject = new JSONObject(new Gson().toJson(response.body()));
+//                        String msg = jsonObject.getString("message");
+//                        if (msg != null) {
+//                        Toast.makeText(RegistrationActivityOne.this, msg, Toast.LENGTH_SHORT).show();
+//                        User user = new User(email, name);
+//                        SharedPrefManager.getInstance(RegistrationActivityOne.this)
+//                                .saveUser(user);
+//                        Intent intent_log = new Intent(RegistrationActivityOne.this, RegistrationActivityTow.class);
+//                        intent_log.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+//                        startActivity(intent_log);
+//                    }
 //
-//        if(repPassword.isEmpty()){
-//            et_reg_rep_password.setError("هذا الحقل مطلوب");
-//            et_reg_rep_password.requestFocus();
-//            return;
-//        }
 //
-//        if (!password.equals(repPassword)){
-//            et_reg_rep_password.setError("الرقم السري غير متطابق");
-//            et_reg_rep_password.requestFocus();
-//            return;
+//                    } catch (JSONException e) {
+//                        e.printStackTrace();
+//                    }
 //
-//        }
-        Call call= RetrofitClient.
-                getInstance().getApi()
-                .createUser(name,email,password,repPassword);
-        call.enqueue(new Callback() {
-            @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) {
-                Log.e("gson:register", new Gson().toJson(response.body()) );
-
-                if(response.isSuccessful()){
-                    Log.e("res:register","isSuccessful");
-
-
-                    try {
-                        JSONObject jsonObject = new JSONObject(new Gson().toJson(response.body()));
-                        String msg = jsonObject.getString("message");
-                        if (msg != null) {
-                        Toast.makeText(RegistrationActivityOne.this, msg, Toast.LENGTH_SHORT).show();
-                        User user = new User(email, name);
-                        SharedPrefManager.getInstance(RegistrationActivityOne.this)
-                                .saveUser(user);
-                        Intent intent_log = new Intent(RegistrationActivityOne.this, RegistrationActivityTow.class);
-                        intent_log.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                        startActivity(intent_log);
-                    }
-
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-
-
-                }else{
-                    Toast.makeText(RegistrationActivityOne.this, "Some error occurred...", Toast.LENGTH_LONG).show();
-
-                }
-                }
-
-
-                @Override
-                public void onFailure(Call call, Throwable t) {
-                    Log.e("RegByApi:onFailure", String.valueOf(t));
-
-                }
-            });
+//
+//                }else{
+//                    Toast.makeText(RegistrationActivityOne.this, "Some error occurred...", Toast.LENGTH_LONG).show();
+//
+//                }
+//                }
+//
+//
+//                @Override
+//                public void onFailure(Call call, Throwable t) {
+//                    Log.e("RegByApi:onFailure", String.valueOf(t));
+//
+//                }
+//            });
 
 
 
@@ -330,7 +341,7 @@ public class RegistrationActivityOne extends AppCompatActivity implements View.O
     private void RegistrationByApi(String name, String email, String password,String repPassword) {
         Call call= RetrofitClient.
                 getInstance().getApi()
-                .createUser(name,email,password,repPassword);
+                .createUser(name,email,password,repPassword,"","","","","","");
         call.enqueue(new Callback() {
                          @Override
                          public void onResponse(@NotNull Call call, @NotNull Response response) {
