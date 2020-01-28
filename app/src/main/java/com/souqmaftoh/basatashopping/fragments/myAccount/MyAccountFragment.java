@@ -115,9 +115,24 @@ public class MyAccountFragment extends Fragment implements View.OnClickListener 
             }
 
             if( user.getAddress()!=null&&!user.getAddress().isEmpty()){
-                et_pro_address.setText(user.getName());
+                et_pro_address.setText(user.getAddress());
 
             }
+
+            if( user.getPhone()!=null&&!user.getPhone().isEmpty()){
+                et_pro_phone.setText(user.getPhone());
+
+            }
+
+            if( user.getDescription()!=null&&!user.getDescription().isEmpty()){
+                et_pro_storeDisc.setText(user.getDescription());
+
+            }
+            if( user.getLat()!=null&&!user.getLat().isEmpty()){
+                et_pro_location.setText(user.getLat());
+
+            }
+
 
         }
 
@@ -180,12 +195,12 @@ public class MyAccountFragment extends Fragment implements View.OnClickListener 
 //                    }
 //                });
 
-        if (FirebaseAuth.getInstance().getCurrentUser() == null) {
-            Toast.makeText(getActivity(), "User Sign out!", Toast.LENGTH_SHORT).show();
-            startActivity(new Intent(getActivity(), LoginActivity.class));
-            Objects.requireNonNull(getFragmentManager()).popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-
-        }
+//        if (FirebaseAuth.getInstance().getCurrentUser() == null) {
+//            Toast.makeText(getActivity(), "User Sign out!", Toast.LENGTH_SHORT).show();
+//            startActivity(new Intent(getActivity(), LoginActivity.class));
+//            Objects.requireNonNull(getFragmentManager()).popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+//
+//        }
 
     }
 

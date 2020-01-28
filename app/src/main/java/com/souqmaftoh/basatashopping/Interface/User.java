@@ -46,9 +46,9 @@ public class User {
         this.description = description;
     }
 
-    public User(String email, String name, String market_name, String address, String lat,String lng, String phone, String description) {
-        this.email = email;
+    public User( String name,String email, String market_name, String address, String lat,String lng, String phone, String description) {
         this.name = name;
+        this.email = email;
         this.market_name = market_name;
         this.address = address;
         this.lat = lat;
@@ -57,9 +57,9 @@ public class User {
         this.description = description;
     }
 
-    public User(String email, String name) {
-        this.email = email;
+    public User(String name,String email) {
         this.name = name;
+        this.email = email;
     }
 
     public User(String email, String name, String market_name, String address, String lat, String phone, String description) {

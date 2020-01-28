@@ -220,7 +220,7 @@ public class RegistrationActivityTow extends AppCompatActivity implements View.O
                             if (msg != null) {
                                 Toast.makeText(RegistrationActivityTow.this, msg, Toast.LENGTH_SHORT).show();
                                 if(msg.equalsIgnoreCase("تم التسجيل بنجاح, ستصلك رسالة على البريد المسجل لتفعيل الحساب")) {
-                                    User user = new User(email, name, market_name, address, lat, lng, phone, description);
+                                    User user = new User(name,email,  market_name, address, lat, lng, phone, description);
                                     SharedPrefManager.getInstance(RegistrationActivityTow.this)
                                             .saveUser(user);
                                     Intent intent_log = new Intent(RegistrationActivityTow.this, MainActivity.class);
