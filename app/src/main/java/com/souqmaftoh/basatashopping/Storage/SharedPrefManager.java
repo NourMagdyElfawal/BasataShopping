@@ -63,8 +63,8 @@ public class SharedPrefManager {
         SharedPreferences sharedPreferences=mCtx.getSharedPreferences(SHARED_PREF_NAME,Context.MODE_PRIVATE);
         return new User(
                 sharedPreferences.getString("token",null),
-                sharedPreferences.getString("email",null),
                 sharedPreferences.getString("name",null),
+                sharedPreferences.getString("email",null),
                 sharedPreferences.getString("image",null),
                 sharedPreferences.getBoolean("is_merchant",false),
                 sharedPreferences.getString("market_name",null),
@@ -78,10 +78,6 @@ public class SharedPrefManager {
 
 
     public void clear(){
-//        SharedPreferences sharedPreferences = mCtx.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
-//        SharedPreferences.Editor editor = sharedPreferences.edit();
-//        editor.clear();
-
         SharedPreferences sharedPreferences = mCtx.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
         sharedPreferences.edit().clear().apply();
 

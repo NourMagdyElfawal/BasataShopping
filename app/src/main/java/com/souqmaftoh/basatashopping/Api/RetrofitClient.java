@@ -66,6 +66,7 @@ public class RetrofitClient {
                                     User user = SharedPrefManager.getInstance().getUser();
                                     if (user.getToken() != null && !user.getToken().isEmpty()) {
                                         token = user.getToken();
+                                        Log.e("token",token);
                                     }
                                 }
 

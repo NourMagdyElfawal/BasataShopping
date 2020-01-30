@@ -67,7 +67,7 @@
                     android:background="@drawable/xml_textbox_bg"
                     android:ems="10"
                     android:text="نور مجدي"
-                    android:enabled="false"
+                    android:focusable="false"
                     android:inputType="text" />
 
 
@@ -99,7 +99,6 @@
                     android:ems="10"
                     android:enabled="false"
                     android:textSize="14sp"
-                    android:maxLength="15"
                     android:inputType="textEmailAddress"
                     android:textAlignment="textEnd"
                     android:text="noor882005@gmail.com" />
@@ -122,8 +121,8 @@
                 </LinearLayout>
 
 
-                <EditText
-                    android:id="@+id/et_pro_pass"
+                <TextView
+                    android:id="@+id/tv_pro_pass"
                     android:layout_width="match_parent"
                     android:layout_height="45dp"
                     android:textSize="14sp"
@@ -131,8 +130,8 @@
                     android:layout_marginBottom="5dp"
                     android:background="@drawable/xml_textbox_bg"
                     android:inputType="textPassword"
-                    android:text="12345678"
-                    android:enabled="false"
+                    android:hint="*******"
+                    android:focusableInTouchMode="false"
                     android:textAlignment="textEnd"
                     android:ems="10" />
 
@@ -165,7 +164,7 @@
                     android:background="@drawable/xml_textbox_bg"
                     android:ems="10"
                     android:text="بساطه شوب"
-                    android:enabled="false"
+                    android:focusable="false"
                     android:inputType="text" />
 
                 <LinearLayout
@@ -196,7 +195,7 @@
                     android:background="@drawable/xml_textbox_bg"
                     android:ems="10"
                     android:text="شارع 7 عماره 14 اسطنبول"
-                    android:enabled="false"
+                    android:focusable="false"
                     android:inputType="text" />
 
                 <LinearLayout
@@ -227,7 +226,7 @@
                     android:background="@drawable/xml_textbox_bg"
                     android:ems="10"
                     android:text="تركيا اسطنبول"
-                    android:enabled="false"
+                    android:focusable="false"
                     android:inputType="text" />
 
                 <LinearLayout
@@ -258,7 +257,7 @@
                     android:background="@drawable/xml_textbox_bg"
                     android:ems="10"
                     android:text="0129303930"
-                    android:enabled="false"
+                    android:focusable="false"
                     android:inputType="phone" />
 
                 <LinearLayout
@@ -289,46 +288,11 @@
                     android:background="@drawable/xml_textbox_bg"
                     android:ems="10"
                     android:text="وصف المحل"
-                    android:enabled="false"
+                    android:focusable="false"
                     android:inputType="text" />
 
 
-                <!--<TextView
-                                android:id="@+id/tv_pro_socity"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/tv_reg_socity"
-                                android:textSize="14sp" />
-
-                            <TextView
-                                android:id="@+id/btn_pro_socity"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginBottom="5dp"
-                                android:background="@drawable/xml_textbox_bg"
-                                android:drawableEnd="@drawable/arrow_right"
-                                android:drawableRight="@drawable/arrow_right"
-                                android:gravity="start|center_vertical"
-                                android:text="@string/btn_reg_socity_choose"
-                                android:textColor="@color/black"/>
-
-                            <TextView
-                                android:id="@+id/tv_pro_home"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/tv_reg_house"
-                                android:textSize="14sp" />
-
-                            <EditText
-                                android:id="@+id/et_pro_home"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginBottom="@dimen/space_5"
-                                android:background="@drawable/xml_textbox_bg"
-                                android:inputType="text" />-->
-
                 <RelativeLayout
-                    android:id="@+id/btn_pro_edit"
                     android:layout_width="match_parent"
                     android:layout_height="45dp"
                     android:layout_margin="12dp"
@@ -336,6 +300,7 @@
                     android:padding="12dp">
 
                     <com.souqmaftoh.basatashopping.Fonts.LatoBLack
+                        android:id="@+id/btn_pro_edit"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:gravity="center"
@@ -378,249 +343,4 @@
         </ScrollView>
 
     </LinearLayout>
-<!--<ScrollView-->
-<!--    android:layout_width="match_parent"-->
-<!--    android:background="@color/white"-->
-<!--    android:layout_height="wrap_content">-->
-<!--    <androidx.constraintlayout.widget.ConstraintLayout-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="match_parent"-->
-
-<!--        >-->
-
-<!--        <ImageView-->
-<!--            android:id="@+id/img_profile"-->
-<!--            android:layout_width="200dp"-->
-<!--            android:layout_height="200dp"-->
-<!--            android:layout_marginTop="20dp"-->
-<!--            android:background="@drawable/profile"-->
-<!--            app:layout_constraintBottom_toTopOf="@+id/layout_txt"-->
-<!--            app:layout_constraintEnd_toEndOf="parent"-->
-<!--            app:layout_constraintHorizontal_bias="0.497"-->
-<!--            app:layout_constraintStart_toStartOf="parent"-->
-<!--            app:layout_constraintTop_toTopOf="parent"-->
-<!--            app:layout_constraintVertical_bias="0.096" />-->
-
-<!--        <View-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="1dp"-->
-<!--            android:background="@android:color/darker_gray"-->
-<!--            app:layout_constraintStart_toStartOf="parent"-->
-<!--            app:layout_constraintEnd_toEndOf="parent"-->
-<!--            app:layout_constraintBottom_toTopOf="@+id/layout_txt"-->
-
-
-<!--            />-->
-
-
-<!--        <LinearLayout-->
-<!--            android:id="@+id/layout_txt"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginBottom="60dp"-->
-<!--            android:orientation="vertical"-->
-<!--            app:layout_constraintBottom_toTopOf="@id/editProfile"-->
-<!--            app:layout_constraintEnd_toEndOf="parent"-->
-<!--            app:layout_constraintTop_toBottomOf="@id/img_profile"-->
-<!--            app:layout_constraintStart_toStartOf="parent">-->
-
-<!--            <TextView-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:text="الاسم" />-->
-
-<!--            <EditText-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_marginBottom="20dp"-->
-<!--                android:enabled="false"-->
-<!--                android:text="نور مجدي" />-->
-
-<!--            <TextView-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:text="الايميل" />-->
-
-<!--            <EditText-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_marginBottom="20dp"-->
-<!--                android:enabled="false"-->
-<!--                android:textAlignment="textEnd"-->
-<!--                android:text="noor882005@gmail.com" />-->
-
-
-<!--            <TextView-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:text="الرقم السري" />-->
-
-<!--            <EditText-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_marginBottom="20dp"-->
-<!--                android:enabled="false"-->
-<!--                android:textAlignment="viewEnd"-->
-<!--                android:inputType="textPassword"-->
-<!--                android:text="12345678" />-->
-
-<!--            <TextView-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:text="اسم المحل التجاري" />-->
-
-<!--            <EditText-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_marginBottom="20dp"-->
-<!--                android:enabled="false"-->
-<!--                android:textAlignment="viewEnd"-->
-<!--                android:text="basata mobile" />-->
-<!--            <TextView-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:text="العنوان" />-->
-
-<!--            <EditText-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_marginBottom="20dp"-->
-<!--                android:enabled="false"-->
-<!--                android:textAlignment="viewEnd"-->
-<!--                android:text="انقره تركيا" />-->
-
-<!--            <TextView-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:text="الموقع" />-->
-
-<!--            <EditText-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_marginBottom="20dp"-->
-<!--                android:enabled="false"-->
-<!--                android:textAlignment="viewEnd"-->
-<!--                android:inputType="textPassword"-->
-<!--                android:text="7 شارع اتاتورك" />-->
-
-<!--            <TextView-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:text="رقم الهاتف" />-->
-
-<!--            <EditText-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_marginBottom="20dp"-->
-<!--                android:enabled="false"-->
-<!--                android:textAlignment="viewEnd"-->
-<!--                android:text="12345678" />-->
-<!--            <TextView-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:text="وصف المحل" />-->
-
-<!--            <EditText-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_marginBottom="20dp"-->
-<!--                android:enabled="false"-->
-<!--                android:textAlignment="viewEnd"-->
-<!--                android:text="محل لبيع الموبيلات والتابلت واكسسوارات الموبيل" />-->
-
-<!--            <TextView-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_marginStart="10dp"-->
-<!--                android:layout_marginTop="10dp"-->
-<!--                android:layout_marginEnd="10dp"-->
-<!--                android:layout_marginBottom="15dp"-->
-<!--                android:text="روابط صفحات التواصل"-->
-<!--                android:textAlignment="center"-->
-<!--                />-->
-
-<!--            <androidx.constraintlayout.widget.ConstraintLayout-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content">-->
-
-<!--                <ImageView-->
-<!--                    android:id="@+id/youtube"-->
-<!--                    android:layout_width="25dp"-->
-<!--                    android:layout_height="25dp"-->
-<!--                    android:background="@drawable/youtube"-->
-<!--                    app:layout_constraintEnd_toStartOf="@+id/instagram"-->
-<!--                    app:layout_constraintStart_toStartOf="parent"-->
-<!--                    app:layout_constraintTop_toTopOf="parent"-->
-<!--                    app:layout_constraintBottom_toBottomOf="parent"-->
-<!--                    />-->
-
-<!--                <ImageView-->
-<!--                    android:id="@+id/instagram"-->
-<!--                    android:layout_width="25dp"-->
-<!--                    android:layout_height="25dp"-->
-<!--                    android:background="@drawable/instagram"-->
-<!--                    app:layout_constraintEnd_toStartOf="@id/facebook"-->
-<!--                    app:layout_constraintStart_toEndOf="@id/youtube"-->
-<!--                    app:layout_constraintTop_toTopOf="parent"-->
-<!--                    app:layout_constraintBottom_toBottomOf="parent"-->
-
-<!--                    />-->
-
-<!--                <ImageView-->
-<!--                    android:id="@+id/facebook"-->
-<!--                    android:layout_width="25dp"-->
-<!--                    android:layout_height="25dp"-->
-<!--                    android:background="@drawable/facebook"-->
-<!--                    app:layout_constraintEnd_toEndOf="parent"-->
-<!--                    app:layout_constraintStart_toEndOf="@+id/instagram"-->
-<!--                    app:layout_constraintTop_toTopOf="parent"-->
-<!--                    app:layout_constraintBottom_toBottomOf="parent"-->
-
-<!--                    />-->
-
-
-<!--            </androidx.constraintlayout.widget.ConstraintLayout>-->
-
-<!--        </LinearLayout>-->
-
-<!--        <com.google.android.material.button.MaterialButton-->
-<!--            style="@style/Widget.AppCompat.Button.Borderless"-->
-<!--            android:textColor="@color/white"-->
-<!--            android:textSize="15sp"-->
-<!--            app:cornerRadius="25dp"-->
-<!--            app:rippleColor="#33AAAAAA"-->
-<!--            android:id="@+id/editProfile"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:text="تعديل"-->
-<!--            android:elevation="4dp"-->
-<!--            app:layout_constraintBottom_toTopOf="@id/btn_logout"-->
-<!--            app:layout_constraintEnd_toEndOf="parent"-->
-<!--            app:layout_constraintStart_toStartOf="parent"-->
-<!--            app:layout_constraintTop_toBottomOf="@+id/layout_txt"/>-->
-
-
-
-<!--        <com.google.android.material.button.MaterialButton-->
-<!--            style="@style/Widget.AppCompat.Button.Borderless"-->
-<!--            android:textColor="@color/white"-->
-<!--            android:textSize="15sp"-->
-<!--            app:cornerRadius="25dp"-->
-<!--            app:rippleColor="#33AAAAAA"-->
-<!--            android:id="@+id/btn_logout"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginBottom="110dp"-->
-<!--            android:layout_marginTop="60dp"-->
-<!--            android:text="تسجيل خروج"-->
-<!--            android:elevation="4dp"-->
-<!--            app:layout_constraintBottom_toBottomOf="parent"-->
-<!--            app:layout_constraintEnd_toEndOf="parent"-->
-<!--            app:layout_constraintStart_toStartOf="parent"-->
-<!--            app:layout_constraintTop_toBottomOf="@+id/editProfile"/>-->
-
-
-<!--    </androidx.constraintlayout.widget.ConstraintLayout>-->
-
-<!--</ScrollView>-->
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

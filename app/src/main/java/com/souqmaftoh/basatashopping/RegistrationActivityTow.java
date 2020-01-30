@@ -64,19 +64,6 @@ public class RegistrationActivityTow extends AppCompatActivity implements View.O
 
 
 
-//        User user= SharedPrefManager.getInstance(this).getUser();
-//        if(user!=null){
-//            if( user.getEmail()!=null&&!user.getEmail().isEmpty()){
-//                email=user.getEmail();
-//
-//            }
-//
-//            if( user.getName()!=null&&!user.getName().isEmpty()){
-//                name=user.getName();
-//
-//            }
-//
-//        }
 //get data from RegistrationActivityOne
 
         Bundle bundle = new Bundle();

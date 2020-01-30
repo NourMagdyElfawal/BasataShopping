@@ -62,11 +62,11 @@ public interface Api {
     @Headers({
             "Accept: application/json",
 //            "Content-Type: application/json",
-            "Authorization: Bearer token"
+//            "Authorization: Bearer token"
     })
     @FormUrlEncoded
     @POST("edit_profile?")
-    Call<String> createStore(
+    Call<String> edit_profile(
                     @Field("name") String name,
                     @Field("email") String email,
                     @Field("market_name") String market_name,
@@ -92,6 +92,21 @@ public interface Api {
             @Field("sub_category") int sub_category,
             @Field("item_condition") String item_condition,
             @Field("main_image") String main_image
+
+    );
+
+
+    @Headers({
+            "Accept: application/json",
+//            "Content-Type: application/json"
+//            "Authorization: Bearer token"
+    })
+    @FormUrlEncoded
+    @POST("reset_password")
+    Call<Object> reset_password(
+            @Field("old_password") String old_password,
+            @Field("new_password") String new_password,
+            @Field("new_password_confirmation") String new_password_confirmation
 
     );
 

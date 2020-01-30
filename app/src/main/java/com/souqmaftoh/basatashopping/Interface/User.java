@@ -62,14 +62,28 @@ public class User {
         this.email = email;
     }
 
-    public User(String email, String name, String market_name, String address, String lat, String phone, String description) {
-        this.email = email;
+    public User(String name,String email,  String market_name, String address, String lat, String phone, String description) {
         this.name = name;
+        this.email = email;
         this.market_name = market_name;
         this.address = address;
         this.lat = lat;
         this.phone = phone;
         this.description = description;
+    }
+
+    public User(String token, String name, String email, Boolean is_merchant, String market_name, String address, String lat, String lng, String phone, String description) {
+        this.token = token;
+        this.name = name;
+        this.email = email;
+        this.is_merchant = is_merchant;
+        this.market_name = market_name;
+        this.address = address;
+        this.lat = lat;
+        this.lng = lng;
+        this.phone = phone;
+        this.description = description;
+
     }
 
 

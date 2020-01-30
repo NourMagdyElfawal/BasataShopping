@@ -30,6 +30,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.lang.reflect.GenericArrayType;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -177,71 +178,71 @@ public class LoginByEmailActivity extends AppCompatActivity implements View.OnCl
             public void onResponse(Call call, Response response) {
                 Log.e("gson:login", new Gson().toJson(response.body()) );
 
-                if(response.isSuccessful()){
-                    Log.e("res:login","isSuccessful");
-                    Intent intent_log =new Intent(LoginByEmailActivity.this, MainActivity.class);
-                    intent_log.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    startActivity(intent_log);
+                if(response.isSuccessful()) {
+                    if (response.body() != null) {
+                        Log.e("res:login", "isSuccessful");
+                        try {
+                            JSONObject jsonObject = new JSONObject(new Gson().toJson(response.body()));
+                            String message = jsonObject.getString("message");
+                            if (message != null) {
+                                Toast.makeText(LoginByEmailActivity.this, message, Toast.LENGTH_SHORT).show();
+                            }
+                            JSONObject data = jsonObject.getJSONObject("data");
+                            if (data != null) {
+                                String token = data.getString("token");
+                                String name = data.getString("name");
+                                String email = data.getString("email");
+                                String image = data.getString("image");
+                                Boolean is_merchant = data.getBoolean("is_merchant");
+                                String market_name = data.getString("market_name");
+                                String address = data.getString("address");
+                                String lat = data.getString("lat");
+                                String lng = data.getString("lng");
+                                String phone = data.getString("phone");
+                                String description = data.getString("description");
+                                JSONArray social_links = data.getJSONArray("social_links");
 
-                }
-
-
-                try {
-                    JSONObject jsonObject = new JSONObject(new Gson().toJson(response.body()));
-                    JSONObject data = jsonObject.getJSONObject("data");
-                    String token=data.getString("token");
-                    String name=data.getString("name");
-                    String email=data.getString("email");
-                    String image=data.getString("image");
-                    Boolean is_merchant=data.getBoolean("is_merchant");
-                    String market_name=data.getString("market_name");
-                    String address=data.getString("address");
-                    String lat=data.getString("lat");
-                    String lng=data.getString("lng");
-                    String phone=data.getString("phone");
-                    String description=data.getString("description");
-                    JSONArray social_links=data.getJSONArray("social_links") ;
-
-                    int length = social_links .length();
+                                int length = social_links.length();
 //                    ArrayList<Object>  socialLinks = new ArrayList<>();
-                    for(int i=0; i<length; i++)
-                    {
-                        JSONObject links=social_links.getJSONObject(i);
-                        String type=links.getString("type");
-                        String link=links.getString("link");
-                        Log.e("social_links",type+"  "+link);
+                                for (int i = 0; i < length; i++) {
+                                    JSONObject links = social_links.getJSONObject(i);
+                                    String type = links.getString("type");
+                                    String link = links.getString("link");
+                                    Log.e("social_links", type + "  " + link);
+
+                                }
+
+                                User user = new User(token, name, email, image, is_merchant, market_name, address, lat, lng, phone, description);
+
+
+                                SharedPrefManager.getInstance(LoginByEmailActivity.this)
+                                        .saveUser(user);
+                            }
+                                Intent intent_log = new Intent(LoginByEmailActivity.this, MainActivity.class);
+                                intent_log.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                startActivity(intent_log);
+
+
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
 
                     }
 
-                    User user = new User(token, name,email,image,is_merchant,market_name,address,lat,lng,phone,description);
-
-
-                    if (data != null) {
-                    SharedPrefManager.getInstance(LoginByEmailActivity.this)
-                            .saveUser(user);
-                    Intent intent_log =new Intent(LoginByEmailActivity.this, MainActivity.class);
-                    intent_log.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    startActivity(intent_log);
-                }
-
-
-                    } catch (JSONException e) {
+            } else if (response.errorBody() != null) {
+                try {
+                    Log.e("gson:loginError", response.errorBody().string());
+                    Toast.makeText(LoginByEmailActivity.this, response.errorBody().string(), Toast.LENGTH_SHORT).show();
+                } catch (IOException e) {
                     e.printStackTrace();
                 }
-
-
-//                LoginDefault loginResponse= response.body();
-
-//                if(loginResponse!=null&&loginResponse.getData()!=null) {
-//                    Toast.makeText(LoginByEmailActivity.this, loginResponse.getMessage(), Toast.LENGTH_SHORT).show();
-//                    Log.e("res:login", "Data"+loginResponse.getData()+" "+"message"+loginResponse.getMessage());
-//                    SharedPrefManager.getInstance(LoginByEmailActivity.this)
-//                            .saveUser(loginResponse.getData());
-//                    Intent intent_log =new Intent(LoginByEmailActivity.this, MainActivity.class);
-//                    intent_log.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |Intent.FLAG_ACTIVITY_CLEAR_TASK);
-//                    startActivity(intent_log);
-//                }
             }
+
+
+
+
+        }
 
             @Override
             public void onFailure(Call call, Throwable t) {
