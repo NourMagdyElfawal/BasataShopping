@@ -31,10 +31,12 @@ import com.google.gson.Gson;
 import com.souqmaftoh.basatashopping.Api.RetrofitClient;
 import com.souqmaftoh.basatashopping.Fonts.LatoBLack;
 import com.souqmaftoh.basatashopping.LoginActivity;
+import com.souqmaftoh.basatashopping.LoginByEmailActivity;
 import com.souqmaftoh.basatashopping.MainActivity;
 import com.souqmaftoh.basatashopping.Interface.User;
 import com.souqmaftoh.basatashopping.R;
 import com.souqmaftoh.basatashopping.Storage.SharedPrefManager;
+import com.souqmaftoh.basatashopping.fragments.ItemsRecyclerFragment.ItemsRecyclerFragment;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -90,7 +92,7 @@ public class MyAccountFragment extends Fragment implements View.OnClickListener 
     }
 
 
-    LatoBLack btn_pro_logout, btn_pro_edit;
+    LatoBLack btn_pro_logout, btn_pro_edit,btn_pro_addv;
     private GoogleSignInClient mGoogleSignInClient;
     EditText et_pro_name, et_pro_email, et_pro_storeName, et_pro_address, et_pro_location, et_pro_phone, et_pro_storeDisc;
     TextView tv_pro_pass;
@@ -112,11 +114,11 @@ public class MyAccountFragment extends Fragment implements View.OnClickListener 
         et_pro_phone = view.findViewById(R.id.et_pro_phone);
         et_pro_storeDisc = view.findViewById(R.id.et_pro_storeDisc);
         btn_pro_edit = view.findViewById(R.id.btn_pro_edit);
-
+        btn_pro_addv=view.findViewById(R.id.btn_pro_addv);
 
         btn_pro_logout.setOnClickListener(this);
         btn_pro_edit.setOnClickListener(this);
-
+        btn_pro_addv.setOnClickListener(this);
         et_pro_name.setOnClickListener(this);
         tv_pro_pass.setOnClickListener(this);
         et_pro_storeName.setOnClickListener(this);
@@ -202,7 +204,19 @@ public class MyAccountFragment extends Fragment implements View.OnClickListener 
             case R.id.btn_pro_logout:
                 logOut();
                 break;
+            case R.id.btn_pro_addv:
+//                ItemDetailsFragment itemDetailsFragment = new ItemDetailsFragment();
+////                    Bundle args = new Bundle();
+////                    args.putString("fragment", "item");
+////                    addAdvFragment.setArguments(args);
+//                activity.getSupportFragmentManager().beginTransaction().add(R.id.items_main_content,itemDetailsFragment ).addToBackStack( "ItemsRecyclerFragment" ).commit();
+                ItemsRecyclerFragment itemsRecyclerFragment= new ItemsRecyclerFragment();
+                Objects.requireNonNull(getActivity()).getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.my_account_container, itemsRecyclerFragment, "findThisFragment")
+                        .addToBackStack(null)
+                        .commit();
 
+                break;
             case R.id.et_pro_name:
                 et_pro_name.setFocusable(true);
                 et_pro_name.setFocusableInTouchMode(true);
@@ -468,6 +482,7 @@ public class MyAccountFragment extends Fragment implements View.OnClickListener 
                             e.printStackTrace();
                         }
                     }
+
                 }
             }
 
@@ -487,7 +502,11 @@ public class MyAccountFragment extends Fragment implements View.OnClickListener 
     private void logOut() {
         SharedPrefManager.getInstance(getActivity()).clear();
         Toast.makeText(getActivity(), "User Sign out!", Toast.LENGTH_SHORT).show();
-        startActivity(new Intent(getActivity(), LoginActivity.class));
+//        startActivity(new Intent(getActivity(), LoginActivity.class));
+        Intent intent_log =new Intent(getActivity(), LoginActivity.class);
+        intent_log.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent_log);
+
         Objects.requireNonNull(getFragmentManager()).popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
 
 

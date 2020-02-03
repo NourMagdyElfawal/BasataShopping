@@ -47,6 +47,8 @@ import com.souqmaftoh.basatashopping.Storage.SharedPrefManager;
 import com.souqmaftoh.basatashopping.design.CurvedBottomNavigationView;
 
 import org.jetbrains.annotations.NotNull;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -75,6 +77,8 @@ public class AddAdvFragment extends Fragment implements BottomNavigationView.OnN
     addAdvAdapter adapter;
     EditText et_advName,et_AdvDescription,et_AdvAddress,et_telephone;
     String encodedImage,token;
+    String item_condition,category;
+    int sub_category;
 
 //    List<category> historicList = new ArrayList<>();
 
@@ -86,6 +90,8 @@ public class AddAdvFragment extends Fragment implements BottomNavigationView.OnN
     private String mParam1;
     private String mParam2;
     MaterialButton btn_addAdv;
+    Spinner   spinnerCat,spin_sub_cat,spin_spin_con;
+
     public AddAdvFragment() {
         // Required empty public constructor
     }
@@ -142,40 +148,15 @@ public class AddAdvFragment extends Fragment implements BottomNavigationView.OnN
         }
 
 
+        // Spinner element
+        spinnerCat = root.findViewById(R.id.spinner_cat);
+        spin_sub_cat = root.findViewById(R.id.spin_sub_cat);
+        spin_spin_con = root.findViewById(R.id.spin_spin_con);
 
 
-
-            // Spinner element
-        final Spinner spinner = root.findViewById(R.id.spinner_nav);
-
-        // Spinner click listener
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            public void onItemSelected(AdapterView<?> parent, View view,
-                                       int position, long id) {
-
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
-
-        // Spinner Drop down elements
-        List<String> categories = new ArrayList<String>();
-        categories.add("جوالات");
-        categories.add("تابلت");
-        categories.add("اكسسوارات");
-        categories.add("أخرى");
-
-        // Creating adapter for spinner
-        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, categories);
-
-        // Drop down layout style - list view with radio button
-        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-        // attaching data adapter to spinner
-        spinner.setAdapter(dataAdapter);
+        spinnerCategories();
+        spinnerSunCategories();
+        spinnerCondition();
 
 
 
@@ -226,6 +207,157 @@ public class AddAdvFragment extends Fragment implements BottomNavigationView.OnN
 //            }
 //        });
         return root;
+    }
+
+    private void spinnerCondition() {
+
+        // Spinner click listener
+        spin_spin_con.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            public void onItemSelected(AdapterView<?> parent, View view,
+                                       int position, long id) {
+                Log.e("position", String.valueOf(position));
+                if(position==0){
+                    item_condition="new";
+
+                }else if(position==1){
+                    item_condition="old";
+                }
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                item_condition="new";
+
+            }
+        });
+
+        // Spinner Drop down elements
+        List<String> item_condition = new ArrayList<String>();
+        item_condition.add("جديد");
+        item_condition.add("مستعمل");
+
+        // Creating adapter for spinner
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, item_condition);
+
+        // Drop down layout style - list view with radio button
+        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        // attaching data adapter to spinner
+        spin_spin_con.setAdapter(dataAdapter);
+
+
+
+    }
+
+    private void spinnerSunCategories() {
+        // Spinner click listener
+        spin_sub_cat.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            public void onItemSelected(AdapterView<?> parent, View view,
+                                       int position, long id) {
+                Log.e("position", String.valueOf(position));
+
+                switch (position){
+                    case 0:
+                        sub_category=0;
+                        break;
+                    case 1:
+                        sub_category=1;
+                        break;
+                    case 2:
+                        sub_category=2;
+                        break;
+                    case 3:
+                        sub_category=3;
+                        break;
+
+
+                }
+
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                sub_category=0;
+
+            }
+        });
+
+        // Spinner Drop down elements
+        List<String> sub_categories = new ArrayList<String>();
+        sub_categories.add("samsung");
+        sub_categories.add("iphon");
+        sub_categories.add("nokia");
+        sub_categories.add("infinix");
+
+        // Creating adapter for spinner
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, sub_categories);
+
+        // Drop down layout style - list view with radio button
+        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        // attaching data adapter to spinner
+        spin_sub_cat.setAdapter(dataAdapter);
+
+
+
+    }
+
+    private void spinnerCategories() {
+        // Spinner click listener
+        spinnerCat.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            public void onItemSelected(AdapterView<?> parent, View view,
+                                       int position, long id) {
+                Log.e("position", String.valueOf(position));
+//                Log.e("category", String.valueOf(view));
+
+
+                switch (position){
+                    case 0:
+                        category="جوالات";
+                        break;
+                    case 1:
+                        category="تابلت";
+                        break;
+                    case 2:
+                        category="اكسسوارات";
+                        break;
+                    case 3:
+                        category="أخرى";
+                        break;
+
+
+                }
+
+
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                category="جوالات";
+
+            }
+        });
+
+        // Spinner Drop down elements
+        List<String> categories = new ArrayList<String>();
+        categories.add("جوالات");
+        categories.add("تابلت");
+        categories.add("اكسسوارات");
+        categories.add("أخرى");
+
+        // Creating adapter for spinner
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, categories);
+
+        // Drop down layout style - list view with radio button
+        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        // attaching data adapter to spinner
+        spinnerCat.setAdapter(dataAdapter);
+
+
     }
 
     @Override
@@ -440,7 +572,7 @@ public class AddAdvFragment extends Fragment implements BottomNavigationView.OnN
         String description=et_AdvDescription.getText().toString();
 //        int sub_category= Integer.parseInt(et_advName.getText().toString());
         String main_image=encodedImage;
-        String item_condition="new";
+//        String item_condition="new";
 
 
 
@@ -455,6 +587,20 @@ public class AddAdvFragment extends Fragment implements BottomNavigationView.OnN
 
                     if(response.body()!=null){
                         Log.e("gson:create_ad", new Gson().toJson(response.body()) );
+                        try {
+                            JSONObject jsonObject = new JSONObject(new Gson().toJson(response.body()));
+                            String message = jsonObject.getString("message");
+                            if (message != null) {
+                                Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+
+                                Intent intent_log =new Intent(getActivity(), MainActivity.class);
+                                intent_log.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                startActivity(intent_log);
+
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
 
                     } else if (response.errorBody() != null) {
                         try {

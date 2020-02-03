@@ -12,6 +12,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -31,9 +33,11 @@ import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Objects;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -45,6 +49,8 @@ public class RegistrationActivityTow extends AppCompatActivity implements View.O
         MaterialButton btn_reg_storeRegist;
         ImageView img_profile;
         private static final int PICK_PHOTO_FOR_AVATAR = 0;
+        String encodedImage;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -148,15 +154,29 @@ public class RegistrationActivityTow extends AppCompatActivity implements View.O
         super.onActivityResult(requestCode, resultCode, data);
 
         if (resultCode == RESULT_OK) {
-            try {
+//            try {
                 final Uri imageUri = data.getData();
-                final InputStream imageStream = getContentResolver().openInputStream(imageUri);
-                final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
-                img_profile.setImageBitmap(selectedImage);
-            } catch (FileNotFoundException e) {
+
+            try {
+
+                Bitmap bitmap = MediaStore.Images.Media.getBitmap(Objects.requireNonNull(this).getContentResolver(), imageUri);
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos); //bm is the bitmap object
+                byte[] b = baos.toByteArray();
+
+                encodedImage = Base64.encodeToString(b, Base64.DEFAULT);
+
+            } catch (IOException e) {
                 e.printStackTrace();
-                Toast.makeText(RegistrationActivityTow.this, "Something went wrong", Toast.LENGTH_LONG).show();
             }
+
+//                final InputStream imageStream = getContentResolver().openInputStream(imageUri);
+//                final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
+//                img_profile.setImageBitmap(selectedImage);
+//            } catch (FileNotFoundException e) {
+//                e.printStackTrace();
+//                Toast.makeText(RegistrationActivityTow.this, "Something went wrong", Toast.LENGTH_LONG).show();
+//            }
 
         }else {
             Toast.makeText(RegistrationActivityTow.this, "You haven't picked Image",Toast.LENGTH_LONG).show();
@@ -181,12 +201,15 @@ public class RegistrationActivityTow extends AppCompatActivity implements View.O
         }
 
         RegistrationStoreByApi(name,email,password,repPassword,market_name,address,lat,lng,phone,description);
-
+        AddImageProfileApi();
 
 
 
     }
 
+    private void AddImageProfileApi() {
+
+    }
 
 
     private void RegistrationStoreByApi(String name, String email, String password, String repPassword,
@@ -210,6 +233,7 @@ public class RegistrationActivityTow extends AppCompatActivity implements View.O
                                     User user = new User(name,email,  market_name, address, lat, lng, phone, description);
                                     SharedPrefManager.getInstance(RegistrationActivityTow.this)
                                             .saveUser(user);
+
                                     Intent intent_log = new Intent(RegistrationActivityTow.this, MainActivity.class);
                                     intent_log.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                     startActivity(intent_log);
