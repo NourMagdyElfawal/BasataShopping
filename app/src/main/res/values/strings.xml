@@ -2,6 +2,7 @@
     <string name="app_name">BasataShopping</string>
     <string name="facebook_app_id">444807396454347</string>
     <string name="fb_login_protocol_scheme">fb444807396454347</string>
+    <string name="map_key">AIzaSyB_qsP8AOP_P0MdlPz-48TDaJYjTP3vbjo</string>
     <string-array name="sports_images">
         <item>https://androidwave.com/media/images/img_baseball.jpg</item>
         <item>https://androidwave.com/media/images/img_badminton.jpg</item>

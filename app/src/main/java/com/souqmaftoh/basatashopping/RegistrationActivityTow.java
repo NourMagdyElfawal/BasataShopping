@@ -4,6 +4,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.transition.FragmentTransitionSupport;
 
 import android.Manifest;
 import android.content.Intent;
@@ -28,6 +31,8 @@ import com.souqmaftoh.basatashopping.Interface.User;
 import com.souqmaftoh.basatashopping.Models.ForgetPassResponse;
 import com.souqmaftoh.basatashopping.Models.RegistrationStoreResponse;
 import com.souqmaftoh.basatashopping.Storage.SharedPrefManager;
+import com.souqmaftoh.basatashopping.fragments.mapFragment.MapFragment;
+import com.souqmaftoh.basatashopping.fragments.myAccount.MyAccountFragment;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
@@ -50,6 +55,10 @@ public class RegistrationActivityTow extends AppCompatActivity implements View.O
         ImageView img_profile;
         private static final int PICK_PHOTO_FOR_AVATAR = 0;
         String encodedImage;
+        private static final int REQUEST_FRAGMENT = 1444;
+        String lat;
+        String lng;
+
 
 
     @Override
@@ -67,7 +76,7 @@ public class RegistrationActivityTow extends AppCompatActivity implements View.O
 
 //        img_profile.setOnClickListener(this);
         btn_reg_storeRegist.setOnClickListener(this);
-
+        et_reg_location.setOnClickListener(this);
 
 
 //get data from RegistrationActivityOne
@@ -79,9 +88,15 @@ public class RegistrationActivityTow extends AppCompatActivity implements View.O
             email = bundle.getString("email");
             password = bundle.getString("password");
             repPassword = bundle.getString("repPassword");
-
         }
 
+        if (bundle != null) {
+            lat = bundle.getString("Lat");
+            lng = bundle.getString("Lng");
+
+            if (lat != null)
+                Log.e("maplat", lat);
+        }
 
     }
 
@@ -98,6 +113,27 @@ public class RegistrationActivityTow extends AppCompatActivity implements View.O
                 break;
             case R.id.btn_reg_storeRegist:
                 signUpAsStore();
+                break;
+
+            case R.id.et_reg_location:
+
+//                FragmentManager manager = getSupportFragmentManager();
+//                FragmentTransaction transaction = manager.beginTransaction();
+////                                MapFragment mapFragment= new MapFragment();
+//
+//                transaction.add(R.id.regist_cont,mapFragment ,"findThisFragment");
+//                transaction.addToBackStack(null);
+//                transaction.commit();
+
+                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                MapFragment mapFragment= new MapFragment();
+                Bundle bundle=new Bundle();
+                bundle.putString("step","regist");
+                mapFragment.setArguments(bundle);
+                ft.addToBackStack(null);
+                ft.add(R.id.regist_cont, mapFragment, "findThisFragment");
+                ft.commit();
+
                 break;
         }
     }
@@ -170,6 +206,15 @@ public class RegistrationActivityTow extends AppCompatActivity implements View.O
                 e.printStackTrace();
             }
 
+            if (requestCode==REQUEST_FRAGMENT){
+                lat = data.getStringExtra("Lat");
+                lng=data.getStringExtra("Lng");
+                Log.e("mapLat",lat);
+                Log.e("mapLng",lng);
+
+            }
+
+
 //                final InputStream imageStream = getContentResolver().openInputStream(imageUri);
 //                final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
 //                img_profile.setImageBitmap(selectedImage);
@@ -190,8 +235,6 @@ public class RegistrationActivityTow extends AppCompatActivity implements View.O
         String address=et_reg_address.getText().toString();
         String phone=et_reg_phone.getText().toString();
         String description=et_reg_disc.getText().toString();
-        String lat="123";
-        String lng="321";
 
 
         if(market_name.isEmpty()){
@@ -216,7 +259,7 @@ public class RegistrationActivityTow extends AppCompatActivity implements View.O
                                         String market_name, String address, String lat, String lng, String phone, String description) {
         Call call= RetrofitClient.
                 getInstance().getApi()
-                .createUser(name,email,password,repPassword,market_name,address,lat,lng,phone,description);
+                .createStore(name,email,password,repPassword,market_name,address,lat,lng,phone,description);
         call.enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) {

@@ -88,19 +88,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //        createKeyHash();
 
 
-//        //get sign in user using gmaile
-//
-//        GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(this);
-//        if (acct != null) {
-//            String personName = acct.getDisplayName();
-//            String personGivenName = acct.getGivenName();
-//            String personFamilyName = acct.getFamilyName();
-//            String personEmail = acct.getEmail();
-//            String personId = acct.getId();
-//            Uri personPhoto = acct.getPhotoUrl();
-////            Toast.makeText(this, "gmailInfo" + personName + personGivenName + personFamilyName + personEmail + personId, Toast.LENGTH_SHORT).show();
-//            Log.e("gmail","gmailInfo" + personName + personGivenName + personFamilyName + personEmail + personId);
-//        }
+        //get sign in user using gmaile
+
+        GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(this);
+        if (acct != null) {
+            String personName = acct.getDisplayName();
+            String personGivenName = acct.getGivenName();
+            String personFamilyName = acct.getFamilyName();
+            String personEmail = acct.getEmail();
+            String personId = acct.getId();
+            Uri personPhoto = acct.getPhotoUrl();
+//            Toast.makeText(this, "gmailInfo" + personName + personGivenName + personFamilyName + personEmail + personId, Toast.LENGTH_SHORT).show();
+            Log.e("gmail","gmailInfo" + personName + personGivenName + personFamilyName + personEmail + personId);
+        }
 
 //        FirebaseUser user = mAuth.getCurrentUser();
 //        if(user!=null){
@@ -157,6 +157,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onBackPressed();
         showFloatingActionButton();
     }
+
+//    public interface OnBackPressedListener {
+//        void onBackPressed();
+//    }
+
 
     //app bar
     private void setupViewPager(ViewPager viewPager) {

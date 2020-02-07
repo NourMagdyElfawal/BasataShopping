@@ -6,6 +6,12 @@
     android:layout_height="match_parent"
     tools:context=".LoginByEmailActivity">
 
+    <ScrollView
+        android:id="@+id/scrollView1"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -227,5 +233,5 @@
 <!--            app:layout_constraintBottom_toBottomOf="parent"/>-->
 
 
-
+</ScrollView>
     </androidx.constraintlayout.widget.ConstraintLayout>

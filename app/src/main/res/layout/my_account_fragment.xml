@@ -67,7 +67,6 @@
                     android:textSize="14sp"
                     android:background="@drawable/xml_textbox_bg"
                     android:ems="10"
-                    android:text="نور مجدي"
                     android:focusable="false"
                     android:inputType="text" />
 
@@ -102,7 +101,7 @@
                     android:textSize="14sp"
                     android:inputType="textEmailAddress"
                     android:textAlignment="textEnd"
-                    android:text="noor882005@gmail.com" />
+                     />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -164,7 +163,6 @@
                     android:textSize="14sp"
                     android:background="@drawable/xml_textbox_bg"
                     android:ems="10"
-                    android:text="بساطه شوب"
                     android:focusable="false"
                     android:inputType="text" />
 
@@ -195,7 +193,6 @@
                     android:textSize="14sp"
                     android:background="@drawable/xml_textbox_bg"
                     android:ems="10"
-                    android:text="شارع 7 عماره 14 اسطنبول"
                     android:focusable="false"
                     android:inputType="text" />
 
@@ -226,7 +223,6 @@
                     android:textSize="14sp"
                     android:background="@drawable/xml_textbox_bg"
                     android:ems="10"
-                    android:text="تركيا اسطنبول"
                     android:focusable="false"
                     android:inputType="text" />
 
@@ -257,7 +253,6 @@
                     android:textSize="14sp"
                     android:background="@drawable/xml_textbox_bg"
                     android:ems="10"
-                    android:text="0129303930"
                     android:focusable="false"
                     android:inputType="phone" />
 
@@ -288,7 +283,6 @@
                     android:textSize="14sp"
                     android:background="@drawable/xml_textbox_bg"
                     android:ems="10"
-                    android:text="وصف المحل"
                     android:focusable="false"
                     android:inputType="text" />
 
@@ -337,7 +331,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:gravity="center"
-                        android:textAlignment="center"
                         android:text="تسجيل خروج"
                         android:textColor="#fff"
                         />

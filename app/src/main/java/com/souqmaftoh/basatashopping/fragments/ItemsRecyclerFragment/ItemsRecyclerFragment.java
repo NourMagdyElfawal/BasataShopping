@@ -4,6 +4,7 @@ package com.souqmaftoh.basatashopping.fragments.ItemsRecyclerFragment;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -21,18 +23,27 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.gson.Gson;
 import com.souqmaftoh.basatashopping.Adapter.HomeAdapter;
 import com.souqmaftoh.basatashopping.Adapter.ItemsAdapter;
+import com.souqmaftoh.basatashopping.Api.RetrofitClient;
 import com.souqmaftoh.basatashopping.Interface.Items;
 import com.souqmaftoh.basatashopping.R;
 import com.souqmaftoh.basatashopping.design.DividerItemDecoration;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class ItemsRecyclerFragment extends Fragment {
 
@@ -53,7 +64,7 @@ public class ItemsRecyclerFragment extends Fragment {
     private static final String ARG_PARAM2 = "param2";
     // TODO: Rename and change types of parameters
     private String mParam1;
-    private String mParam2;
+    private String mParam2,fragmentName;
     public ItemsRecyclerFragment() {
         // Required empty public constructor
     }
@@ -80,6 +91,8 @@ public class ItemsRecyclerFragment extends Fragment {
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
+            fragmentName = getArguments().getString("fragment");
+
         }
     }
 
@@ -94,6 +107,8 @@ public class ItemsRecyclerFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.items_recycler_fragment, container, false);
 
+
+        getMyAdsApi();
         // Spinner element
         final Spinner spinner = (Spinner) view.findViewById(R.id.spinner_nav);
         Button button=(Button)view.findViewById(R.id.button);
@@ -134,6 +149,54 @@ public class ItemsRecyclerFragment extends Fragment {
 //        Objects.requireNonNull(((AppCompatActivity) Objects.requireNonNull(getActivity())).getSupportActionBar()).hide();
 
         return view;
+    }
+
+    private void getMyAdsApi() {
+
+        Call<Object> call= RetrofitClient.
+                getInstance()
+                .getApi()
+                .get_my_ads();
+        call.enqueue(new Callback<Object>() {
+            @Override
+            public void onResponse(Call<Object> call, Response<Object> response) {
+                Log.e("gson:get_my_ads", new Gson().toJson(response.body()) );
+
+                if(response!=null) {
+
+                    if (response.body() != null) {
+//                        Log.e("res:reset_password", "isSuccessful");
+//                        try {
+//                            JSONObject jsonObject = new JSONObject(new Gson().toJson(response.body()));
+//                            String message = jsonObject.getString("message");
+//                            if (message != null) {
+//                                Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+//                            }
+//                        } catch (JSONException e) {
+//                            e.printStackTrace();
+//                        }
+//
+                    }
+
+                } else if (response.errorBody() != null) {
+                    try {
+                        Log.e("gson:get_my_ads_error", response.errorBody().string());
+                        Toast.makeText(getActivity(), response.errorBody().string(), Toast.LENGTH_SHORT).show();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+
+
+            @Override
+            public void onFailure(Call<Object> call, Throwable t) {
+                Log.e("get_my_ads:onFailure", String.valueOf(t));
+
+            }
+        });
+
     }
 
     private void setUp() {

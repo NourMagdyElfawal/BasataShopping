@@ -1,0 +1,90 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+
+
+
+    <!--<fragment-->
+    <!--android:id="@+id/location_map"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"-->
+    <!--class="com.google.android.gms.maps.SupportMapFragment"-->
+    <!--android:layout_below="@+id/mptxt"-->
+    <!--android:layout_marginTop="5dp" />-->
+    <com.google.android.gms.maps.MapView
+        android:id="@+id/google_map"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+         />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/mptxt"
+        android:layout_gravity="center_horizontal"
+        android:textSize="18sp"
+        android:background="@color/colorAccent"
+        android:alpha=".8"
+        android:textColor="#ffff"
+        android:layout_alignParentTop="true"
+        android:textAlignment="gravity"
+        android:gravity="center_horizontal"
+        android:layout_marginTop="15dp"
+        android:visibility="visible"/>
+
+
+
+<!--<androidx.appcompat.widget.AppCompatAutoCompleteTextView-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:id="@+id/mptxt"-->
+<!--        android:layout_gravity="center_horizontal"-->
+<!--        android:textSize="18sp"-->
+<!--        android:background="#ffffff"-->
+<!--        android:hint="Type your address or post/zip code"-->
+<!--        android:maxLines="1"-->
+<!--        android:singleLine="true"-->
+<!--        android:textColor="#8000"-->
+<!--        android:layout_alignParentTop="false"-->
+<!--        android:textAlignment="gravity"-->
+<!--        android:gravity="center_horizontal"-->
+<!--        android:layout_below="@+id/tabOver"-->
+<!--        android:layout_marginTop="10dp"-->
+<!--        android:digits=".,';1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ "/>-->
+<!--    <TextView-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:id="@+id/mptxtview"-->
+<!--        android:layout_gravity="center_horizontal"-->
+<!--        android:textSize="18sp"-->
+<!--        android:background="#ffffff"-->
+<!--        android:maxLines="1"-->
+<!--        android:singleLine="true"-->
+<!--        android:visibility="gone"-->
+<!--        android:textColor="#8000"-->
+<!--        android:layout_alignParentTop="false"-->
+<!--        android:textAlignment="gravity"-->
+<!--        android:gravity="center_horizontal"-->
+<!--        android:layout_below="@+id/tabOver"-->
+<!--        android:layout_marginTop="10dp"-->
+<!--        android:digits=".,';1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ "/>-->
+<!--    <Button-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:text="Use This Location"-->
+<!--        android:padding="8dp"-->
+<!--        android:id="@+id/submap"-->
+<!--        android:visibility="visible"-->
+<!--        android:textSize="18sp"-->
+<!--        android:textColor="#8000"-->
+<!--        android:textAllCaps="false"-->
+<!--        android:elevation="3dp"-->
+<!--        android:background="#ffffff"-->
+<!--        android:layout_alignParentBottom="true"-->
+<!--        android:layout_centerHorizontal="true" />-->
+
+
+</RelativeLayout>

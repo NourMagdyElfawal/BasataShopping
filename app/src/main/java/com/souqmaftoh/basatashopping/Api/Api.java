@@ -12,6 +12,7 @@ import com.souqmaftoh.basatashopping.Storage.SharedPrefManager;
 import retrofit2.Call;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
+import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
@@ -29,17 +30,37 @@ public interface Api {
         @Field("name") String name,
         @Field("email") String email,
         @Field("password") String password,
-        @Field("password_confirmation") String password_confirmation,
-        @Field("market_name") String market_name,
-        @Field("address") String address,
-        @Field("lat") String lat,
-        @Field("lng") String lng,
-        @Field("phone") String phone,
-        @Field("description") String description
+        @Field("password_confirmation") String password_confirmation
 
         );
 
-    @Headers({"Accept: application/json"})
+    @Headers({
+            "Accept: application/json",
+//            "Content-Type: application/json",
+//            "Authorization: Bearer token"
+    })
+    @FormUrlEncoded
+    @POST("register")
+    Call<Object> createStore(
+            @Field("name") String name,
+            @Field("email") String email,
+            @Field("password") String password,
+            @Field("password_confirmation") String password_confirmation,
+            @Field("market_name") String market_name,
+            @Field("address") String address,
+            @Field("lat") String lat,
+            @Field("lng") String lng,
+            @Field("phone") String phone,
+            @Field("description") String description
+
+    );
+
+
+
+    @Headers({
+            "Accept: application/json",
+//            "Content-Type: application/json",
+    })
     @FormUrlEncoded
     @POST("login")
     Call<Object> userLogin(
@@ -70,6 +91,7 @@ public interface Api {
                     @Field("name") String name,
                     @Field("email") String email,
                     @Field("market_name") String market_name,
+                    @Field("is_merchant") Boolean is_merchant,
                     @Field("address") String address,
                     @Field("lat") String lat,
                     @Field("lng") String lng,
@@ -109,6 +131,15 @@ public interface Api {
             @Field("new_password_confirmation") String new_password_confirmation
 
     );
+
+
+    @Headers({
+            "Accept: application/json",
+//            "Content-Type: application/json"
+//            "Authorization: Bearer token"
+    })
+    @GET("get_my_ads?page=1")
+    Call<Object> get_my_ads();
 
 }
 

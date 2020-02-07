@@ -1,12 +1,16 @@
 package com.souqmaftoh.basatashopping.fragments.myAccount;
 
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProviders;
 
+import android.Manifest;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -37,16 +41,20 @@ import com.souqmaftoh.basatashopping.Interface.User;
 import com.souqmaftoh.basatashopping.R;
 import com.souqmaftoh.basatashopping.Storage.SharedPrefManager;
 import com.souqmaftoh.basatashopping.fragments.ItemsRecyclerFragment.ItemsRecyclerFragment;
+import com.souqmaftoh.basatashopping.fragments.mapFragment.MapFragment;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Objects;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+import static android.app.Activity.RESULT_OK;
 
 public class MyAccountFragment extends Fragment implements View.OnClickListener {
 
@@ -99,6 +107,22 @@ public class MyAccountFragment extends Fragment implements View.OnClickListener 
     String token;
     Boolean is_merchant;
     EditText et_dia_oldPass,et_dia_newPass,et_dia_repPass;
+    MapFragment mapFragment;
+    String lat;
+    String lng;
+    private static final String[] INITIAL_PERMS = {
+            Manifest.permission.ACCESS_FINE_LOCATION,
+
+    };
+
+
+    private static final int INITIAL_REQUEST = 1337;
+    private static final int REQUEST_FRAGMENT = 1444;
+
+    public HashMap<String, String> step1 = new HashMap<>();
+
+
+
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -132,7 +156,42 @@ public class MyAccountFragment extends Fragment implements View.OnClickListener 
         SetUserDetailsSharedPref();
 
 
+
+//        if(mapFragment!=null)
+//            if(mapFragment.map!=null)
+//                if(!mapFragment.map.get("Lat").isEmpty()){
+//            lat=mapFragment.map.get("Lat");
+//            lng=mapFragment.map.get("Lng");
+//            Log.e("map", String.valueOf(mapFragment.map.get("Lat")));
+//
+//        }
+
+
+
         return view;
+    }
+
+    private View.OnClickListener openMap() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //   CreateEvent1Fragment.step1.put("Fees",cost.getText().toString());
+                //using checkSelfPermission if you have them
+                if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    //you have to request them from user at runtime
+                    requestPermissions(INITIAL_PERMS, INITIAL_REQUEST);
+                } else {
+                    mapFragment = MapFragment.newInstance();
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("step1", step1);
+                    mapFragment.setArguments(bundle);
+
+                    getActivity().getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.container, mapFragment, "map").addToBackStack("map").commit();
+                    //   Log.e("latlong", String.valueOf(step2));
+                }
+            }
+        };
     }
 
     private void SetUserDetailsSharedPref() {
@@ -211,6 +270,10 @@ public class MyAccountFragment extends Fragment implements View.OnClickListener 
 ////                    addAdvFragment.setArguments(args);
 //                activity.getSupportFragmentManager().beginTransaction().add(R.id.items_main_content,itemDetailsFragment ).addToBackStack( "ItemsRecyclerFragment" ).commit();
                 ItemsRecyclerFragment itemsRecyclerFragment= new ItemsRecyclerFragment();
+                Bundle args = new Bundle();
+                args.putString("fragment", "myacc");
+                itemsRecyclerFragment.setArguments(args);
+
                 Objects.requireNonNull(getActivity()).getSupportFragmentManager().beginTransaction()
                         .replace(R.id.my_account_container, itemsRecyclerFragment, "findThisFragment")
                         .addToBackStack(null)
@@ -272,6 +335,34 @@ public class MyAccountFragment extends Fragment implements View.OnClickListener 
 
                 break;
             case R.id.et_pro_location:
+
+
+                FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+                MapFragment mapFragment= new MapFragment();
+                Bundle bundle = new Bundle();
+                bundle.putString("Lat", "123");
+                bundle.putString("Lng","123");
+                mapFragment.setArguments(bundle);
+                mapFragment.setTargetFragment(MyAccountFragment.this, REQUEST_FRAGMENT);
+                ft.addToBackStack(null);
+                ft.add(R.id.my_account_container, mapFragment, "findThisFragment");
+                ft.commit();
+
+
+
+
+//                MapFragment mapFragment= new MapFragment();
+//                Bundle bundle = new Bundle();
+//                bundle.putString("Lat", "123");
+//                bundle.getString("Lng","123");
+//                mapFragment.setArguments(bundle);
+
+//                Objects.requireNonNull(getActivity()).getSupportFragmentManager().beginTransaction()
+//                        .replace(R.id.my_account_container, mapFragment, "findThisFragment")
+//                        .addToBackStack(null)
+//                        .commit();
+
+
                 break;
             case R.id.et_pro_phone:
                 et_pro_phone.setFocusable(true);
@@ -397,7 +488,7 @@ public class MyAccountFragment extends Fragment implements View.OnClickListener 
 
         @Override
         public void onFailure(Call<Object> call, Throwable t) {
-            Log.e("RegByApiTow:onFailure", String.valueOf(t));
+            Log.e("reset_pass:onFailure", String.valueOf(t));
 
         }
     });
@@ -430,8 +521,6 @@ public class MyAccountFragment extends Fragment implements View.OnClickListener 
         String location=et_pro_location.getText().toString();
         String phone=et_pro_phone.getText().toString();
         String description=et_pro_storeDisc.getText().toString();
-        String lat="456";
-        String lng="234";
 
         editProfileApi(name,email,market_name,address,lat,lng,phone,description);
     }
@@ -442,7 +531,7 @@ public class MyAccountFragment extends Fragment implements View.OnClickListener 
         Call<String> call= RetrofitClient.
                 getInstance()
                 .getApi()
-                .edit_profile(name,email,market_name,address,lat,lng,phone,description);
+                .edit_profile(name,email,market_name,true,address,lat,lng,phone,description);
         call.enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
@@ -538,6 +627,33 @@ public class MyAccountFragment extends Fragment implements View.OnClickListener 
 //
 //        }
 
+    }
+
+    /**
+     * Receive the result from a previous call to
+     * {@link #startActivityForResult(Intent, int)}.  This follows the
+     * related Activity API as described there in
+     *
+     * @param requestCode The integer request code originally supplied to
+     *                    startActivityForResult(), allowing you to identify who this
+     *                    result came from.
+     * @param resultCode  The integer result code returned by the child activity
+     *                    through its setResult().
+     * @param data        An Intent, which can return result data to the caller
+     */
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode == RESULT_OK) {
+            if (requestCode==REQUEST_FRAGMENT){
+                lat = data.getStringExtra("Lat");
+                lng=data.getStringExtra("Lng");
+                Log.e("mapLat",lat);
+                Log.e("mapLng",lng);
+
+            }
+        }
     }
 
     @Override

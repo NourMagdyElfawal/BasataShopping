@@ -341,7 +341,7 @@ public class RegistrationActivityOne extends AppCompatActivity implements View.O
     private void RegistrationByApi(String name, String email, String password,String repPassword) {
         Call call= RetrofitClient.
                 getInstance().getApi()
-                .createUser(name,email,password,repPassword,"","","","","","");
+                .createUser(name,email,password,repPassword);
         call.enqueue(new Callback() {
                          @Override
                          public void onResponse(@NotNull Call call, @NotNull Response response) {
