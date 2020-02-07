@@ -10,7 +10,7 @@
     <ScrollView
         android:id="@+id/scrollView1"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -32,6 +32,7 @@
                 android:layout_width="189dp"
                 android:layout_height="178dp"
                 android:layout_marginTop="36dp"
+                android:visibility="gone"
                 android:background="@drawable/ic_profile"
                 app:layout_constraintBottom_toTopOf="@id/llRegister"
                 app:layout_constraintEnd_toEndOf="parent"

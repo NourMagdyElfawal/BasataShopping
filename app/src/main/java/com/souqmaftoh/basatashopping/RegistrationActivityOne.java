@@ -12,6 +12,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.util.Base64;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
@@ -33,9 +35,11 @@ import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Objects;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -46,6 +50,9 @@ public class RegistrationActivityOne extends AppCompatActivity implements View.O
     Button btn_Register,btn_BusinessMan;
     ImageView img_profile;
     private static final int PICK_PHOTO_FOR_AVATAR = 0;
+    String encodedImage;
+    Bitmap bitmap;
+
 
 
     @Override
@@ -161,15 +168,30 @@ public class RegistrationActivityOne extends AppCompatActivity implements View.O
         super.onActivityResult(requestCode, resultCode, data);
 
         if (resultCode == RESULT_OK) {
+            final Uri imageUri = data.getData();
             try {
-                final Uri imageUri = data.getData();
-                final InputStream imageStream = getContentResolver().openInputStream(imageUri);
-                final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
-                img_profile.setImageBitmap(selectedImage);
-            } catch (FileNotFoundException e) {
+
+                bitmap = MediaStore.Images.Media.getBitmap(Objects.requireNonNull(this).getContentResolver(), imageUri);
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos); //bm is the bitmap object
+                byte[] b = baos.toByteArray();
+
+                encodedImage = Base64.encodeToString(b, Base64.DEFAULT);
+                img_profile.setImageURI(imageUri);
+
+            } catch (IOException e) {
                 e.printStackTrace();
-                Toast.makeText(RegistrationActivityOne.this, "Something went wrong", Toast.LENGTH_LONG).show();
             }
+
+//            try {
+//                final Uri imageUri = data.getData();
+//                final InputStream imageStream = getContentResolver().openInputStream(imageUri);
+//                final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
+
+//            } catch (FileNotFoundException e) {
+//                e.printStackTrace();
+//                Toast.makeText(RegistrationActivityOne.this, "Something went wrong", Toast.LENGTH_LONG).show();
+//            }
 
         }else {
             Toast.makeText(RegistrationActivityOne.this, "You haven't picked Image",Toast.LENGTH_LONG).show();
@@ -233,6 +255,7 @@ public class RegistrationActivityOne extends AppCompatActivity implements View.O
                         intent.putExtra("email",email);
                         intent.putExtra("password",password);
                         intent.putExtra("repPassword",repPassword);
+//                        intent.putExtra("BitmapImage", bitmap);
                         startActivity(intent);
 
 
@@ -336,6 +359,53 @@ public class RegistrationActivityOne extends AppCompatActivity implements View.O
         }
         RegistrationByApi(name,email,password,repPassword);
     }
+    private void AddImageProfileApi() {
+        Call call= RetrofitClient.
+                getInstance().getApi()
+                .storeImage(encodedImage);
+        call.enqueue(new Callback() {
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) {
+                if(response!=null) {
+
+                    if (response.body() != null) {
+                        Log.e("gson:Change_Image", new Gson().toJson(response.body()));
+                        try {
+                            JSONObject jsonObject = new JSONObject(new Gson().toJson(response.body()));
+                            String msg = jsonObject.getString("message");
+                            if (msg != null) {
+//                                Toast.makeText(RegistrationActivityTow.this, msg, Toast.LENGTH_SHORT).show();
+                                Log.e("Change_Image",msg);
+                            }
+
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    } else if (response.errorBody() != null) {
+                        try {
+                            Log.e("gson:Change_Image", response.errorBody().string());
+                            Toast.makeText(RegistrationActivityOne.this, response.errorBody().string(), Toast.LENGTH_SHORT).show();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                }
+            }
+
+
+            @Override
+            public void onFailure(Call call, Throwable t) {
+//                Toast.makeText(RegistrationActivityOne.this, t, Toast.LENGTH_SHORT).show();
+                Log.e("ChangImgByApi:onFailure", String.valueOf(t));
+
+            }
+        });
+
+
+    }
 
 
     private void RegistrationByApi(String name, String email, String password,String repPassword) {
@@ -360,6 +430,8 @@ public class RegistrationActivityOne extends AppCompatActivity implements View.O
                                              Intent intent_log = new Intent(RegistrationActivityOne.this, MainActivity.class);
                                              intent_log.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                              startActivity(intent_log);
+                                             AddImageProfileApi();
+
                                          }
 
 

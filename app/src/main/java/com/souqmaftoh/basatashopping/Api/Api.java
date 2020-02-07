@@ -56,6 +56,17 @@ public interface Api {
     );
 
 
+    @Headers({
+            "Accept: application/json",
+//            "Content-Type: application/json",
+//            "Authorization: Bearer token"
+    })
+    @FormUrlEncoded
+    @POST("change_image")
+    Call<Object> storeImage(
+            @Field("image") String image
+    );
+
 
     @Headers({
             "Accept: application/json",

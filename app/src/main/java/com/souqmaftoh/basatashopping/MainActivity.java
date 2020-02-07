@@ -24,6 +24,8 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.robertlevonyan.views.customfloatingactionbutton.FloatingActionButton;
+import com.souqmaftoh.basatashopping.Interface.User;
+import com.souqmaftoh.basatashopping.Storage.SharedPrefManager;
 import com.souqmaftoh.basatashopping.fragments.MobileFragment.MobileFragment;
 import com.souqmaftoh.basatashopping.fragments.ItemsRecyclerFragment.ItemsRecyclerFragment;
 import com.souqmaftoh.basatashopping.fragments.myAccount.MyAccountFragment;
@@ -69,16 +71,29 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         bottomNavigation.setOnNavigationItemSelectedListener(navigationItemSelectedListener);
         //    openFragment(MobileFragment.newInstance("", ""));
 
+
+
+        User user= SharedPrefManager.getInstance().getUser();
+
+
         fab = findViewById(R.id.fab);
         showFloatingActionButton();
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                transaction.add(R.id.main, AddAdvFragment.newInstance("", ""));
-                transaction.addToBackStack(null);
-                transaction.commit();
-                hideFloatingActionButton();
+                if(user.getToken()!=null) {
+                    FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                    transaction.add(R.id.main, AddAdvFragment.newInstance("", ""));
+                    transaction.addToBackStack(null);
+                    transaction.commit();
+                    hideFloatingActionButton();
+
+                }else {
+                    Intent myIntent = new Intent(MainActivity.this, LoginActivity.class);
+                    startActivity(myIntent);
+
+                }
+
 
 
             }
