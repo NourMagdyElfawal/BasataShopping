@@ -535,8 +535,10 @@ public class AddAdvFragment extends Fragment implements BottomNavigationView.OnN
             try {
 
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(Objects.requireNonNull(getActivity()).getContentResolver(), selectedImage);
+                Bitmap converetdImage = getResizedBitmap(bitmap, 500);
+
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos); //bm is the bitmap object
+                converetdImage.compress(Bitmap.CompressFormat.JPEG, 100, baos); //bm is the bitmap object
                 byte[] b = baos.toByteArray();
 
                 encodedImage = Base64.encodeToString(b, Base64.DEFAULT);
@@ -563,6 +565,20 @@ public class AddAdvFragment extends Fragment implements BottomNavigationView.OnN
 
     }
 
+    public Bitmap getResizedBitmap(Bitmap image, int maxSize) {
+        int width = image.getWidth();
+        int height = image.getHeight();
+
+        float bitmapRatio = (float)width / (float) height;
+        if (bitmapRatio > 1) {
+            width = maxSize;
+            height = (int) (width / bitmapRatio);
+        } else {
+            height = maxSize;
+            width = (int) (height * bitmapRatio);
+        }
+        return Bitmap.createScaledBitmap(image, width, height, true);
+    }
 
 
     private void AddAdvertiseByApi() {
@@ -638,7 +654,7 @@ public class AddAdvFragment extends Fragment implements BottomNavigationView.OnN
             @Override
             public void onFailure(Call call, Throwable t) {
 //                Toast.makeText(RegistrationActivityOne.this, t, Toast.LENGTH_SHORT).show();
-                Log.e("RegByApi:onFailure", String.valueOf(t));
+                Log.e("AddAdv:onFailure", String.valueOf(t));
 
             }
         });

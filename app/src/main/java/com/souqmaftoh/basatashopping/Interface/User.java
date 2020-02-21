@@ -1,5 +1,7 @@
 package com.souqmaftoh.basatashopping.Interface;
 
+import android.net.Uri;
+
 import java.util.ArrayList;
 
 public class User {
@@ -83,6 +85,11 @@ public class User {
         this.lng = lng;
         this.phone = phone;
         this.description = description;
+
+    }
+
+    public User(String image) {
+        this.image = image;
 
     }
 

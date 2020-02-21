@@ -1,6 +1,7 @@
 package com.souqmaftoh.basatashopping.fragments.myAccount;
 
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -10,26 +11,42 @@ import android.Manifest;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.location.Address;
+import android.location.Geocoder;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import android.provider.MediaStore;
+import android.util.Base64;
 import android.util.Log;
+import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.login.LoginManager;
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.gson.Gson;
 import com.souqmaftoh.basatashopping.Api.RetrofitClient;
@@ -39,15 +56,21 @@ import com.souqmaftoh.basatashopping.LoginByEmailActivity;
 import com.souqmaftoh.basatashopping.MainActivity;
 import com.souqmaftoh.basatashopping.Interface.User;
 import com.souqmaftoh.basatashopping.R;
+import com.souqmaftoh.basatashopping.RegistrationActivityOne;
 import com.souqmaftoh.basatashopping.Storage.SharedPrefManager;
 import com.souqmaftoh.basatashopping.fragments.ItemsRecyclerFragment.ItemsRecyclerFragment;
 import com.souqmaftoh.basatashopping.fragments.mapFragment.MapFragment;
+import com.squareup.picasso.Picasso;
 
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 
 import retrofit2.Call;
@@ -55,6 +78,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 import static android.app.Activity.RESULT_OK;
+import static android.content.Context.MODE_PRIVATE;
 
 public class MyAccountFragment extends Fragment implements View.OnClickListener {
 
@@ -101,7 +125,7 @@ public class MyAccountFragment extends Fragment implements View.OnClickListener 
 
 
     LatoBLack btn_pro_logout, btn_pro_edit,btn_pro_addv;
-    private GoogleSignInClient mGoogleSignInClient;
+    GoogleSignInClient mGoogleSignInClient;
     EditText et_pro_name, et_pro_email, et_pro_storeName, et_pro_address, et_pro_location, et_pro_phone, et_pro_storeDisc;
     TextView tv_pro_pass;
     String token;
@@ -110,6 +134,16 @@ public class MyAccountFragment extends Fragment implements View.OnClickListener 
     MapFragment mapFragment;
     String lat;
     String lng;
+    ImageView iv_pro_img;
+    String encodedImage;
+    Bitmap bitmap;
+    String location;
+    Geocoder geocoder;
+    Dialog dialog;
+    Uri selectedImage;
+
+    private static final int PICK_PHOTO_FOR_AVATAR = 0;
+
     private static final String[] INITIAL_PERMS = {
             Manifest.permission.ACCESS_FINE_LOCATION,
 
@@ -118,6 +152,8 @@ public class MyAccountFragment extends Fragment implements View.OnClickListener 
 
     private static final int INITIAL_REQUEST = 1337;
     private static final int REQUEST_FRAGMENT = 1444;
+
+
 
     public HashMap<String, String> step1 = new HashMap<>();
 
@@ -139,6 +175,7 @@ public class MyAccountFragment extends Fragment implements View.OnClickListener 
         et_pro_storeDisc = view.findViewById(R.id.et_pro_storeDisc);
         btn_pro_edit = view.findViewById(R.id.btn_pro_edit);
         btn_pro_addv=view.findViewById(R.id.btn_pro_addv);
+        iv_pro_img=view.findViewById(R.id.iv_pro_img);
 
         btn_pro_logout.setOnClickListener(this);
         btn_pro_edit.setOnClickListener(this);
@@ -150,10 +187,11 @@ public class MyAccountFragment extends Fragment implements View.OnClickListener 
         et_pro_location.setOnClickListener(this);
         et_pro_phone.setOnClickListener(this);
         et_pro_storeDisc.setOnClickListener(this);
+        iv_pro_img.setOnClickListener(this);
 
 
         //get user from shared preference
-        SetUserDetailsSharedPref();
+        SetUserDetailsFromSharedPref();
 
 
 
@@ -165,6 +203,14 @@ public class MyAccountFragment extends Fragment implements View.OnClickListener 
 //            Log.e("map", String.valueOf(mapFragment.map.get("Lat")));
 //
 //        }
+        // Initialize Google Logout button
+        // Configure sign-in to request the user's ID, email address, and basic
+// profile. ID and basic profile are included in DEFAULT_SIGN_IN.
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .build();
+// Build a GoogleSignInClient with the options specified by gso.
+        mGoogleSignInClient = GoogleSignIn.getClient(Objects.requireNonNull(getActivity()), gso);
 
 
 
@@ -194,15 +240,27 @@ public class MyAccountFragment extends Fragment implements View.OnClickListener 
         };
     }
 
-    private void SetUserDetailsSharedPref() {
+    private void SetUserDetailsFromSharedPref() {
         User user = SharedPrefManager.getInstance(getActivity()).getUser();
         if (user != null) {
 
-             if (user.getToken() != null && !user.getToken().isEmpty()) {
-                 token = user.getToken();
-             }
+            if (user.getToken() != null && !user.getToken().isEmpty()) {
+                token = user.getToken();
+            }
 
-}            if (user.getEmail() != null && !user.getEmail().isEmpty()) {
+            if (user.getImage() != null && !user.getImage().isEmpty()) {
+                //Loading image using Picasso
+                String imageUrl=user.getImage();
+//                if(Patterns.WEB_URL.matcher(imageUrl).matches()){
+                    Picasso.get().load(imageUrl).into(iv_pro_img);
+//                }else {
+//                    iv_pro_img.setImageURI(Uri.parse(imageUrl));
+//                }
+
+            }
+
+
+            if (user.getEmail() != null && !user.getEmail().isEmpty()) {
                 et_pro_email.setText(user.getEmail());
 
             }
@@ -210,8 +268,7 @@ public class MyAccountFragment extends Fragment implements View.OnClickListener 
             is_merchant = user.getIs_merchant();
 
 
-
-        if (user.getName() != null && !user.getName().isEmpty()) {
+            if (user.getName() != null && !user.getName().isEmpty()) {
                 et_pro_name.setText(user.getName());
 
             }
@@ -235,10 +292,44 @@ public class MyAccountFragment extends Fragment implements View.OnClickListener 
                 et_pro_storeDisc.setText(user.getDescription());
 
             }
-            if (user.getLat() != null && !user.getLat().isEmpty()) {
-                et_pro_location.setText(user.getLat());
+            if (user.getLat() != null && !user.getLat().isEmpty() && user.getLng() != null && !user.getLng().isEmpty()) {
+                convertLatLngToAdd(user.getLat(), user.getLng());
 
             }
+        }
+    }
+
+    private void convertLatLngToAdd(String lat, String lng) {
+        geocoder = new Geocoder(getActivity(), Locale.getDefault());
+        StringBuilder strReturnedAddress;
+        double latitude= Double.parseDouble(lat);
+        double longitude= Double.parseDouble(lng);
+
+        try {
+            if (geocoder.isPresent()) {
+                List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1); // Here 1 represent max location result to returned, by documents it recommended 1 to 5
+                if (addresses != null&&addresses.size()>0 ) {
+                    Address returnedAddress = addresses.get(0);
+                     strReturnedAddress = new StringBuilder("");
+                    Log.e("MaxAddressLine", String.valueOf(returnedAddress.getMaxAddressLineIndex()));
+                    for (int i = 0; i <= returnedAddress.getMaxAddressLineIndex(); i++) {
+                        strReturnedAddress.append(returnedAddress.getAddressLine(i));
+                        Log.e("count", String.valueOf(i));
+                    }
+                    Log.e("Myaddress",strReturnedAddress.toString());
+                    et_pro_location.setText(strReturnedAddress.toString());
+
+//                    mptxt.setText(strReturnedAddress.toString());
+                } else {
+                    Log.e("Myaddress", "No Address returned!");
+                }
+//                String locdescSt = mptxt.getText().toString();
+                //    mapstep2.put("locdesc", Tools.encodeStr(locdescSt.replaceAll("\\r"," ").replaceAll("\\n"," ")).replace("+", "%20"));
+            }
+        } catch(IOException e){
+            Log.e("MyCurrentaddress", "Canont get Address!");
+        }
+
 
     }
 
@@ -257,6 +348,9 @@ public class MyAccountFragment extends Fragment implements View.OnClickListener 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.iv_pro_img:
+                openGallery();
+                break;
             case R.id.btn_pro_edit:
                 editProfile();
                 break;
@@ -340,8 +434,8 @@ public class MyAccountFragment extends Fragment implements View.OnClickListener 
                 FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
                 MapFragment mapFragment= new MapFragment();
                 Bundle bundle = new Bundle();
-                bundle.putString("Lat", "123");
-                bundle.putString("Lng","123");
+//                bundle.putString("Lat", lat);
+//                bundle.putString("Lng",lng);
                 mapFragment.setArguments(bundle);
                 mapFragment.setTargetFragment(MyAccountFragment.this, REQUEST_FRAGMENT);
                 ft.addToBackStack(null);
@@ -406,8 +500,132 @@ public class MyAccountFragment extends Fragment implements View.OnClickListener 
 
     }
 
+    private void openGallery() {
+        try {
+            if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE}, PICK_PHOTO_FOR_AVATAR);
+            } else {
+                Intent intent = new Intent();
+                intent.setType("image/*");
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+
+//                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+//                intent.setType("image/*");
+                startActivityForResult(intent, PICK_PHOTO_FOR_AVATAR);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+    }
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case PICK_PHOTO_FOR_AVATAR:
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Intent galleryIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore
+                            .Images.Media.EXTERNAL_CONTENT_URI);
+                    startActivityForResult(galleryIntent, PICK_PHOTO_FOR_AVATAR);
+                } else {
+                    //do something like displaying a message that he didn`t allow the app to access gallery and you wont be able to let him select from gallery
+                }
+                break;
+        }
+
+    }
+
+    /**
+     * Dispatch incoming result to the correct fragment.
+     *
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+            if (requestCode == PICK_PHOTO_FOR_AVATAR && null != data) {
+                if (resultCode == RESULT_OK) {
+
+                    selectedImage = data.getData();
+                    try {
+
+                        Bitmap bitmap = MediaStore.Images.Media.getBitmap(Objects.requireNonNull(getActivity()).getContentResolver(), selectedImage);
+                        Bitmap converetdImage = getResizedBitmap(bitmap, 500);
+
+
+                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                        converetdImage.compress(Bitmap.CompressFormat.JPEG, 100, baos); //bm is the bitmap object
+                        byte[] b = baos.toByteArray();
+
+
+                        encodedImage = Base64.encodeToString(b, Base64.DEFAULT);
+
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                    iv_pro_img.setImageURI(selectedImage);
+                }
+            }
+//            } else {
+//                Toast.makeText(getActivity(), "You haven't picked Image", Toast.LENGTH_LONG).show();
+//            }
+
+
+//            try {
+//                final Uri imageUri = data.getData();
+//                final InputStream imageStream = getContentResolver().openInputStream(imageUri);
+//                final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
+
+//            } catch (FileNotFoundException e) {
+//                e.printStackTrace();
+//                Toast.makeText(RegistrationActivityOne.this, "Something went wrong", Toast.LENGTH_LONG).show();
+//            }
+            else if (requestCode == REQUEST_FRAGMENT && null != data) {
+                if (resultCode == RESULT_OK) {
+                    lat = data.getStringExtra("Lat");
+                lng = data.getStringExtra("Lng");
+                Log.e("mapLat", lat);
+                Log.e("mapLng", lng);
+
+                convertLatLngToAdd(lat, lng);
+            }
+        }
+    }
+    /**
+     * reduces the size of the image
+     * @param image
+     * @param maxSize
+     * @return
+     */
+    public Bitmap getResizedBitmap(Bitmap image, int maxSize) {
+        int width = image.getWidth();
+        int height = image.getHeight();
+
+        float bitmapRatio = (float)width / (float) height;
+        if (bitmapRatio > 1) {
+            width = maxSize;
+            height = (int) (width / bitmapRatio);
+        } else {
+            height = maxSize;
+            width = (int) (height * bitmapRatio);
+        }
+        return Bitmap.createScaledBitmap(image, width, height, true);
+    }
+
+
+
+
+
     private void openEditPassDialogue() {
-            final Dialog dialog = new Dialog(getContext());
+            dialog = new Dialog(getContext());
             dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             dialog.setCancelable(false);
             dialog.setContentView(R.layout.dialog_reset_password);
@@ -467,6 +685,9 @@ public class MyAccountFragment extends Fragment implements View.OnClickListener 
                             String message = jsonObject.getString("message");
                             if (message != null) {
                                 Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+                                if(dialog!=null)
+                                dialog.dismiss();
+
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -523,44 +744,48 @@ public class MyAccountFragment extends Fragment implements View.OnClickListener 
         String description=et_pro_storeDisc.getText().toString();
 
         editProfileApi(name,email,market_name,address,lat,lng,phone,description);
+        if(encodedImage!=null)
+        AddImageProfileApi(encodedImage, selectedImage);
     }
 
     private void editProfileApi(String name, String email, String market_name, String address, String lat,String lng, String phone, String description) {
 
 
-        Call<String> call= RetrofitClient.
+        Call<Object> call= RetrofitClient.
                 getInstance()
                 .getApi()
                 .edit_profile(name,email,market_name,true,address,lat,lng,phone,description);
-        call.enqueue(new Callback<String>() {
+        call.enqueue(new Callback<Object>() {
             @Override
-            public void onResponse(Call<String> call, Response<String> response) {
+            public void onResponse(Call<Object> call, Response<Object> response) {
                 if(response!=null) {
 
                     if (response.body() != null) {
                         Log.e("gson:edit_profile", new Gson().toJson(response.body()));
-//                        try {
-//                            JSONObject jsonObject = new JSONObject(new Gson().toJson(response.body()));
-//                            String msg = jsonObject.getString("message");
-//                            if (msg != null) {
-//                                Toast.makeText(getActivity(), msg, Toast.LENGTH_SHORT).show();
-//                                if (msg.equalsIgnoreCase("تم تعديل البانات بنجاح")) {
-//                                SharedPrefManager.getInstance(getActivity()).clear();
+                        try {
+                            JSONObject jsonObject = new JSONObject(new Gson().toJson(response.body()));
+                            String msg = jsonObject.getString("message");
+                            if (msg != null) {
+                                Toast.makeText(getActivity(), msg, Toast.LENGTH_SHORT).show();
+                                if (msg.equalsIgnoreCase("تم تعديل البيانات بنجاح")) {
+                                SharedPrefManager.getInstance(getActivity()).clear();
                                 User user = new User(token,name, email,is_merchant, market_name, address, lat, lng, phone, description);
                                     SharedPrefManager.getInstance(getActivity())
                                             .saveUser(user);
-                                //get user from shared preference
-//                                SetUserDetailsSharedPref();
-//                                    Intent intent_log = new Intent(getActivity(), MainActivity.class);
-////                                    intent_log.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-//                                    startActivity(intent_log);
-//                                }
-//                            }
+                        Log.e("param:edit_profile", String.valueOf(user));
+
+//                        get user from shared preference
+                                SetUserDetailsFromSharedPref();
+                                    Intent intent_log = new Intent(getActivity(), MainActivity.class);
+                                    intent_log.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                    startActivity(intent_log);
+                                }
+                            }
 
 
-//                        } catch (JSONException e) {
-//                            e.printStackTrace();
-//                        }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
 
 
                     } else if (response.errorBody() != null) {
@@ -577,8 +802,8 @@ public class MyAccountFragment extends Fragment implements View.OnClickListener 
 
 
             @Override
-            public void onFailure(Call<String> call, Throwable t) {
-                Log.e("RegByApiTow:onFailure", String.valueOf(t));
+            public void onFailure(Call<Object> call, Throwable t) {
+                Log.e("edit_profile:onFailure", String.valueOf(t));
 
             }
         });
@@ -586,6 +811,65 @@ public class MyAccountFragment extends Fragment implements View.OnClickListener 
 
 
     }
+
+        private void AddImageProfileApi(String encodedImage, Uri selectedImage) {
+            Call<Object> call= RetrofitClient.
+                getInstance().getApi()
+                .storeImage(encodedImage);
+            call.enqueue(new Callback<Object>() {
+            @Override
+            public void onResponse(Call<Object> call, Response<Object> response) {
+                if(response!=null) {
+
+                    if (response.body() != null) {
+                        Log.e("gson:Change_Image", new Gson().toJson(response.body()));
+                        try {
+                            JSONObject jsonObject = new JSONObject(new Gson().toJson(response.body()));
+                            String msg = jsonObject.getString("message");
+
+                            if (msg != null) {
+                                if (msg.equalsIgnoreCase("تم تغيير الصورة بنجاح")) {
+
+                                }
+                                JSONObject data = jsonObject.getJSONObject("data");
+                                if (data != null) {
+                                    String imageUrl = data.getString("image");
+                                    SharedPrefManager.getInstance(getActivity()).editSingleValue("image", imageUrl);
+
+                                }
+//                                Toast.makeText(RegistrationActivityTow.this, msg, Toast.LENGTH_SHORT).show();
+                                Log.e("Change_Image", String.valueOf(selectedImage));
+                            }
+
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    } else if (response.errorBody() != null) {
+                        try {
+                            Log.e("gson:Change_Image", response.errorBody().string());
+                            Toast.makeText(getActivity(), response.errorBody().string(), Toast.LENGTH_SHORT).show();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                }
+            }
+
+
+            @Override
+            public void onFailure(Call<Object> call, Throwable t) {
+//                Toast.makeText(RegistrationActivityOne.this, t, Toast.LENGTH_SHORT).show();
+                Log.e("ChangImgByApi:onFailure", String.valueOf(t));
+
+            }
+        });
+
+
+    }
+
 
 
     private void logOut() {
@@ -605,27 +889,24 @@ public class MyAccountFragment extends Fragment implements View.OnClickListener 
 
 
 
-//        // Google sign out
-//        if(mGoogleSignInClient!=null)
-//        mGoogleSignInClient.signOut();
+        // Google sign out
+        if(mGoogleSignInClient!=null){
+            mGoogleSignInClient.signOut().addOnCompleteListener(Objects.requireNonNull(getActivity()), new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+//                    Toast.makeText(getActivity(), "User Sign out gmail!", Toast.LENGTH_SHORT).show();
+                    Log.e("gmail","User Sign out");
 
-//        // Google sign out
-//        Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
-//                new ResultCallback<Status>() {
-//                    @Override
-//                    public void onResult(@NonNull Status status) {
-//                        //do what you want
-//                        Toast.makeText(getActivity(), "User Sign out gmail!", Toast.LENGTH_SHORT).show();
-//
-//                    }
-//                });
+                }
+            });
 
-//        if (FirebaseAuth.getInstance().getCurrentUser() == null) {
-//            Toast.makeText(getActivity(), "User Sign out!", Toast.LENGTH_SHORT).show();
-//            startActivity(new Intent(getActivity(), LoginActivity.class));
-//            Objects.requireNonNull(getFragmentManager()).popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-//
-//        }
+        }
+        if (FirebaseAuth.getInstance().getCurrentUser() == null) {
+            Toast.makeText(getActivity(), "User Sign out!", Toast.LENGTH_SHORT).show();
+            startActivity(new Intent(getActivity(), LoginActivity.class));
+            Objects.requireNonNull(getFragmentManager()).popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+
+        }
 
     }
 
@@ -634,27 +915,18 @@ public class MyAccountFragment extends Fragment implements View.OnClickListener 
      * {@link #startActivityForResult(Intent, int)}.  This follows the
      * related Activity API as described there in
      *
-     * @param requestCode The integer request code originally supplied to
-     *                    startActivityForResult(), allowing you to identify who this
-     *                    result came from.
-     * @param resultCode  The integer result code returned by the child activity
-     *                    through its setResult().
-     * @param data        An Intent, which can return result data to the caller
+//     * @param requestCode The integer request code originally supplied to
+//     *                    startActivityForResult(), allowing you to identify who this
+//     *                    result came from.
+//     * @param resultCode  The integer result code returned by the child activity
+//     *                    through its setResult().
+//     * @param data        An Intent, which can return result data to the caller
      */
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (resultCode == RESULT_OK) {
-            if (requestCode==REQUEST_FRAGMENT){
-                lat = data.getStringExtra("Lat");
-                lng=data.getStringExtra("Lng");
-                Log.e("mapLat",lat);
-                Log.e("mapLng",lng);
-
-            }
-        }
-    }
+//    @Override
+//    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        super.onActivityResult(requestCode, resultCode, data);
+//
+//    }
 
     @Override
     public void onStart() {

@@ -67,10 +67,14 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private  GoogleMap mMap;
     private double longitude,latitude;
     Geocoder geocoder;
-    public HashMap<String,String> map= new HashMap<>();
+    public HashMap<String,String> mapstep2= new HashMap<>();
     TextView mptxt;
     private Context context;
     Boolean flag=false;
+    String email,name,password,repPassword;
+    String market_name,address,phone,description;
+
+
 
 
     public static MapFragment newInstance() {
@@ -80,16 +84,34 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null &&getArguments().getString("step")!=null) {
+        if (getArguments() != null &&getArguments().getSerializable("step2")!=null) {
+            mapstep2 = (HashMap<String,String>)getArguments().getSerializable("step2");
+            Log.e("mapstep2", String.valueOf(mapstep2));
+        }
 
             flag=true;
+
+//                name = getArguments().getString("name");
+//                email = getArguments().getString("email");
+//                password = getArguments().getString("password");
+//                repPassword = getArguments().getString("repPassword");
+//
+//                market_name = getArguments().getString("market_name");
+//                address = getArguments().getString("address");
+//                phone = getArguments().getString("phone");
+//                description = getArguments().getString("description");
+
+
+//            bitmap = (Bitmap) getIntent().getParcelableExtra("bitmap");
+
+
 //            latitude = Double.parseDouble(getArguments().getString("Lat"));
 //            longitude = Double.parseDouble(getArguments().getString("Long"));
 //
 //            Log.e("lat", String.valueOf(latitude));
 //            Log.e("lng", String.valueOf(longitude));
 //
-        }
+//        }
 
     }
 
@@ -99,13 +121,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
        View view=inflater.inflate(R.layout.map_fragment, container, false);
         mptxt=(TextView)view.findViewById(R.id.mptxt);
        fusedLocationProviderClient= LocationServices.getFusedLocationProviderClient(Objects.requireNonNull(getActivity()));
-
+        fetchLastLocation();
        MapView mapView = (MapView) view.findViewById(R.id.google_map);
         mapView.onCreate(savedInstanceState);
         mapView.onResume();
         mapView.getMapAsync(this);//when you already implement OnMapReadyCallback in your fragment
 
-        fetchLastLocation();
 //        setupAutoCompleteFragment();
 
 
@@ -137,6 +158,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                     longitude=currentLocation.getLongitude();
 
                     putAddress(latitude,longitude);
+                    mapstep2.put("lat", String.valueOf(latitude));
+                    mapstep2.put("lng", String.valueOf(longitude));
+
 
 //                    SupportMapFragment mMapFragment = SupportMapFragment.newInstance();
 //                    FragmentTransaction fragmentTransaction =
@@ -258,8 +282,48 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                     Toast.makeText(getActivity(), "Back press", Toast.LENGTH_SHORT).show();
                     if(flag) {
                         Intent intent = new Intent(getActivity(), RegistrationActivityTow.class);
-                        intent.putExtra("Lat", String.valueOf(latitude));
-                        intent.putExtra("Lng", String.valueOf(longitude));
+                        intent.putExtra("mapstep2",mapstep2);
+
+//                        String lat= String.valueOf(latitude);
+//                        String lng=String.valueOf(longitude);
+//                        intent.putExtra("Lat", lat);
+//                        intent.putExtra("Lng", lng);
+                        Objects.requireNonNull(getActivity()).setResult(RESULT_OK,intent);
+                        getActivity().finish();
+                        Log.e("mapstep2", String.valueOf(mapstep2));
+//                        if(lat!=null&&!lat.isEmpty()){
+//                            intent.putExtra("Lat", lat);
+//                        }
+//                        if(lng!=null&&!lng.isEmpty()){
+//                            intent.putExtra("Lng",lng );
+//                        }
+//                        if(name!=null&&!name.isEmpty()){
+//                            intent.putExtra("name",name);
+//                        }
+//                        if(email!=null&&!email.isEmpty()){
+//                            intent.putExtra("email",email);
+//                        }
+//                        if(password!=null&&!password.isEmpty()){
+//                            intent.putExtra("password",password);
+//                        }
+//                        if(repPassword!=null&&!repPassword.isEmpty()){
+//                            intent.putExtra("repPassword",repPassword);
+//                        }
+//
+//
+//                        if(market_name!=null&&!market_name.isEmpty()){
+//                            intent.putExtra("market_name",market_name);
+//                        }
+//                        if(address!=null&&!address.isEmpty()){
+//                            intent.putExtra("address",address);
+//                        }
+//                        if(phone!=null&&!phone.isEmpty()){
+//                            intent.putExtra("phone",phone);
+//                        }
+//                        if(description!=null&&!description.isEmpty()){
+//                            intent.putExtra("description",description);
+//                        }
+
                         startActivity(intent);
 
                     }else {

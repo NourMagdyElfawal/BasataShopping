@@ -3,15 +3,13 @@ package com.souqmaftoh.basatashopping;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.graphics.Paint;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.service.autofill.SaveCallback;
+import android.util.Base64;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -21,19 +19,16 @@ import com.souqmaftoh.basatashopping.Api.RetrofitClient;
 import com.souqmaftoh.basatashopping.Fonts.LatoBLack;
 import com.souqmaftoh.basatashopping.Interface.User;
 import com.souqmaftoh.basatashopping.Models.ForgetPassResponse;
-import com.souqmaftoh.basatashopping.Models.LoginDefault;
-import com.souqmaftoh.basatashopping.Models.LoginResponse;
 import com.souqmaftoh.basatashopping.Services.MyFirebaseMessagingService;
 import com.souqmaftoh.basatashopping.Storage.SharedPrefManager;
 
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.lang.reflect.GenericArrayType;
-import java.text.ParseException;
-import java.util.ArrayList;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -46,6 +41,13 @@ public class LoginByEmailActivity extends AppCompatActivity implements View.OnCl
     EditText et_login_email, et_login_pass;
     LatoBLack txtV_Forgot;
     String device_id,push_token;
+    String email,password;
+    Bitmap bitmap;
+    String encodedImage;
+    String facebookUrl,instagramUrl,youtubeUrl;
+
+
+
 
 
     @Override
@@ -71,6 +73,104 @@ public class LoginByEmailActivity extends AppCompatActivity implements View.OnCl
         txtV_Register.setOnClickListener(this);
         btn_loginByEmail.setOnClickListener(this);
         txtV_Forgot.setOnClickListener(this);
+
+
+        Bundle bundle = new Bundle();
+        bundle = getIntent().getExtras();
+        if (bundle != null) {
+            email = bundle.getString("email");
+            if(email!=null) {
+                Log.e("email_login", email);
+                et_login_email.setText(email);
+                et_login_email.setEnabled(false);
+            }
+            password = bundle.getString("password");
+            if(password!=null) {
+                Log.e("password_login", password);
+                et_login_pass.setText(password);
+                et_login_pass.setEnabled(false);
+
+            }
+            facebookUrl = bundle.getString("facebook");
+            instagramUrl = bundle.getString("instagram");
+            youtubeUrl = bundle.getString("youtube");
+//          if(facebookUrl!=null&&!facebookUrl.isEmpty()){
+//              AddSocialMediaLinks("facebook",facebookUrl);
+//          }
+//          if(instagramUrl!=null&&!instagramUrl.isEmpty()){
+//              AddSocialMediaLinks("instagram",instagramUrl);
+//
+//          }
+//          if(youtubeUrl!=null&&!youtubeUrl.isEmpty()){
+//              AddSocialMediaLinks("youtube",youtubeUrl);
+//
+//          }
+            bitmap = (Bitmap) getIntent().getParcelableExtra("bitmap");
+        }
+
+        if(bitmap!=null){
+            Encode(bitmap);
+
+        }
+
+    }
+
+    private void AddSocialMediaLinks(String type, String link) {
+            Call<Object> call = RetrofitClient.
+                    getInstance()
+                    .getApi()
+                    .add_social_link(type, link);
+            call.enqueue(new Callback<Object>() {
+                @Override
+                public void onResponse(Call<Object> call, Response<Object> response) {
+                    Log.e("gson:add_social_link", new Gson().toJson(response.body()));
+
+                    if (response != null) {
+
+                        if (response.body() != null) {
+                            Log.e("res:add_social_link", "isSuccessful");
+                            try {
+                                JSONObject jsonObject = new JSONObject(new Gson().toJson(response.body()));
+                                String message = jsonObject.getString("message");
+                                if (message != null) {
+//                                Toast.makeText(g, message, Toast.LENGTH_SHORT).show();
+                                    Log.e("gson:add_social_link", message);
+
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+
+                        }
+
+                    } else if (response.errorBody() != null) {
+                        try {
+                            Log.e("gson:add_social_link", response.errorBody().string());
+//                            Toast.makeText(LoginByEmailActivity.this, response.errorBody().string(), Toast.LENGTH_SHORT).show();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+
+
+                @Override
+                public void onFailure(Call<Object> call, Throwable t) {
+                    Log.e("reset_pass:onFailure", String.valueOf(t));
+
+                }
+            });
+
+
+    }
+
+    private void Encode(Bitmap bitmap) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos); //bm is the bitmap object
+        byte[] b = baos.toByteArray();
+
+        encodedImage = Base64.encodeToString(b, Base64.DEFAULT);
+
     }
 
 
@@ -217,6 +317,25 @@ public class LoginByEmailActivity extends AppCompatActivity implements View.OnCl
 
                                 SharedPrefManager.getInstance(LoginByEmailActivity.this)
                                         .saveUser(user);
+                                if(token!=null&&!token.isEmpty()) {
+                                    //add image profile
+                                    if(encodedImage!=null&&!encodedImage.isEmpty()){
+                                        AddImageProfileApi(encodedImage);
+                                    }
+
+                                    ///add social url
+                                    if(facebookUrl!=null&&!facebookUrl.isEmpty()){
+                                        AddSocialMediaLinks("facebook",facebookUrl);
+                                    }
+                                    if(instagramUrl!=null&&!instagramUrl.isEmpty()){
+                                        AddSocialMediaLinks("instagram",instagramUrl);
+
+                                    }
+                                    if(youtubeUrl!=null&&!youtubeUrl.isEmpty()){
+                                        AddSocialMediaLinks("youtube",youtubeUrl);
+
+                                    }
+                                }
                             }
                                 Intent intent_log = new Intent(LoginByEmailActivity.this, MainActivity.class);
                                 intent_log.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -254,4 +373,53 @@ public class LoginByEmailActivity extends AppCompatActivity implements View.OnCl
 
 
     }
+
+    private void AddImageProfileApi(String encodedImage) {
+        Call call= RetrofitClient.
+                getInstance().getApi()
+                .storeImage(encodedImage);
+        call.enqueue(new Callback() {
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) {
+                if(response!=null) {
+
+                    if (response.body() != null) {
+                        Log.e("gson:Change_Image", new Gson().toJson(response.body()));
+                        try {
+                            JSONObject jsonObject = new JSONObject(new Gson().toJson(response.body()));
+                            String msg = jsonObject.getString("message");
+                            if (msg != null) {
+//                                Toast.makeText(RegistrationActivityTow.this, msg, Toast.LENGTH_SHORT).show();
+                                Log.e("Change_Image",msg);
+                            }
+
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    } else if (response.errorBody() != null) {
+                        try {
+                            Log.e("gson:Change_Image", response.errorBody().string());
+                            Toast.makeText(LoginByEmailActivity.this, response.errorBody().string(), Toast.LENGTH_SHORT).show();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                }
+            }
+
+
+            @Override
+            public void onFailure(Call call, Throwable t) {
+//                Toast.makeText(RegistrationActivityOne.this, t, Toast.LENGTH_SHORT).show();
+                Log.e("ChangImgByApi:onFailure", String.valueOf(t));
+
+            }
+        });
+
+
+    }
+
 }

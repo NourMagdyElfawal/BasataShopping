@@ -91,4 +91,12 @@ public class SharedPrefManager {
 
     }
 
+    public void editSingleValue(String KeyName,String value) {
+
+        SharedPreferences.Editor editor = mCtx.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE).edit();
+        editor.putString(KeyName, value);
+        editor.apply();
+
+    }
+
 }

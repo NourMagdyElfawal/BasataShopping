@@ -39,7 +39,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private FirebaseAuth mAuth;
     int RC_SIGN_IN=0;
     Button next,btnLogin;
-    String facebookEmail,facebookToken;
+    String facebookEmail,facebookToken,facebookName,facebookId;
 
     TextView registration;
     GoogleSignInClient mGoogleSignInClient;
@@ -143,7 +143,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
 
         if ((currentUser != null)||(account != null) ){
-            updateUI();
+//            updateUI();
         }
     }
 
@@ -161,18 +161,27 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             FirebaseUser user = mAuth.getCurrentUser();
                             if(user!=null){
                                 facebookEmail=user.getEmail();
+                                facebookName=user.getDisplayName();
+                                facebookId=user.getUid();
                                 if (facebookEmail!=null&&token!=null) {
                                     Log.e("facebookEmail", facebookEmail);
-                                    Log.e("facebookToken", String.valueOf(token.getToken()));
+                                    Log.e("facebookId", facebookId);
+                                    Intent intent =new Intent(LoginActivity.this,RegistrationActivityOne.class);
+                                    intent.putExtra("name",facebookName);
+                                    intent.putExtra("email",facebookEmail);
+                                    intent.putExtra("password",facebookId);
+                                    startActivity(intent);
+
+
                                 }
                             }
-                            updateUI();
+//                            updateUI();
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithCredential:failure", task.getException());
                             Toast.makeText(LoginActivity.this, "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
-                            updateUI();
+//                            updateUI();
                         }
 
                         // ...

@@ -98,7 +98,7 @@ public interface Api {
     })
     @FormUrlEncoded
     @POST("edit_profile?")
-    Call<String> edit_profile(
+    Call<Object> edit_profile(
                     @Field("name") String name,
                     @Field("email") String email,
                     @Field("market_name") String market_name,
@@ -142,6 +142,30 @@ public interface Api {
             @Field("new_password_confirmation") String new_password_confirmation
 
     );
+
+
+    @Headers({
+            "Accept: application/json",
+    })
+    @FormUrlEncoded
+    @POST("add_social_link")
+    Call<Object> add_social_link(
+            @Field("type") String type,
+            @Field("link") String link
+    );
+
+    @Headers({
+            "Accept: application/json",
+    })
+    @FormUrlEncoded
+    @POST("remove_social_link")
+    Call<Object> remove_social_link(
+            @Field("type") String type,
+            @Field("link") String link
+    );
+
+
+
 
 
     @Headers({

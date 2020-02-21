@@ -39,6 +39,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
 import java.util.Objects;
 
 import retrofit2.Call;
@@ -52,6 +53,8 @@ public class RegistrationActivityOne extends AppCompatActivity implements View.O
     private static final int PICK_PHOTO_FOR_AVATAR = 0;
     String encodedImage;
     Bitmap bitmap;
+    String name,email,password;
+    public HashMap<String, String> step1 = new HashMap<>();
 
 
 
@@ -71,7 +74,15 @@ public class RegistrationActivityOne extends AppCompatActivity implements View.O
         btn_Register.setOnClickListener(this);
         btn_BusinessMan.setOnClickListener(this);
 
+        Bundle bundle=new Bundle();
+        bundle = getIntent().getExtras();
+        if(bundle!=null){
+            name=bundle.getString("name");
+            email=bundle.getString("email");
+            password=bundle.getString("password");
+            RegistrationByApi(name,email,password,password);
 
+        }
 
 
         //get sign in user using gmaile
@@ -86,7 +97,7 @@ public class RegistrationActivityOne extends AppCompatActivity implements View.O
             Uri personPhoto = acct.getPhotoUrl();
 //            Toast.makeText(this, "gmailInfo" + personName + personGivenName + personFamilyName + personEmail + personId, Toast.LENGTH_SHORT).show();
 //            Log.e("gmail","gmailInfo " + personName+" "+ personGivenName +" "+ token +" "+ personEmail +" "+ personId);
-            RegistrationByApi(personName,personEmail,token,token);
+            RegistrationByApi(personName,personEmail,personId,personId);
 
         }
 
@@ -203,7 +214,11 @@ public class RegistrationActivityOne extends AppCompatActivity implements View.O
         String name=et_reg_name.getText().toString();
         String email=et_reg_email.getText().toString();
         String password=et_reg_password.getText().toString();
+//        String password="12345678";
+
         String repPassword=et_reg_rep_password.getText().toString();
+//        String repPassword="12345678";
+
 
 //TODO:unHash validation
 
@@ -249,15 +264,16 @@ public class RegistrationActivityOne extends AppCompatActivity implements View.O
 
         }
 
+        step1.put("name", name);
+        step1.put("email", email);
+        step1.put("password", password);
+        step1.put("repPassword", repPassword);
 
-                        Intent intent = new Intent(RegistrationActivityOne.this, RegistrationActivityTow.class);
-                        intent.putExtra("name",name);
-                        intent.putExtra("email",email);
-                        intent.putExtra("password",password);
-                        intent.putExtra("repPassword",repPassword);
-//                        intent.putExtra("BitmapImage", bitmap);
-                        startActivity(intent);
 
+        Intent intent = new Intent(RegistrationActivityOne.this, RegistrationActivityTow.class);
+        intent.putExtra("step1",step1);
+//        step1.put("BitmapImage", bitmap);
+        startActivity(intent);
 
 
 //        Call call= RetrofitClient.
@@ -359,53 +375,53 @@ public class RegistrationActivityOne extends AppCompatActivity implements View.O
         }
         RegistrationByApi(name,email,password,repPassword);
     }
-    private void AddImageProfileApi() {
-        Call call= RetrofitClient.
-                getInstance().getApi()
-                .storeImage(encodedImage);
-        call.enqueue(new Callback() {
-            @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) {
-                if(response!=null) {
-
-                    if (response.body() != null) {
-                        Log.e("gson:Change_Image", new Gson().toJson(response.body()));
-                        try {
-                            JSONObject jsonObject = new JSONObject(new Gson().toJson(response.body()));
-                            String msg = jsonObject.getString("message");
-                            if (msg != null) {
-//                                Toast.makeText(RegistrationActivityTow.this, msg, Toast.LENGTH_SHORT).show();
-                                Log.e("Change_Image",msg);
-                            }
-
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-
-                    } else if (response.errorBody() != null) {
-                        try {
-                            Log.e("gson:Change_Image", response.errorBody().string());
-                            Toast.makeText(RegistrationActivityOne.this, response.errorBody().string(), Toast.LENGTH_SHORT).show();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }
-
-                }
-            }
-
-
-            @Override
-            public void onFailure(Call call, Throwable t) {
-//                Toast.makeText(RegistrationActivityOne.this, t, Toast.LENGTH_SHORT).show();
-                Log.e("ChangImgByApi:onFailure", String.valueOf(t));
-
-            }
-        });
-
-
-    }
+//    private void AddImageProfileApi() {
+//        Call call= RetrofitClient.
+//                getInstance().getApi()
+//                .storeImage(encodedImage);
+//        call.enqueue(new Callback() {
+//            @Override
+//            public void onResponse(@NotNull Call call, @NotNull Response response) {
+//                if(response!=null) {
+//
+//                    if (response.body() != null) {
+//                        Log.e("gson:Change_Image", new Gson().toJson(response.body()));
+//                        try {
+//                            JSONObject jsonObject = new JSONObject(new Gson().toJson(response.body()));
+//                            String msg = jsonObject.getString("message");
+//                            if (msg != null) {
+////                                Toast.makeText(RegistrationActivityTow.this, msg, Toast.LENGTH_SHORT).show();
+//                                Log.e("Change_Image",msg);
+//                            }
+//
+//
+//                        } catch (JSONException e) {
+//                            e.printStackTrace();
+//                        }
+//
+//                    } else if (response.errorBody() != null) {
+//                        try {
+//                            Log.e("gson:Change_Image", response.errorBody().string());
+//                            Toast.makeText(RegistrationActivityOne.this, response.errorBody().string(), Toast.LENGTH_SHORT).show();
+//                        } catch (IOException e) {
+//                            e.printStackTrace();
+//                        }
+//                    }
+//
+//                }
+//            }
+//
+//
+//            @Override
+//            public void onFailure(Call call, Throwable t) {
+////                Toast.makeText(RegistrationActivityOne.this, t, Toast.LENGTH_SHORT).show();
+//                Log.e("ChangImgByApi:onFailure", String.valueOf(t));
+//
+//            }
+//        });
+//
+//
+//    }
 
 
     private void RegistrationByApi(String name, String email, String password,String repPassword) {
@@ -424,13 +440,18 @@ public class RegistrationActivityOne extends AppCompatActivity implements View.O
                                          String msg = jsonObject.getString("message");
                                          if (msg != null) {
                                              Toast.makeText(RegistrationActivityOne.this, msg, Toast.LENGTH_SHORT).show();
-                                             User user = new User(email, name);
-                                             SharedPrefManager.getInstance(RegistrationActivityOne.this)
-                                                     .saveUser(user);
-                                             Intent intent_log = new Intent(RegistrationActivityOne.this, MainActivity.class);
+                                             if(msg.equalsIgnoreCase("تم التسجيل بنجاح, ستصلك رسالة على البريد المسجل لتفعيل الحساب")){}
+
+//                                             User user = new User(email, name);
+//                                             SharedPrefManager.getInstance(RegistrationActivityOne.this)
+//                                                     .saveUser(user);
+                                             Intent intent_log = new Intent(RegistrationActivityOne.this, LoginByEmailActivity.class);
+                                             intent_log.putExtra("email",email);
+                                             intent_log.putExtra("password", password);
+                                             intent_log.putExtra("BitmapImage", bitmap);
                                              intent_log.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                              startActivity(intent_log);
-                                             AddImageProfileApi();
+//                                             AddImageProfileApi();
 
                                          }
 
