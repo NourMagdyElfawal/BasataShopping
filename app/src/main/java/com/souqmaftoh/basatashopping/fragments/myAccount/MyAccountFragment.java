@@ -34,6 +34,8 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -124,7 +126,7 @@ public class MyAccountFragment extends Fragment implements View.OnClickListener 
     }
 
 
-    LatoBLack btn_pro_logout, btn_pro_edit,btn_pro_addv;
+    LatoBLack btn_pro_logout, btn_pro_edit,btn_pro_addv,btn_pro_conv_merch;
     GoogleSignInClient mGoogleSignInClient;
     EditText et_pro_name, et_pro_email, et_pro_storeName, et_pro_address, et_pro_location, et_pro_phone, et_pro_storeDisc;
     TextView tv_pro_pass;
@@ -141,6 +143,9 @@ public class MyAccountFragment extends Fragment implements View.OnClickListener 
     Geocoder geocoder;
     Dialog dialog;
     Uri selectedImage;
+    RelativeLayout relative_conv_merch;
+    LinearLayout linear_is_merchant;
+    User user;
 
     private static final int PICK_PHOTO_FOR_AVATAR = 0;
 
@@ -177,6 +182,11 @@ public class MyAccountFragment extends Fragment implements View.OnClickListener 
         btn_pro_addv=view.findViewById(R.id.btn_pro_addv);
         iv_pro_img=view.findViewById(R.id.iv_pro_img);
 
+        linear_is_merchant=view.findViewById(R.id.linear_is_merchant);
+        relative_conv_merch=view.findViewById(R.id.relative_pro_conv_merch);
+        btn_pro_conv_merch=view.findViewById(R.id.btn_pro_conv_merch);
+
+
         btn_pro_logout.setOnClickListener(this);
         btn_pro_edit.setOnClickListener(this);
         btn_pro_addv.setOnClickListener(this);
@@ -189,20 +199,13 @@ public class MyAccountFragment extends Fragment implements View.OnClickListener 
         et_pro_storeDisc.setOnClickListener(this);
         iv_pro_img.setOnClickListener(this);
 
+        relative_conv_merch.setOnClickListener(this);
 
         //get user from shared preference
         SetUserDetailsFromSharedPref();
 
 
 
-//        if(mapFragment!=null)
-//            if(mapFragment.map!=null)
-//                if(!mapFragment.map.get("Lat").isEmpty()){
-//            lat=mapFragment.map.get("Lat");
-//            lng=mapFragment.map.get("Lng");
-//            Log.e("map", String.valueOf(mapFragment.map.get("Lat")));
-//
-//        }
         // Initialize Google Logout button
         // Configure sign-in to request the user's ID, email address, and basic
 // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
@@ -241,7 +244,7 @@ public class MyAccountFragment extends Fragment implements View.OnClickListener 
     }
 
     private void SetUserDetailsFromSharedPref() {
-        User user = SharedPrefManager.getInstance(getActivity()).getUser();
+         user = SharedPrefManager.getInstance(getActivity()).getUser();
         if (user != null) {
 
             if (user.getToken() != null && !user.getToken().isEmpty()) {
@@ -265,6 +268,14 @@ public class MyAccountFragment extends Fragment implements View.OnClickListener 
 
             }
 
+            if(user.getIs_merchant()){
+                linear_is_merchant.setVisibility(View.VISIBLE);
+                btn_pro_conv_merch.setText("تحويل لحساب عادي");
+            }else {
+                linear_is_merchant.setVisibility(View.GONE);
+                btn_pro_conv_merch.setText("تحويل الحساب لحساب محل تجاري");
+
+            }
             is_merchant = user.getIs_merchant();
 
 
@@ -352,7 +363,11 @@ public class MyAccountFragment extends Fragment implements View.OnClickListener 
                 openGallery();
                 break;
             case R.id.btn_pro_edit:
-                editProfile();
+                if(is_merchant){
+                    editMerchantProfile();
+                }else {
+                    editProfile();
+                }
                 break;
             case R.id.btn_pro_logout:
                 logOut();
@@ -493,12 +508,24 @@ public class MyAccountFragment extends Fragment implements View.OnClickListener 
                 et_pro_name.setFocusableInTouchMode(false);
 
                 break;
+            case R.id.relative_pro_conv_merch:
+                if (is_merchant) {
+                    linear_is_merchant.setVisibility(View.GONE);
+                    btn_pro_conv_merch.setText("تحويل الى حساب محل تجاري");
+                    is_merchant=false;
+                }else {
+                    linear_is_merchant.setVisibility(View.VISIBLE);
+                    btn_pro_conv_merch.setText("تحويل الى حساب عادي");
+                    is_merchant=true;
+                }
+                break;
 
 
 
         }
 
     }
+
 
     private void openGallery() {
         try {
@@ -716,9 +743,22 @@ public class MyAccountFragment extends Fragment implements View.OnClickListener 
 //
 
 }
-
-
     private void editProfile() {
+        et_pro_name.setFocusable(false);
+        et_pro_name.setFocusableInTouchMode(false);
+
+        String name = et_pro_name.getText().toString();
+        String email=et_pro_email.getText().toString();
+        is_merchant=false;
+        editProfileApi(name,email,is_merchant);
+        if(encodedImage!=null)
+            AddImageProfileApi(encodedImage, selectedImage);
+
+    }
+
+
+
+    private void editMerchantProfile() {
 
         et_pro_name.setFocusable(false);
         et_pro_name.setFocusableInTouchMode(false);
@@ -743,18 +783,17 @@ public class MyAccountFragment extends Fragment implements View.OnClickListener 
         String phone=et_pro_phone.getText().toString();
         String description=et_pro_storeDisc.getText().toString();
 
-        editProfileApi(name,email,market_name,address,lat,lng,phone,description);
+        editMerchantProfileApi(name,email,market_name,address,lat,lng,phone,description);
         if(encodedImage!=null)
         AddImageProfileApi(encodedImage, selectedImage);
     }
 
-    private void editProfileApi(String name, String email, String market_name, String address, String lat,String lng, String phone, String description) {
-
-
+    private void editProfileApi(String name, String email, Boolean is_merchant) {
         Call<Object> call= RetrofitClient.
                 getInstance()
                 .getApi()
-                .edit_profile(name,email,market_name,true,address,lat,lng,phone,description);
+                .edit_profile(name,email,false);
+
         call.enqueue(new Callback<Object>() {
             @Override
             public void onResponse(Call<Object> call, Response<Object> response) {
@@ -768,14 +807,14 @@ public class MyAccountFragment extends Fragment implements View.OnClickListener 
                             if (msg != null) {
                                 Toast.makeText(getActivity(), msg, Toast.LENGTH_SHORT).show();
                                 if (msg.equalsIgnoreCase("تم تعديل البيانات بنجاح")) {
-                                SharedPrefManager.getInstance(getActivity()).clear();
-                                User user = new User(token,name, email,is_merchant, market_name, address, lat, lng, phone, description);
+                                    SharedPrefManager.getInstance(getActivity()).clear();
+                                    User user = new User(token,name, email, MyAccountFragment.this.is_merchant);
                                     SharedPrefManager.getInstance(getActivity())
                                             .saveUser(user);
-                        Log.e("param:edit_profile", String.valueOf(user));
+                                    Log.e("param:edit_profile", String.valueOf(user));
 
 //                        get user from shared preference
-                                SetUserDetailsFromSharedPref();
+                                    SetUserDetailsFromSharedPref();
                                     Intent intent_log = new Intent(getActivity(), MainActivity.class);
                                     intent_log.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                     startActivity(intent_log);
@@ -804,6 +843,70 @@ public class MyAccountFragment extends Fragment implements View.OnClickListener 
             @Override
             public void onFailure(Call<Object> call, Throwable t) {
                 Log.e("edit_profile:onFailure", String.valueOf(t));
+
+            }
+        });
+
+    }
+
+
+    private void editMerchantProfileApi(String name, String email, String market_name, String address, String lat,String lng, String phone, String description) {
+
+
+        Call<Object> call= RetrofitClient.
+                getInstance()
+                .getApi()
+                .edit_merchant_profile(name,email,market_name,true,address,lat,lng,phone,description);
+
+        call.enqueue(new Callback<Object>() {
+            @Override
+            public void onResponse(Call<Object> call, Response<Object> response) {
+                if(response!=null) {
+
+                    if (response.body() != null) {
+                        Log.e("gson:edit_merch_profile", new Gson().toJson(response.body()));
+                        try {
+                            JSONObject jsonObject = new JSONObject(new Gson().toJson(response.body()));
+                            String msg = jsonObject.getString("message");
+                            if (msg != null) {
+                                Toast.makeText(getActivity(), msg, Toast.LENGTH_SHORT).show();
+                                if (msg.equalsIgnoreCase("تم تعديل البيانات بنجاح")) {
+                                SharedPrefManager.getInstance(getActivity()).clear();
+                                User user = new User(token,name, email,is_merchant, market_name, address, lat, lng, phone, description);
+                                    SharedPrefManager.getInstance(getActivity())
+                                            .saveUser(user);
+                        Log.e("param:edit_merch_pro", String.valueOf(user));
+
+//                        get user from shared preference
+                                SetUserDetailsFromSharedPref();
+                                    Intent intent_log = new Intent(getActivity(), MainActivity.class);
+                                    intent_log.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                    startActivity(intent_log);
+                                }
+                            }
+
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+
+                    } else if (response.errorBody() != null) {
+                        try {
+                            Log.e("gson:edit_merch_pro_err", response.errorBody().string());
+                            Toast.makeText(getActivity(), response.errorBody().string(), Toast.LENGTH_SHORT).show();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                }
+            }
+
+
+            @Override
+            public void onFailure(Call<Object> call, Throwable t) {
+                Log.e("edt_merch_pro:onFailure", String.valueOf(t));
 
             }
         });

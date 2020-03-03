@@ -87,9 +87,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         if (getArguments() != null &&getArguments().getSerializable("step2")!=null) {
             mapstep2 = (HashMap<String,String>)getArguments().getSerializable("step2");
             Log.e("mapstep2", String.valueOf(mapstep2));
+            flag=true;
         }
 
-            flag=true;
 
 //                name = getArguments().getString("name");
 //                email = getArguments().getString("email");

@@ -93,6 +93,14 @@ public class User {
 
     }
 
+    public User(String token, String name, String email, Boolean is_merchant) {
+        this.token = token;
+        this.name = name;
+        this.email = email;
+        this.is_merchant = is_merchant;
+
+    }
+
 
     // Getter Methods
 
@@ -112,9 +120,15 @@ public class User {
         return image;
     }
 
+    public void setIs_merchant(boolean is_merchant) {
+        this.is_merchant = is_merchant;
+    }
+
     public boolean getIs_merchant() {
         return is_merchant;
     }
+
+
 
     public String getMarket_name() {
         return market_name;
