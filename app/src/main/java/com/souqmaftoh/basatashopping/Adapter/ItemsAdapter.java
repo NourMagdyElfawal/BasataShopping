@@ -95,11 +95,11 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsViewHolder> {
         @BindView(R.id.title)
         TextView titleTextView;
 
-        @BindView(R.id.newsTitle)
-        TextView newsTextView;
+        @BindView(R.id.address_my_ads)
+        TextView addressTextView;
 
-        @BindView(R.id.newsInfo)
-        TextView infoTextView;
+        @BindView(R.id.category_my_ads)
+        TextView categoryTextView;
 
 
         public ViewHolder(View itemView) {
@@ -109,9 +109,9 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsViewHolder> {
 
         protected void clear() {
             coverImageView.setImageDrawable(null);
-//            titleTextView.setText("");
-//            newsTextView.setText("");
-//            infoTextView.setText("");
+            titleTextView.setText("");
+            addressTextView.setText("");
+            categoryTextView.setText("");
         }
 
         public void onBind(int position) {
@@ -126,15 +126,15 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsViewHolder> {
                 }
 
             if (mSport.getTitle() != null) {
-//                titleTextView.setText(mSport.getTitle());
+                titleTextView.setText(mSport.getTitle());
             }
 
             if (mSport.getSubTitle() != null) {
-//                newsTextView.setText(mSport.getSubTitle());
+                addressTextView.setText(mSport.getSubTitle());
             }
 
             if (mSport.getInfo() != null) {
-//                infoTextView.setText(mSport.getInfo());
+                categoryTextView.setText(mSport.getInfo());
             }
 
 //                itemView.setOnClickListener(v -> {

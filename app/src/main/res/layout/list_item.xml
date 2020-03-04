@@ -48,6 +48,8 @@
                     android:background="#80000000"
                     android:gravity="center"
                     android:text="Price"
+                    android:textSize="15dp"
+                    android:padding="5dp"
                     android:layout_marginBottom="5dp"
                     android:layout_marginStart="5dp"
                     android:layout_alignParentBottom="true"
@@ -67,7 +69,7 @@
                 app:layout_constraintTop_toTopOf="parent">
 
                 <TextView
-                    android:id="@+id/newsTitle"
+                    android:id="@+id/address_my_ads"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="10dp"
@@ -76,7 +78,7 @@
                     android:textStyle="bold" />
 
                 <TextView
-                    android:id="@+id/newsInfo"
+                    android:id="@+id/category_my_ads"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="5dp"
@@ -90,7 +92,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="10dp"
                     android:layout_gravity="end"
-                    android:text="توقيت نشر الاعلان"
+                    android:text=""
                      />
 
             </LinearLayout>

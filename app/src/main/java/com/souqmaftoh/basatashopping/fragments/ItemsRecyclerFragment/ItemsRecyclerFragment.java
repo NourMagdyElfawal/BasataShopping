@@ -31,6 +31,8 @@ import com.souqmaftoh.basatashopping.Interface.Items;
 import com.souqmaftoh.basatashopping.R;
 import com.souqmaftoh.basatashopping.design.DividerItemDecoration;
 
+import org.jetbrains.annotations.NotNull;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -108,7 +110,7 @@ public class ItemsRecyclerFragment extends Fragment {
         View view = inflater.inflate(R.layout.items_recycler_fragment, container, false);
 
 
-        getMyAdsApi();
+//        getMyAdsApi();
         // Spinner element
         final Spinner spinner = (Spinner) view.findViewById(R.id.spinner_nav);
         Button button=(Button)view.findViewById(R.id.button);
@@ -153,28 +155,55 @@ public class ItemsRecyclerFragment extends Fragment {
 
     private void getMyAdsApi() {
 
+        ArrayList<Items> mSports = new ArrayList<>();
+
+
         Call<Object> call= RetrofitClient.
                 getInstance()
                 .getApi()
                 .get_my_ads();
         call.enqueue(new Callback<Object>() {
             @Override
-            public void onResponse(Call<Object> call, Response<Object> response) {
+            public void onResponse(@NotNull Call<Object> call, @NotNull Response<Object> response) {
                 Log.e("gson:get_my_ads", new Gson().toJson(response.body()) );
 
                 if(response!=null) {
 
                     if (response.body() != null) {
-//                        Log.e("res:reset_password", "isSuccessful");
-//                        try {
-//                            JSONObject jsonObject = new JSONObject(new Gson().toJson(response.body()));
-//                            String message = jsonObject.getString("message");
-//                            if (message != null) {
-//                                Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
-//                            }
-//                        } catch (JSONException e) {
-//                            e.printStackTrace();
-//                        }
+                        Log.e("res:get_my_ads", "isSuccessful");
+                        try {
+                            JSONObject jsonObject = new JSONObject(new Gson().toJson(response.body()));
+                            String message = jsonObject.getString("message");
+                            if (message != null&&!message.isEmpty()) {
+                                Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+                            }
+                            JSONObject jsonData  = jsonObject.getJSONObject("data");
+                            JSONArray arrJson = jsonData.getJSONArray("ads");
+                            JSONObject[] arr=new JSONObject[arrJson.length()];
+
+                            for(int i = 0; i < arrJson.length(); i++) {
+                                arr[i] = arrJson.getJSONObject(i);
+                                Log.e("tag", String.valueOf(arr[i]));
+                                String ad_key=arr[i].getString("ad_key");
+                                String title=arr[i].getString("title");
+                                String offer=arr[i].getString("offer");
+                                String main_image=arr[i].getString("main_image");
+                                String price=arr[i].getString("price");
+                                String category=arr[i].getString("category");
+                                String sub_category=arr[i].getString("sub_category");
+                                String active=arr[i].getString("active");
+                                String item_condition=arr[i].getString("item_condition");
+                                String status=arr[i].getString("status");
+                                mSports.add(new Items(main_image,item_condition , title, price));
+                            }
+                            mSportAdapter.addItems(mSports);
+                            mRecyclerView.setAdapter(mSportAdapter);
+
+
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
 //
                     }
 
@@ -208,7 +237,10 @@ public class ItemsRecyclerFragment extends Fragment {
         mRecyclerView.addItemDecoration(new DividerItemDecoration(dividerDrawable));
         mSportAdapter = new ItemsAdapter(new ArrayList<>());
 
-        prepareDemoContent();
+//        prepareDemoContent();
+
+        getMyAdsApi();
+
     }
 
 

@@ -188,7 +188,7 @@ public interface Api {
 //            "Content-Type: application/json"
 //            "Authorization: Bearer token"
     })
-    @GET("get_my_ads?page=1")
+    @GET("get_my_ads")
     Call<Object> get_my_ads();
 
 }

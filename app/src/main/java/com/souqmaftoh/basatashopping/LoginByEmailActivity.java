@@ -284,7 +284,7 @@ public class LoginByEmailActivity extends AppCompatActivity implements View.OnCl
                         try {
                             JSONObject jsonObject = new JSONObject(new Gson().toJson(response.body()));
                             String message = jsonObject.getString("message");
-                            if (message != null) {
+                            if (message != null&&!message.isEmpty()) {
                                 Toast.makeText(LoginByEmailActivity.this, message, Toast.LENGTH_SHORT).show();
                             }
                             JSONObject data = jsonObject.getJSONObject("data");

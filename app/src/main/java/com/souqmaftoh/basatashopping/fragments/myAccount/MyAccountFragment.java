@@ -145,6 +145,7 @@ public class MyAccountFragment extends Fragment implements View.OnClickListener 
     Uri selectedImage;
     RelativeLayout relative_conv_merch;
     LinearLayout linear_is_merchant;
+
     User user;
 
     private static final int PICK_PHOTO_FOR_AVATAR = 0;
@@ -270,7 +271,7 @@ public class MyAccountFragment extends Fragment implements View.OnClickListener 
 
             if(user.getIs_merchant()){
                 linear_is_merchant.setVisibility(View.VISIBLE);
-                btn_pro_conv_merch.setText("تحويل لحساب عادي");
+                relative_conv_merch.setVisibility(View.GONE);
             }else {
                 linear_is_merchant.setVisibility(View.GONE);
                 btn_pro_conv_merch.setText("تحويل الحساب لحساب محل تجاري");
@@ -511,11 +512,11 @@ public class MyAccountFragment extends Fragment implements View.OnClickListener 
             case R.id.relative_pro_conv_merch:
                 if (is_merchant) {
                     linear_is_merchant.setVisibility(View.GONE);
-                    btn_pro_conv_merch.setText("تحويل الى حساب محل تجاري");
+                    btn_pro_conv_merch.setText("تحويل الى حساب محل تجاري ");
                     is_merchant=false;
                 }else {
-                    linear_is_merchant.setVisibility(View.VISIBLE);
-                    btn_pro_conv_merch.setText("تحويل الى حساب عادي");
+                linear_is_merchant.setVisibility(View.VISIBLE);
+                    btn_pro_conv_merch.setText("العوده الى حساب عادي");
                     is_merchant=true;
                 }
                 break;

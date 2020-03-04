@@ -4,17 +4,18 @@
     <string name="fb_login_protocol_scheme">fb444807396454347</string>
     <string name="map_key">AIzaSyB_qsP8AOP_P0MdlPz-48TDaJYjTP3vbjo</string>
     <string-array name="sports_images">
-        <item>https://androidwave.com/media/images/img_baseball.jpg</item>
-        <item>https://androidwave.com/media/images/img_badminton.jpg</item>
-        <item>https://androidwave.com/media/images/img_basketball.jpg</item>
-        <item>https://androidwave.com/media/images/img_bowling.jpg</item>
-        <item>https://androidwave.com/media/images/img_cycling.jpg</item>
-        <item>https://androidwave.com/media/images/img_golf.jpg</item>
-        <item>https://androidwave.com/media/images/img_running.jpg</item>
-        <item>https://androidwave.com/media/images/img_soccer.jpg</item>
-        <item>https://androidwave.com/media/images/img_swimming.jpg</item>
-        <item>https://androidwave.com/media/images/img_tabletennis.jpg</item>
-        <item>https://androidwave.com/media/images/img_tennis.jpg</item>
+        <item>https://tineye.com/images/widgets/mona.jpg</item>
+        <item>https://tineye.com/images/widgets/mona.jpg</item>
+        <item>https://tineye.com/images/widgets/mona.jpg</item>
+        <item>https://tineye.com/images/widgets/mona.jpg</item>
+        <item>https://tineye.com/images/widgets/mona.jpg</item>
+        <item>https://tineye.com/images/widgets/mona.jpg</item>
+        <item>https://tineye.com/images/widgets/mona.jpg</item>
+        <item>https://tineye.com/images/widgets/mona.jpg</item>
+        <item>https://tineye.com/images/widgets/mona.jpg</item>
+        <item>https://tineye.com/images/widgets/mona.jpg</item>
+        <item>https://tineye.com/images/widgets/mona.jpg</item>
+
     </string-array>
     <string-array name="sports_titles">
         <item>Baseball</item>
