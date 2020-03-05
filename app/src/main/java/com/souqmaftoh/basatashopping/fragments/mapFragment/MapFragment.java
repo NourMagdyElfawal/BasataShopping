@@ -7,13 +7,16 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProviders;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -91,6 +94,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         }
 
 
+        //TODO check gps
+
 //                name = getArguments().getString("name");
 //                email = getArguments().getString("email");
 //                password = getArguments().getString("password");
@@ -120,6 +125,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                              @Nullable Bundle savedInstanceState) {
        View view=inflater.inflate(R.layout.map_fragment, container, false);
         mptxt=(TextView)view.findViewById(R.id.mptxt);
+
+        statusCheck();
+
        fusedLocationProviderClient= LocationServices.getFusedLocationProviderClient(Objects.requireNonNull(getActivity()));
         fetchLastLocation();
        MapView mapView = (MapView) view.findViewById(R.id.google_map);
@@ -136,6 +144,40 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         return view;
 
     }
+
+    public void statusCheck() {
+        final LocationManager manager = (LocationManager) Objects.requireNonNull(getActivity()).getSystemService(Context.LOCATION_SERVICE);
+
+        if (manager != null && !manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            buildAlertMessageNoGps();
+
+        }
+    }
+
+
+    private void buildAlertMessageNoGps() {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setMessage("Your GPS seems to be disabled, do you want to enable it?")
+                .setCancelable(false)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(final DialogInterface dialog, final int id) {
+                        startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    public void onClick(final DialogInterface dialog, final int id) {
+                        dialog.cancel();
+                    }
+                });
+        final AlertDialog alert = builder.create();
+        alert.show();
+    }
+
+
+
+
+
+
 
     private void fetchLastLocation() {
         if ( ActivityCompat.checkSelfPermission(Objects.requireNonNull(getActivity()), Manifest.permission.ACCESS_FINE_LOCATION ) != PackageManager.PERMISSION_GRANTED ) {
