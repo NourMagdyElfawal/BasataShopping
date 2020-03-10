@@ -1,5 +1,4 @@
 package com.souqmaftoh.basatashopping.fragments.mapFragment;
-
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentManager;
@@ -17,6 +16,7 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -44,6 +44,7 @@ import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -66,18 +67,18 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private MapViewModel mViewModel;
     Location currentLocation;
     FusedLocationProviderClient fusedLocationProviderClient;
-    private static final int REQUEST_CODE=101;
-    private  GoogleMap mMap;
-    private double longitude,latitude;
+    private static final int REQUEST_CODE = 101;
+    private GoogleMap mMap;
+    private double longitude, latitude;
     Geocoder geocoder;
-    public HashMap<String,String> mapstep2= new HashMap<>();
+    public HashMap<String, String> mapstep2 = new HashMap<>();
     TextView mptxt;
     private Context context;
-    Boolean flag=false;
-    String email,name,password,repPassword;
-    String market_name,address,phone,description;
-
-
+    Boolean flag = false;
+    String email, name, password, repPassword;
+    String market_name, address, phone, description;
+    private Context globalContext = null;
+    private Marker myMarker;
 
 
     public static MapFragment newInstance() {
@@ -87,71 +88,103 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null &&getArguments().getSerializable("step2")!=null) {
-            mapstep2 = (HashMap<String,String>)getArguments().getSerializable("step2");
+        globalContext = this.getActivity();
+        if (getArguments() != null && getArguments().getSerializable("step2") != null) {
+            mapstep2 = (HashMap<String, String>) getArguments().getSerializable("step2");
             Log.e("mapstep2", String.valueOf(mapstep2));
-            flag=true;
+            flag = true;
         }
-
-
-        //TODO check gps
-
-//                name = getArguments().getString("name");
-//                email = getArguments().getString("email");
-//                password = getArguments().getString("password");
-//                repPassword = getArguments().getString("repPassword");
-//
-//                market_name = getArguments().getString("market_name");
-//                address = getArguments().getString("address");
-//                phone = getArguments().getString("phone");
-//                description = getArguments().getString("description");
-
-
-//            bitmap = (Bitmap) getIntent().getParcelableExtra("bitmap");
-
-
-//            latitude = Double.parseDouble(getArguments().getString("Lat"));
-//            longitude = Double.parseDouble(getArguments().getString("Long"));
-//
-//            Log.e("lat", String.valueOf(latitude));
-//            Log.e("lng", String.valueOf(longitude));
-//
-//        }
 
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-       View view=inflater.inflate(R.layout.map_fragment, container, false);
-        mptxt=(TextView)view.findViewById(R.id.mptxt);
+        View view = inflater.inflate(R.layout.map_fragment, container, false);
+        mptxt = view.findViewById(R.id.mptxt);
 
         statusCheck();
-
-       fusedLocationProviderClient= LocationServices.getFusedLocationProviderClient(Objects.requireNonNull(getActivity()));
-        fetchLastLocation();
-       MapView mapView = (MapView) view.findViewById(R.id.google_map);
+//        fetchLastLocation();
+        MapView mapView = (MapView) view.findViewById(R.id.google_map);
         mapView.onCreate(savedInstanceState);
         mapView.onResume();
         mapView.getMapAsync(this);//when you already implement OnMapReadyCallback in your fragment
 
-//        setupAutoCompleteFragment();
-
-
-
-
+//        setupAutoCompleteFragment()
 
         return view;
 
     }
 
+
     public void statusCheck() {
+
+        if ( ActivityCompat.checkSelfPermission(Objects.requireNonNull(getActivity()), Manifest.permission.ACCESS_FINE_LOCATION ) != PackageManager.PERMISSION_GRANTED ) {
+
+            ActivityCompat.requestPermissions( getActivity(), new String[] {  Manifest.permission.ACCESS_FINE_LOCATION  },
+                    REQUEST_CODE );
+            return;
+        }
+
         final LocationManager manager = (LocationManager) Objects.requireNonNull(getActivity()).getSystemService(Context.LOCATION_SERVICE);
 
         if (manager != null && !manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
             buildAlertMessageNoGps();
 
+        }else {
+            fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(Objects.requireNonNull(getActivity()));
+            fetchLastLocation();
         }
+
+        if (manager != null) {
+            manager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 2000, 0, new android.location.LocationListener() {
+                @Override
+                public void onLocationChanged(Location location) {
+                    Log.e("requestLocationUpdates", String.valueOf(location.getLatitude()));
+                    latitude =location.getLatitude();
+                    longitude =location.getLongitude();
+
+                    fetchMap(latitude,longitude);
+                    addMarker(latitude,longitude);
+                    putAddress(latitude,longitude);
+                    mapstep2.put("lat", String.valueOf(latitude));
+                    mapstep2.put("lng", String.valueOf(longitude));
+                    Log.e("mapstep2", String.valueOf(mapstep2));
+
+//                    fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(Objects.requireNonNull(getActivity()));
+//                    fetchLastLocation();
+
+                }
+
+                @Override
+                public void onStatusChanged(String provider, int status, Bundle extras) {
+                    Log.e("requestLocationUpdates","onStatusChanged");
+                }
+
+                @Override
+                public void onProviderEnabled(String provider) {
+                    Log.e("requestLocationUpdates","onProviderEnabled");
+                }
+
+                @Override
+                public void onProviderDisabled(String provider) {
+                    Log.e("requestLocationUpdates","onProviderDisabled");
+
+                }
+            });
+
+
+        }
+
+    }
+
+    private void fetchMap(double latitude, double longitude) {
+        if (mMap!=null) {
+            LatLng latLng = new LatLng(latitude, longitude);
+            mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 12.0f));
+        }
+
     }
 
 
@@ -180,12 +213,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
 
     private void fetchLastLocation() {
-        if ( ActivityCompat.checkSelfPermission(Objects.requireNonNull(getActivity()), Manifest.permission.ACCESS_FINE_LOCATION ) != PackageManager.PERMISSION_GRANTED ) {
-
-            ActivityCompat.requestPermissions( getActivity(), new String[] {  Manifest.permission.ACCESS_FINE_LOCATION  },
-                    REQUEST_CODE );
-            return;
-        }
 
         Task<Location> task=fusedLocationProviderClient.getLastLocation();
         task.addOnSuccessListener(new OnSuccessListener<Location>() {
@@ -203,17 +230,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                     mapstep2.put("lat", String.valueOf(latitude));
                     mapstep2.put("lng", String.valueOf(longitude));
 
-
-//                    SupportMapFragment mMapFragment = SupportMapFragment.newInstance();
-//                    FragmentTransaction fragmentTransaction =
-//                           getChildFragmentManager().beginTransaction();
-//                    fragmentTransaction.add(R.id.google_map, mMapFragment);
-//                    fragmentTransaction.commit();
-//                    mMapFragment.getMapAsync(con);
-
-
-//                    SupportMapFragment supportMapFragment = (SupportMapFragment) getFragmentManager().findFragmentById(R.id.google_map);
-//                    supportMapFragment.getMapAsync(this);
                 }
                 }
         });
@@ -221,29 +237,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     }
 
 
-//    private void setupAutoCompleteFragment() {
-//        PlaceAutocompleteFragment autocompleteFragment = (PlaceAutocompleteFragment)
-//                getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
-//        autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
-//            @Override
-//            public void onPlaceSelected(Place place) {
-//                sydney = place.getLatLng();
-//                mapFragment.getMapAsync(this);
-//            }
-//
-//            @Override
-//            public void onError(Status status) {
-//                Log.e("Error", status.getStatusMessage());
-//            }
-//        });
-//    }
-
-
 
     private void putAddress(double latitude, double longitude) {
-        geocoder = new Geocoder(getActivity(), Locale.getDefault());
+
+        geocoder = new Geocoder(globalContext, Locale.getDefault());
         try {
-            if (geocoder.isPresent()) {
+            if (Geocoder.isPresent()) {
                 List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1); // Here 1 represent max location result to returned, by documents it recommended 1 to 5
                 if (addresses != null&&addresses.size()>0 ) {
                     Address returnedAddress = addresses.get(0);
@@ -265,6 +264,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             Log.e("MyCurrentaddress", "Canont get Address!");
         }
     }
+
+
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -275,12 +276,23 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap=googleMap;
-        if (mMap!=null) {
-            LatLng latLng = new LatLng(latitude, longitude);
-            MarkerOptions markerOptions = new MarkerOptions().position(latLng).title("My Location");
-            googleMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
-            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 5));
-            googleMap.addMarker(markerOptions);
+            if(mMap!=null) {
+                fetchMap(latitude, longitude);
+                addMarker(latitude, longitude);
+            }
+
+    }
+
+    private void addMarker( double lat, double lng) {
+        if (mMap != null) {
+            if (myMarker == null) {
+                myMarker = mMap.addMarker(new MarkerOptions().position(new LatLng(lat, lng))
+                        .title("My Event").snippet("Event Address"));
+            } else {
+                myMarker.remove();
+                myMarker = mMap.addMarker(new MarkerOptions().position(new LatLng(lat, lng))
+                        .title("My Event").snippet("Event Address"));
+            }
         }
     }
 
@@ -314,7 +326,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     public void onResume() {
         super.onResume();
 
-        getView().setFocusableInTouchMode(true);
+        Log.e("onResume","onResume");
+
+        Objects.requireNonNull(getView()).setFocusableInTouchMode(true);
         getView().requestFocus();
         getView().setOnKeyListener(new View.OnKeyListener() {
             @Override
@@ -325,55 +339,19 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                     if(flag) {
                         Intent intent = new Intent(getActivity(), RegistrationActivityTow.class);
                         intent.putExtra("mapstep2",mapstep2);
-
-//                        String lat= String.valueOf(latitude);
-//                        String lng=String.valueOf(longitude);
-//                        intent.putExtra("Lat", lat);
-//                        intent.putExtra("Lng", lng);
                         Objects.requireNonNull(getActivity()).setResult(RESULT_OK,intent);
                         getActivity().finish();
                         Log.e("mapstep2", String.valueOf(mapstep2));
-//                        if(lat!=null&&!lat.isEmpty()){
-//                            intent.putExtra("Lat", lat);
-//                        }
-//                        if(lng!=null&&!lng.isEmpty()){
-//                            intent.putExtra("Lng",lng );
-//                        }
-//                        if(name!=null&&!name.isEmpty()){
-//                            intent.putExtra("name",name);
-//                        }
-//                        if(email!=null&&!email.isEmpty()){
-//                            intent.putExtra("email",email);
-//                        }
-//                        if(password!=null&&!password.isEmpty()){
-//                            intent.putExtra("password",password);
-//                        }
-//                        if(repPassword!=null&&!repPassword.isEmpty()){
-//                            intent.putExtra("repPassword",repPassword);
-//                        }
-//
-//
-//                        if(market_name!=null&&!market_name.isEmpty()){
-//                            intent.putExtra("market_name",market_name);
-//                        }
-//                        if(address!=null&&!address.isEmpty()){
-//                            intent.putExtra("address",address);
-//                        }
-//                        if(phone!=null&&!phone.isEmpty()){
-//                            intent.putExtra("phone",phone);
-//                        }
-//                        if(description!=null&&!description.isEmpty()){
-//                            intent.putExtra("description",description);
-//                        }
-
                         startActivity(intent);
 
                     }else {
                         Intent intent = new Intent(getActivity(), MapFragment.class);
                         intent.putExtra("Lat", String.valueOf(latitude));
                         intent.putExtra("Lng", String.valueOf(longitude));
-                        getTargetFragment().onActivityResult(getTargetRequestCode(), RESULT_OK, intent);
-                        getFragmentManager().popBackStack();
+                        Objects.requireNonNull(getTargetFragment()).onActivityResult(getTargetRequestCode(), RESULT_OK, intent);
+                        if (getFragmentManager() != null) {
+                            getFragmentManager().popBackStack();
+                        }
                     }
 
 
@@ -382,6 +360,14 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 return false;
             }
         });
+
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Log.e("onStart","onstart");
+
 
     }
 
