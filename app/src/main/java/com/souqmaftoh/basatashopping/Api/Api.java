@@ -191,6 +191,23 @@ public interface Api {
     @GET("get_my_ads")
     Call<Object> get_my_ads();
 
+
+
+    @Headers({
+            "Accept: application/json",
+    })
+    @FormUrlEncoded
+    @POST("social-user")
+    Call<Object> social_user(
+            @Field("token") String token,
+            @Field("type") String type,
+            @Field("device_id") String device_id,
+            @Field("push_token") String push_token
+
+    );
+
+
+
 }
 
 

@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -30,8 +31,21 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.gson.Gson;
+import com.souqmaftoh.basatashopping.Api.RetrofitClient;
 import com.souqmaftoh.basatashopping.Interface.User;
+import com.souqmaftoh.basatashopping.Services.MyFirebaseMessagingService;
 import com.souqmaftoh.basatashopping.Storage.SharedPrefManager;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
     CallbackManager mCallbackManager;
@@ -40,6 +54,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     int RC_SIGN_IN=0;
     Button next,btnLogin;
     String facebookEmail,facebookToken,facebookName,facebookId;
+    String device_id,push_token;
 
     TextView registration;
     GoogleSignInClient mGoogleSignInClient;
@@ -47,6 +62,19 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+
+        //device id
+        device_id = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
+        if(device_id!=null)Log.e("device_id",device_id);
+
+//device token
+
+
+//        device_token=(String) ParseInstallation.getCurrentInstallation().get("deviceToken");
+        push_token= MyFirebaseMessagingService.getToken(this);
+        if(push_token!=null)Log.e("push_token",push_token);
+
 
         User user= SharedPrefManager.getInstance(this).getUser();
         if(user!=null) {
@@ -159,34 +187,109 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithCredential:success");
                             FirebaseUser user = mAuth.getCurrentUser();
-                            if(user!=null){
-                                facebookEmail=user.getEmail();
-                                facebookName=user.getDisplayName();
-                                facebookId=user.getUid();
-                                if (facebookEmail!=null&&token!=null) {
-                                    Log.e("facebookEmail", facebookEmail);
-                                    Log.e("facebookId", facebookId);
-                                    Intent intent =new Intent(LoginActivity.this,RegistrationActivityOne.class);
-                                    intent.putExtra("name",facebookName);
-                                    intent.putExtra("email",facebookEmail);
-                                    intent.putExtra("password",facebookId);
-                                    startActivity(intent);
-
-
-                                }
+                            if(token!=null){
+                                facebookToken=token.getToken();
+                                socialUserApi(facebookToken,"facebook",device_id,push_token);
                             }
-//                            updateUI();
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithCredential:failure", task.getException());
                             Toast.makeText(LoginActivity.this, "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
-//                            updateUI();
                         }
 
                         // ...
                     }
                 });
+    }
+
+    private void socialUserApi(String facebookToken, String type, String device_id, String push_token) {
+
+        Call call= RetrofitClient.
+                getInstance()
+                .getApi()
+                .social_user(facebookToken,type,device_id,push_token);
+        call.enqueue(new Callback() {
+            @Override
+            public void onResponse(Call call, Response response) {
+                Log.e("gson:loginSocial", new Gson().toJson(response.body()) );
+
+                if(response.isSuccessful()) {
+                    if (response.body() != null) {
+                        Log.e("res:loginSocial", "isSuccessful");
+                        try {
+                            JSONObject jsonObject = new JSONObject(new Gson().toJson(response.body()));
+                            String message = jsonObject.getString("message");
+                            if (message != null&&!message.isEmpty()) {
+                                Toast.makeText(LoginActivity.this, message, Toast.LENGTH_SHORT).show();
+                            }
+                            JSONObject data = jsonObject.getJSONObject("data");
+                            if (data != null) {
+                                String token = data.getString("token");
+                                String name = data.getString("name");
+                                String email = data.getString("email");
+                                String image = data.getString("image");
+                                Boolean is_merchant = data.getBoolean("is_merchant");
+                                String market_name = data.getString("market_name");
+                                String address = data.getString("address");
+                                String lat = data.getString("lat");
+                                String lng = data.getString("lng");
+                                String phone = data.getString("phone");
+                                String description = data.getString("description");
+                                JSONArray social_links = data.getJSONArray("social_links");
+
+                                int length = social_links.length();
+//                    ArrayList<Object>  socialLinks = new ArrayList<>();
+                                for (int i = 0; i < length; i++) {
+                                    JSONObject links = social_links.getJSONObject(i);
+                                    String type = links.getString("type");
+                                    String link = links.getString("link");
+                                    Log.e("social_links", type + "  " + link);
+
+                                }
+
+                                User user = new User(token, name, email, image, is_merchant, market_name, address, lat, lng, phone, description);
+
+
+                                SharedPrefManager.getInstance(LoginActivity.this)
+                                        .saveUser(user);
+
+                            }
+                            Intent intent_log = new Intent(LoginActivity.this, MainActivity.class);
+                            intent_log.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            startActivity(intent_log);
+
+
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+
+                } else if (response.errorBody() != null) {
+                    try {
+                        Log.e("gson:loginSocialError", response.errorBody().string());
+                        Toast.makeText(LoginActivity.this, response.errorBody().string(), Toast.LENGTH_SHORT).show();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+
+
+
+            }
+
+            @Override
+            public void onFailure(Call call, Throwable t) {
+                Log.e("loginSocial:onFailure", String.valueOf(t));
+
+
+            }
+        });
+
+
     }
 
     private void updateUI() {
