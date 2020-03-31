@@ -3,6 +3,8 @@
     <string name="facebook_app_id">444807396454347</string>
     <string name="fb_login_protocol_scheme">fb444807396454347</string>
     <string name="map_key">AIzaSyB_qsP8AOP_P0MdlPz-48TDaJYjTP3vbjo</string>
+    <string name="server_client_id">651640230770-jma2ks6j185b7ah00kh168tdp694cnf4.apps.googleusercontent.com</string>
+
     <string-array name="sports_images">
         <item>https://tineye.com/images/widgets/mona.jpg</item>
         <item>https://tineye.com/images/widgets/mona.jpg</item>

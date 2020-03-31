@@ -22,8 +22,10 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.Scopes;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.common.api.Scope;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
@@ -102,7 +104,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         // Initialize Google Login button
         // Configure sign-in to request the user's ID, email address, and basic
 // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
+        String serverClientId = getString(R.string.server_client_id);
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestScopes(new Scope(Scopes.DRIVE_APPFOLDER))
+                .requestServerAuthCode(serverClientId)
                 .requestEmail()
                 .build();
 // Build a GoogleSignInClient with the options specified by gso.
@@ -330,15 +335,20 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
         try {
             GoogleSignInAccount account = completedTask.getResult(ApiException.class);
+            // Signed in successfully.
+//            if(account!=null){
+                String authCode = account.getServerAuthCode();
+                String token = account.getIdToken();
 
-            // Signed in successfully, show authenticated UI.
+                socialUserApi(authCode,"google",device_id,push_token);
+//            }
 
-            Intent intent =new Intent(LoginActivity.this,RegistrationActivityOne.class);
-            startActivity(intent);
+//            Intent intent =new Intent(LoginActivity.this,RegistrationActivityOne.class);
+//            startActivity(intent);
         } catch (ApiException e) {
             // The ApiException status code indicates the detailed failure reason.
             // Please refer to the GoogleSignInStatusCodes class reference for more information.
-            Log.w("google", "signInResult:failed code=" + e.getStatusCode());
+            Log.e("google", "signInResult:failed code=" + e.getStatusCode());
         }
     }
 
