@@ -208,12 +208,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 });
     }
 
-    private void socialUserApi(String facebookToken, String type, String device_id, String push_token) {
+    private void socialUserApi(String token, String type, String device_id, String push_token) {
 
         Call call= RetrofitClient.
                 getInstance()
                 .getApi()
-                .social_user(facebookToken,type,device_id,push_token);
+                .social_user(token,type,device_id,push_token);
         call.enqueue(new Callback() {
             @Override
             public void onResponse(Call call, Response response) {
@@ -336,12 +336,16 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         try {
             GoogleSignInAccount account = completedTask.getResult(ApiException.class);
             // Signed in successfully.
-//            if(account!=null){
+            if(account!=null){
                 String authCode = account.getServerAuthCode();
-                String token = account.getIdToken();
-
+            if (authCode != null) {
+                Log.e("google_token",authCode);
                 socialUserApi(authCode,"google",device_id,push_token);
-//            }
+
+            }
+            String token = account.getIdToken();
+
+            }
 
 //            Intent intent =new Intent(LoginActivity.this,RegistrationActivityOne.class);
 //            startActivity(intent);

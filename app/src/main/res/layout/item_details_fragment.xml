@@ -22,17 +22,21 @@
 
 
                 <ImageView
-                    android:id="@+id/imageView"
+                    android:id="@+id/imgV_adv"
                     android:layout_width="match_parent"
                     android:layout_height="300dp"
                     app:layout_constraintTop_toTopOf="parent"
                     android:background="@drawable/logo" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:orientation="vertical"
+                    app:layout_constraintTop_toBottomOf="@+id/imgV_adv"
+                    android:layout_height="wrap_content">
 
                 <androidx.cardview.widget.CardView
                     android:id="@+id/card_AddName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:layout_constraintTop_toBottomOf="@+id/imageView"
                     app:cardCornerRadius="15dp"
                     android:layout_margin="8dp">
 
@@ -87,7 +91,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:layout_constraintTop_toBottomOf="@+id/card_AddName"
-                    app:layout_constraintBottom_toTopOf="@+id/card_AdvAddress"
+                    app:layout_constraintBottom_toTopOf="@+id/card_AdvCategory"
                     app:cardCornerRadius="15dp"
                     android:layout_margin="8dp">
 
@@ -129,17 +133,206 @@
                     </androidx.constraintlayout.widget.ConstraintLayout>
                 </androidx.cardview.widget.CardView>
 
+
                 <androidx.cardview.widget.CardView
-                    android:id="@+id/card_AdvAddress"
+                    android:id="@+id/card_AdvCategory"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toBottomOf="@+id/card_AdvDescription"
+                    app:layout_constraintBottom_toTopOf="@+id/card_AdvAddress"
+                    app:cardCornerRadius="15dp"
+                    android:layout_margin="8dp">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_margin="20dp"
+                        android:orientation="vertical"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        >
+
+
+                        <TextView
+                            android:id="@+id/text_AdvCategory"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="القسم الرئيسي"
+                            android:textStyle="bold"
+                            android:textAlignment="center"
+                            android:layout_marginBottom="5dp"
+                            app:layout_constraintTop_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:id="@+id/edit_AdvCategory"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:clickable="false"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            android:layout_marginTop="15dp"
+                            android:text="القسم الرئيسي"
+                            android:textAlignment="center"
+                            app:layout_constraintTop_toBottomOf="@id/text_AdvCategory"
+                            />
+
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </androidx.cardview.widget.CardView>
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/card_AdvSubCategory"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toBottomOf="@+id/card_AdvCategory"
+                    app:layout_constraintBottom_toTopOf="@+id/card_AdvAddress"
+                    app:cardCornerRadius="15dp"
+                    android:layout_margin="8dp">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_margin="20dp"
+                        android:orientation="vertical"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        >
+
+
+                        <TextView
+                            android:id="@+id/text_AdvSubCategory"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="القسم الفرعي"
+                            android:textStyle="bold"
+                            android:textAlignment="center"
+                            android:layout_marginBottom="5dp"
+                            app:layout_constraintTop_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:id="@+id/edit_AdvSubCategory"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:clickable="false"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            android:layout_marginTop="15dp"
+                            android:text="القسم الفرعي"
+                            android:textAlignment="center"
+                            app:layout_constraintTop_toBottomOf="@id/text_AdvSubCategory"
+                            />
+
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </androidx.cardview.widget.CardView>
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/card_AdvActive"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toBottomOf="@+id/card_AddName"
+                    app:layout_constraintBottom_toTopOf="@+id/card_AdvAddress"
+                    app:cardCornerRadius="15dp"
+                    android:layout_margin="8dp">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_margin="20dp"
+                        android:orientation="vertical"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        >
+
+
+                        <TextView
+                            android:id="@+id/text_AdvActive"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="تفعيل الاعلان"
+                            android:textStyle="bold"
+                            android:textAlignment="center"
+                            android:layout_marginBottom="5dp"
+                            app:layout_constraintTop_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:id="@+id/edit_AdvActive"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:clickable="false"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            android:layout_marginTop="15dp"
+                            android:text="تفعيل الاعلان"
+                            android:textAlignment="center"
+                            app:layout_constraintTop_toBottomOf="@id/text_AdvActive"
+                            />
+
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </androidx.cardview.widget.CardView>
+
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/card_AdvStatus"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintTop_toBottomOf="@+id/card_AdvActive"
+                        app:layout_constraintBottom_toTopOf="@+id/card_AdvAddress"
+                        app:cardCornerRadius="15dp"
+                        android:layout_margin="8dp">
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_margin="20dp"
+                            android:orientation="vertical"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            >
+
+
+                            <TextView
+                                android:id="@+id/text_AdvStatus"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="حالة الاعلان"
+                                android:textStyle="bold"
+                                android:textAlignment="center"
+                                android:layout_marginBottom="5dp"
+                                app:layout_constraintTop_toBottomOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                            <TextView
+                                android:id="@+id/edit_AdvStatus"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:clickable="false"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                android:layout_marginTop="15dp"
+                                android:text="غير مباع"
+                                android:textAlignment="center"
+                                app:layout_constraintTop_toBottomOf="@id/text_AdvStatus"
+                                />
+
+
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+                    </androidx.cardview.widget.CardView>
+
+
+                    <androidx.cardview.widget.CardView
+                    android:id="@+id/card_AdvPrice"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:layout_marginLeft="8dp"
                     android:layout_marginRight="8dp"
-                    android:layout_marginBottom="120dp"
+                    android:layout_marginBottom="50dp"
                     app:cardCornerRadius="15dp"
                     app:layout_constraintTop_toBottomOf="@+id/card_AdvDescription"
-                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintBottom_toTopOf="@+id/btn_Edit_Choices"
 
                     >
 
@@ -153,11 +346,11 @@
 
 
                         <TextView
-                            android:id="@+id/text_AdvAddress"
+                            android:id="@+id/text_AdvPrice"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="5dp"
-                            android:text="العنوان"
+                            android:text="سعر المنتج"
                             android:textStyle="bold"
                             android:textAlignment="center"
                             app:layout_constraintEnd_toEndOf="parent"
@@ -165,15 +358,15 @@
                             app:layout_constraintTop_toTopOf="parent" />
 
                         <TextView
-                            android:id="@+id/edit_AdvAddress"
+                            android:id="@+id/edit_AdvPrice"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="15dp"
                             android:clickable="false"
-                            android:text="العنوان"
+                            android:text="سعر المنتج"
                             android:textAlignment="center"
                             app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintTop_toBottomOf="@id/text_AdvAddress" />
+                            app:layout_constraintTop_toBottomOf="@id/text_AdvPrice" />
 
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -181,115 +374,28 @@
                 </androidx.cardview.widget.CardView>
 
 
-
-<!--                <androidx.cardview.widget.CardView-->
-<!--                    android:id="@+id/card_telephone"-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    app:layout_constraintTop_toBottomOf="@+id/card_AdvAddress"-->
-<!--                    app:layout_constraintBottom_toBottomOf="@id/card_confirm"-->
-<!--                    app:cardCornerRadius="15dp"-->
-<!--                    android:layout_margin="8dp">-->
-
-<!--                    <androidx.constraintlayout.widget.ConstraintLayout-->
-<!--                        android:layout_width="match_parent"-->
-<!--                        android:layout_height="match_parent"-->
-<!--                        android:layout_margin="20dp"-->
-<!--                        android:orientation="vertical"-->
-<!--                        app:layout_constraintEnd_toEndOf="parent"-->
-<!--                        app:layout_constraintStart_toStartOf="parent"-->
-<!--                        >-->
-
-
-<!--                        <TextView-->
-<!--                            android:id="@+id/text_telephone"-->
-<!--                            android:layout_width="wrap_content"-->
-<!--                            android:layout_height="wrap_content"-->
-<!--                            android:text="رقم الهاتف"-->
-<!--                            android:textAlignment="center"-->
-<!--                            android:layout_marginBottom="5dp"-->
-<!--                            app:layout_constraintTop_toBottomOf="parent"-->
-<!--                            app:layout_constraintEnd_toEndOf="parent"-->
-<!--                            app:layout_constraintTop_toTopOf="parent" />-->
-
-<!--                        <TextView-->
-<!--                            android:id="@+id/edit_telephone"-->
-<!--                            android:layout_width="wrap_content"-->
-<!--                            android:layout_height="wrap_content"-->
-<!--                            app:layout_constraintEnd_toEndOf="parent"-->
-<!--                            android:layout_marginTop="15dp"-->
-<!--                            android:text="رقم الهاتف"-->
-<!--                            android:textAlignment="center"-->
-<!--                            app:layout_constraintTop_toBottomOf="@id/text_telephone"-->
-<!--                            />-->
-
-
-<!--                    </androidx.constraintlayout.widget.ConstraintLayout>-->
-<!--                </androidx.cardview.widget.CardView>-->
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_Edit_Choices"
+                        android:layout_width="150dp"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_horizontal"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="150dp"
+                        style="@style/Widget.AppCompat.Button.Borderless"
+                        android:textColor="@color/white"
+                        android:textSize="15sp"
+                        app:cornerRadius="25dp"
+                        app:rippleColor="#33AAAAAA"
+                        android:text="خيارات التعديل"
+                        android:elevation="4dp"
+                        />
 
 
 
-
-<!--                <androidx.cardview.widget.CardView-->
-<!--                    android:layout_width="wrap_content"-->
-<!--                    app:cardElevation="3dp"-->
-<!--                    android:layout_height="40dp"-->
-<!--                    android:id="@+id/card_confirm"-->
-<!--                    app:layout_constraintEnd_toEndOf="parent"-->
-<!--                    app:layout_constraintStart_toStartOf="parent"-->
-<!--                    app:layout_constraintTop_toBottomOf="@+id/card_telephone"-->
-<!--                    app:layout_constraintBottom_toBottomOf="parent"-->
-<!--                    android:layout_marginTop="8dp"-->
-<!--                    android:layout_marginBottom="70dp"-->
-<!--                    android:layout_gravity="center">-->
-<!--                    <Button-->
-<!--                        android:layout_width="wrap_content"-->
-<!--                        android:layout_height="wrap_content"-->
-<!--                        android:text="اضافة"-->
-<!--                        android:background="@color/colorPrimaryDark"-->
-<!--                        android:id="@+id/NotifyDays"-->
-<!--                        android:textSize="14sp"-->
-<!--                        android:textColor="@color/white"-->
-<!--                        />-->
-<!--                </androidx.cardview.widget.CardView>-->
-
-                <!--        <androidx.constraintlayout.widget.ConstraintLayout-->
-                <!--            android:layout_width="match_parent"-->
-                <!--            android:layout_height="match_parent"-->
-                <!--            android:layout_margin="20dp"-->
-                <!--            android:orientation="vertical"-->
-                <!--            app:layout_constraintEnd_toEndOf="parent"-->
-                <!--            app:layout_constraintHorizontal_bias="0.535"-->
-                <!--            app:layout_constraintStart_toStartOf="parent"-->
-                <!--            tools:layout_editor_absoluteY="572dp">-->
-
-
-                <!--            <TextView-->
-                <!--                android:id="@+id/text_AdvAddress"-->
-                <!--                android:layout_width="wrap_content"-->
-                <!--                android:layout_height="wrap_content"-->
-                <!--                android:layout_marginBottom="5dp"-->
-                <!--                android:text="العنوان"-->
-                <!--                android:textAlignment="center"-->
-                <!--                app:layout_constraintEnd_toEndOf="parent"-->
-                <!--                app:layout_constraintTop_toBottomOf="parent"-->
-                <!--                app:layout_constraintTop_toTopOf="parent" />-->
-
-                <!--            <TextView-->
-                <!--                android:id="@+id/edit_AdvAddress"-->
-                <!--                android:layout_width="wrap_content"-->
-                <!--                android:layout_height="wrap_content"-->
-                <!--                android:layout_marginTop="15dp"-->
-                <!--                android:text="العنوان"-->
-                <!--                android:textAlignment="center"-->
-                <!--                app:layout_constraintEnd_toEndOf="parent"-->
-                <!--                app:layout_constraintTop_toBottomOf="@id/text_AdvAddress" />-->
-
-
-                <!--        </androidx.constraintlayout.widget.ConstraintLayout>-->
+                </LinearLayout>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
-
         </ScrollView>
 
         <com.souqmaftoh.basatashopping.design.CurvedBottomNavigationView
@@ -299,7 +405,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:itemIconSize="22dp"
-            android:visibility="visible"
+            android:visibility="gone"
             app:itemTextAppearanceActive="@style/BottomNavigationView.Active"
             app:itemTextAppearanceInactive="@style/BottomNavigationView"
             app:menu="@menu/bottom_menu"

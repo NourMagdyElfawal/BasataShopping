@@ -1,6 +1,5 @@
 package com.souqmaftoh.basatashopping.Adapter;
 
-
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -25,23 +24,23 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class ItemsAdapter extends RecyclerView.Adapter<ItemsViewHolder> {
-    private static final String TAG = "ItemsAdapter";
+public class MyItemsAdapter extends RecyclerView.Adapter<ItemsViewHolder> {
+    private static final String TAG = "MyItemsAdapter";
     public static final int VIEW_TYPE_EMPTY = 0;
     public static final int VIEW_TYPE_NORMAL = 1;
     public HashMap<String, String> hashMapItem = new HashMap<>();
 
-    private Callback mCallback;
+    private ItemsAdapter.Callback mCallback;
     private List<Items> mSportList;
 
 
-    public ItemsAdapter(ArrayList<Items> sportList) {
+    public MyItemsAdapter(ArrayList<Items> sportList) {
         mSportList = sportList;
 
     }
 
 
-    public void setCallback(Callback callback) {
+    public void setCallback(ItemsAdapter.Callback callback) {
         mCallback = callback;
     }
 
@@ -55,11 +54,11 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsViewHolder> {
 
         switch (viewType) {
             case VIEW_TYPE_NORMAL:
-                return new ViewHolder(
-                        LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item, parent, false));
+                return new MyItemsAdapter.ViewHolder(
+                        LayoutInflater.from(parent.getContext()).inflate(R.layout.list_my_item, parent, false));
             case VIEW_TYPE_EMPTY:
             default:
-                return new EmptyViewHolder(
+                return new MyItemsAdapter.EmptyViewHolder(
                         LayoutInflater.from(parent.getContext()).inflate(R.layout.item_empty_view, parent, false));
         }
     }
@@ -123,7 +122,6 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsViewHolder> {
 
             final Items mSport = mSportList.get(position);
 
-
             if (mSport.getmAdKey() != null) {
                 hashMapItem.put("ad_key",mSport.getmAdKey());
                 Log.e("ad_key",mSport.getmAdKey());
@@ -131,10 +129,10 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsViewHolder> {
 
 
             if (mSport.getImageUrl() != null) {
-                    Glide.with(itemView.getContext())
-                            .load(mSport.getImageUrl())
-                            .into(coverImageView);
-                    hashMapItem.put("ImageUrl",mSport.getImageUrl());                }
+                Glide.with(itemView.getContext())
+                        .load(mSport.getImageUrl())
+                        .into(coverImageView);
+                hashMapItem.put("ImageUrl",mSport.getImageUrl());                }
 
             if (mSport.getTitle() != null) {
                 titleTextView.setText(mSport.getTitle());

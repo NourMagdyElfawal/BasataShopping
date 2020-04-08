@@ -16,6 +16,7 @@ import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
+import retrofit2.http.Path;
 
 public interface Api {
 
@@ -181,16 +182,51 @@ public interface Api {
 
 
 
+    @Headers({
+            "Accept: application/json",
+    })
+    @FormUrlEncoded
+    @POST("deactivate_ad")
+    Call<Object> deactivate_ad(
+            @Field("ad_key") String ad_key
+    );
 
 
     @Headers({
             "Accept: application/json",
-//            "Content-Type: application/json"
-//            "Authorization: Bearer token"
+    })
+    @FormUrlEncoded
+    @POST("set_as_sold")
+    Call<Object> set_as_sold(
+            @Field("ad_key") String ad_key
+    );
+
+    @Headers({
+            "Accept: application/json",
+    })
+    @FormUrlEncoded
+    @POST("delete_ad")
+    Call<Object> delete_ad(
+            @Field("ad_key") String ad_key
+    );
+
+
+
+    @Headers({
+            "Accept: application/json",
     })
     @GET("get_my_ads")
     Call<Object> get_my_ads();
 
+
+
+    @Headers({
+            "Accept: application/json",
+    })
+    @GET("get_ad/ad_key={ad_key}")
+    Call<Object> get_ads(
+            @Path("ad_key") String ad_key
+    );
 
 
     @Headers({

@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -26,6 +27,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.gson.Gson;
 import com.souqmaftoh.basatashopping.Adapter.HomeAdapter;
 import com.souqmaftoh.basatashopping.Adapter.ItemsAdapter;
+import com.souqmaftoh.basatashopping.Adapter.MyItemsAdapter;
 import com.souqmaftoh.basatashopping.Api.RetrofitClient;
 import com.souqmaftoh.basatashopping.Interface.Items;
 import com.souqmaftoh.basatashopping.R;
@@ -52,13 +54,15 @@ public class ItemsRecyclerFragment extends Fragment {
     private ItemsRecyclerViewModel mViewModel;
     @BindView(R.id.mRecyclerView)
     RecyclerView mRecyclerView;
-    ItemsAdapter mSportAdapter;
+    MyItemsAdapter mSportAdapter;
+    ItemsAdapter itemsAdapter;
 
     LinearLayoutManager mLayoutManager;
 
 //    List<category> historicList = new ArrayList<>();
 
     private RecyclerView recyclerView;
+    private LinearLayout layout_icons;
     HomeAdapter homeAdapter;
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -67,6 +71,8 @@ public class ItemsRecyclerFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2,fragmentName;
+    private boolean flag;
+
     public ItemsRecyclerFragment() {
         // Required empty public constructor
     }
@@ -90,10 +96,15 @@ public class ItemsRecyclerFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
             fragmentName = getArguments().getString("fragment");
+            if(fragmentName.equalsIgnoreCase("myacc")){
+                flag=true;
+
+            }
 
         }
     }
@@ -147,7 +158,14 @@ public class ItemsRecyclerFragment extends Fragment {
 
 
         ButterKnife.bind(this,view);
-        setUp();
+
+        if(flag){
+            setUpListOfMyItems();
+        }else {
+            setUpListOfItems();
+        }
+
+
 //        Objects.requireNonNull(((AppCompatActivity) Objects.requireNonNull(getActivity())).getSupportActionBar()).hide();
 
         return view;
@@ -194,7 +212,7 @@ public class ItemsRecyclerFragment extends Fragment {
                                 String active=arr[i].getString("active");
                                 String item_condition=arr[i].getString("item_condition");
                                 String status=arr[i].getString("status");
-                                mSports.add(new Items(main_image,item_condition , title, price));
+                                mSports.add(new Items(ad_key,main_image,item_condition , title, price,offer,category,sub_category,active,status));
                             }
                             mSportAdapter.addItems(mSports);
                             mRecyclerView.setAdapter(mSportAdapter);
@@ -228,20 +246,36 @@ public class ItemsRecyclerFragment extends Fragment {
 
     }
 
-    private void setUp() {
+    private void setUpListOfItems() {
         mLayoutManager = new LinearLayoutManager(getActivity());
         mLayoutManager.setOrientation(RecyclerView.VERTICAL);
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         Drawable dividerDrawable = ContextCompat.getDrawable(Objects.requireNonNull(getActivity()), R.drawable.divider_drawable);
         mRecyclerView.addItemDecoration(new DividerItemDecoration(dividerDrawable));
-        mSportAdapter = new ItemsAdapter(new ArrayList<>());
+        itemsAdapter = new ItemsAdapter(new ArrayList<>());
+
+//        prepareDemoContent();
+
+
+    }
+
+
+    private void setUpListOfMyItems() {
+        mLayoutManager = new LinearLayoutManager(getActivity());
+        mLayoutManager.setOrientation(RecyclerView.VERTICAL);
+        mRecyclerView.setLayoutManager(mLayoutManager);
+        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+        Drawable dividerDrawable = ContextCompat.getDrawable(Objects.requireNonNull(getActivity()), R.drawable.divider_drawable);
+        mRecyclerView.addItemDecoration(new DividerItemDecoration(dividerDrawable));
+        mSportAdapter = new MyItemsAdapter(new ArrayList<>());
 
 //        prepareDemoContent();
 
         getMyAdsApi();
 
     }
+
 
 
     private void prepareDemoContent() {
