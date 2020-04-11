@@ -190,6 +190,14 @@ public interface Api {
     Call<Object> deactivate_ad(
             @Field("ad_key") String ad_key
     );
+    @Headers({
+            "Accept: application/json",
+    })
+    @FormUrlEncoded
+    @POST("activate_ad")
+    Call<Object> activate_ad(
+            @Field("ad_key") String ad_key
+    );
 
 
     @Headers({

@@ -29,10 +29,12 @@ import com.google.gson.Gson;
 import com.souqmaftoh.basatashopping.Api.RetrofitClient;
 import com.souqmaftoh.basatashopping.Interface.Items;
 import com.souqmaftoh.basatashopping.RegistrationActivityTow;
+import com.souqmaftoh.basatashopping.fragments.ItemsRecyclerFragment.ItemsRecyclerFragment;
 import com.souqmaftoh.basatashopping.fragments.MobileFragment.MobileViewModel;
 import com.souqmaftoh.basatashopping.MainActivity;
 import com.souqmaftoh.basatashopping.R;
 import com.souqmaftoh.basatashopping.design.CurvedBottomNavigationView;
+import com.souqmaftoh.basatashopping.fragments.addAdv.AddAdvFragment;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
@@ -389,10 +391,15 @@ public class ItemDetailsFragment extends Fragment implements BottomNavigationVie
                     public void onClick(DialogInterface dialog, int which) {
                         switch (selected){
                             case "تعديل الاعلان":
+                                AddAdvFragment addAdvFragment= new AddAdvFragment();
+                                Bundle args = new Bundle();
+                                args.putString("fragment", "editAdv");
+                                addAdvFragment.setArguments(args);
+
                                 Toast.makeText(getContext(), selected, Toast.LENGTH_SHORT).show();
                                 break;
                             case "تفعيل/الغاء تفعيل الاعلان":
-                                Toast.makeText(getContext(), selected, Toast.LENGTH_SHORT).show();
+                                openDialogActivateAd();
                                 break;
                             case "مسح الاعلان":
                                 message="هل انت متأكد انك تريد مسح الاعلان؟";
@@ -417,6 +424,154 @@ public class ItemDetailsFragment extends Fragment implements BottomNavigationVie
         builder.show();
 
     }
+
+
+
+
+    private void openDialogActivateAd() {
+        CharSequence[] array = {"تفعيل الاعلان" , "الغاء تفعيل الاعلان"};
+
+        builder = new AlertDialog.Builder(Objects.requireNonNull(getActivity()));
+        builder.setSingleChoiceItems(array, 0, new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface arg0, int arg1) {
+                        // TODO Auto-generated method stub
+                        selected = array[arg1].toString();
+//                        Toast.makeText(getContext(), selected, Toast.LENGTH_SHORT).show();
+
+                    }
+                })
+                .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+
+                    }
+                })
+                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+
+                    public void onClick(DialogInterface dialog, int which) {
+                        switch (selected){
+                            case "تفعيل الاعلان":
+                                Toast.makeText(getContext(), selected, Toast.LENGTH_SHORT).show();
+                                activateAdApi();
+                                break;
+                            case "الغاء تفعيل الاعلان":
+//                                Toast.makeText(getContext(), selected, Toast.LENGTH_SHORT).show();
+                                deActivateAdApi();
+                                break;
+
+                        }
+
+
+                    }
+                });
+        builder.show();
+
+    }
+
+    private void activateAdApi() {
+        Call call= RetrofitClient.
+                getInstance().getApi()
+                .activate_ad(ad_key);
+        call.enqueue(new Callback() {
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) {
+                if(response!=null) {
+
+                    if (response.body() != null) {
+                        Log.e("gson:activate_ad", new Gson().toJson(response.body()));
+                        try {
+                            JSONObject jsonObject = new JSONObject(new Gson().toJson(response.body()));
+                            String msg = jsonObject.getString("message");
+//                            if (msg != null&&msg.equalsIgnoreCase("تم حذف الإعلان بنجاح")) {
+                                Toast.makeText(getActivity(), msg, Toast.LENGTH_SHORT).show();
+                                Log.e("activate_ad",msg);
+                                Intent intent_log =new Intent(getActivity(), MainActivity.class);
+                                intent_log.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                startActivity(intent_log);
+
+//                            }
+
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    } else if (response.errorBody() != null) {
+                        try {
+                            Log.e("gson:error_activate_ad", response.errorBody().string());
+                            Toast.makeText(getActivity(), response.errorBody().string(), Toast.LENGTH_SHORT).show();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                }
+            }
+
+
+            @Override
+            public void onFailure(Call call, Throwable t) {
+//                Toast.makeText(RegistrationActivityOne.this, t, Toast.LENGTH_SHORT).show();
+                Log.e("activate_ad:onFailure", String.valueOf(t));
+
+            }
+        });
+
+    }
+
+    private void deActivateAdApi() {
+
+        Call call= RetrofitClient.
+                getInstance().getApi()
+                .deactivate_ad(ad_key);
+        call.enqueue(new Callback() {
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) {
+                if(response!=null) {
+
+                    if (response.body() != null) {
+                        Log.e("gson:deactivate_ad", new Gson().toJson(response.body()));
+                        try {
+                            JSONObject jsonObject = new JSONObject(new Gson().toJson(response.body()));
+                            String msg = jsonObject.getString("message");
+//                            if (msg != null&&msg.equalsIgnoreCase("تم حذف الإعلان بنجاح")) {
+                                Toast.makeText(getActivity(), msg, Toast.LENGTH_SHORT).show();
+                                Log.e("deactivate_ad",msg);
+                                Intent intent_log =new Intent(getActivity(), MainActivity.class);
+                                intent_log.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                startActivity(intent_log);
+
+//                            }
+
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    } else if (response.errorBody() != null) {
+                        try {
+                            Log.e("gson:err_deactivate_ad", response.errorBody().string());
+                            Toast.makeText(getActivity(), response.errorBody().string(), Toast.LENGTH_SHORT).show();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                }
+            }
+
+
+            @Override
+            public void onFailure(Call call, Throwable t) {
+//                Toast.makeText(RegistrationActivityOne.this, t, Toast.LENGTH_SHORT).show();
+                Log.e("deactivate_ad:onFailure", String.valueOf(t));
+
+            }
+        });
+
+    }
+
 
     private void openCheckDialog(String message, int i) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -516,6 +671,10 @@ public class ItemDetailsFragment extends Fragment implements BottomNavigationVie
                             if (msg != null&&msg.equalsIgnoreCase("تم تغيير حالة الإعلان بنجاح")) {
                                 Toast.makeText(getActivity(), msg, Toast.LENGTH_SHORT).show();
                                 Log.e("set_as_sold",msg);
+                                Intent intent_log =new Intent(getActivity(), MainActivity.class);
+                                intent_log.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                startActivity(intent_log);
+
                             }
 
 
