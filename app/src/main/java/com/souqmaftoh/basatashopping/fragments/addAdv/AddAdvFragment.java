@@ -36,7 +36,6 @@ import com.google.android.material.button.MaterialButton;
 import com.google.gson.Gson;
 import com.souqmaftoh.basatashopping.Adapter.addAdvAdapter;
 import com.souqmaftoh.basatashopping.Api.RetrofitClient;
-import com.souqmaftoh.basatashopping.Interface.Advertise;
 import com.souqmaftoh.basatashopping.Interface.addAdvImageModelClass;
 import com.souqmaftoh.basatashopping.LoginActivity;
 import com.souqmaftoh.basatashopping.MainActivity;
@@ -87,8 +86,8 @@ public class AddAdvFragment extends Fragment implements BottomNavigationView.OnN
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
     // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private String fragment;
+    private String ad_key;
     MaterialButton btn_addAdv;
     Spinner   spinnerCat,spin_sub_cat,spin_spin_con;
 
@@ -116,8 +115,8 @@ public class AddAdvFragment extends Fragment implements BottomNavigationView.OnN
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            fragment = getArguments().getString("fragment");
+            ad_key = getArguments().getString("ad_key");
         }
     }
 
@@ -145,6 +144,10 @@ public class AddAdvFragment extends Fragment implements BottomNavigationView.OnN
                 token = user.getToken();
 
             }
+        }
+
+        if(!ad_key.isEmpty()){
+
         }
 
 
@@ -446,11 +449,15 @@ public class AddAdvFragment extends Fragment implements BottomNavigationView.OnN
                 break;
 
             case R.id.btn_addAdv:
-                AddAdvertiseByApi();
+                if(fragment!=null&&ad_key!=null)
+                    editAdvertiseByApi(ad_key);
+                else
+                    AddAdvertiseByApi();
                 break;
             }
 
         }
+
 
     public void pickImage() {
         try {
@@ -579,6 +586,85 @@ public class AddAdvFragment extends Fragment implements BottomNavigationView.OnN
         }
         return Bitmap.createScaledBitmap(image, width, height, true);
     }
+    private void editAdvertiseByApi(String ad_key) {
+        String title=et_advName.getText().toString();
+        int price= Integer.parseInt(et_AdvAddress.getText().toString());
+        String description=et_AdvDescription.getText().toString();
+//        int sub_category= Integer.parseInt(et_advName.getText().toString());
+        String main_image=encodedImage;
+//        String item_condition="new";
+
+
+
+        Call call= RetrofitClient.
+                getInstance()
+                .getApi()
+                .editAd(ad_key,title,price,description,main_image);
+        call.enqueue(new Callback() {
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) {
+                if(response!=null) {
+
+                    if(response.body()!=null){
+                        Log.e("gson:editAd", new Gson().toJson(response.body()) );
+                        try {
+                            JSONObject jsonObject = new JSONObject(new Gson().toJson(response.body()));
+                            String message = jsonObject.getString("message");
+                            if (message != null) {
+                                Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+
+                                Intent intent_log =new Intent(getActivity(), MainActivity.class);
+                                intent_log.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                startActivity(intent_log);
+
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    } else if (response.errorBody() != null) {
+                        try {
+                            Log.e("gson_Error:editAd", response.errorBody().string());
+                            if(response.errorBody().string().equalsIgnoreCase("Unauthenticated.")){
+                                Intent i = new Intent(getActivity(), LoginActivity.class);
+                                startActivity(i);
+
+                            }
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+
+                    if (response.isSuccessful()) {
+                        Log.e("res:editAd", "isSuccessful");
+                    }
+
+                }
+//                DefaultResponse dr=response.body();
+//                if (dr != null && dr.getMessage() != null) {
+//                    Toast.makeText(getActivity(), dr.getMessage(), Toast.LENGTH_SHORT).show();
+//                    Log.e("res:create_ad", "Data"+dr.getData()+" "+"message"+dr.getMessage());
+//                    Advertise advertise=new Advertise(title,price,description,main_image,sub_category);
+//                    Intent intent_log =new Intent(getActivity(), MainActivity.class);
+//                    intent_log.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |Intent.FLAG_ACTIVITY_CLEAR_TASK);
+//                    startActivity(intent_log);
+//
+//
+//                }
+            }
+
+
+            @Override
+            public void onFailure(Call call, Throwable t) {
+//                Toast.makeText(RegistrationActivityOne.this, t, Toast.LENGTH_SHORT).show();
+                Log.e("editAd:onFailure", String.valueOf(t));
+
+            }
+        });
+
+    }
+
 
 
     private void AddAdvertiseByApi() {

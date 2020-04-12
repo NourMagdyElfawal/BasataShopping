@@ -129,8 +129,6 @@ public interface Api {
 
     @Headers({
             "Accept: application/json",
-//            "Content-Type: application/json"
-//            "Authorization: Bearer token"
     })
     @FormUrlEncoded
     @POST("create_ad")
@@ -143,6 +141,18 @@ public interface Api {
             @Field("main_image") String main_image
 
     );
+    @Headers({
+            "Accept: application/json",
+    })
+    @FormUrlEncoded
+    @POST("edit_ad")
+    Call<Object> editAd(
+            @Field("ad_key") String ad_key,
+            @Field("title") String title,
+            @Field("price") int price,
+            @Field("description") String description,
+            @Field("main_image") String main_image
+            );
 
 
     @Headers({
@@ -231,8 +241,8 @@ public interface Api {
     @Headers({
             "Accept: application/json",
     })
-    @GET("get_ad/ad_key={ad_key}")
-    Call<Object> get_ads(
+    @GET("get_ad/{ad_key}")
+    Call<Object> get_ad(
             @Path("ad_key") String ad_key
     );
 

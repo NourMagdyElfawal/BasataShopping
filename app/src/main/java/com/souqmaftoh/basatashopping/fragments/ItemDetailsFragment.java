@@ -27,6 +27,8 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.button.MaterialButton;
 import com.google.gson.Gson;
 import com.souqmaftoh.basatashopping.Api.RetrofitClient;
+import com.souqmaftoh.basatashopping.Interface.Advertise;
+import com.souqmaftoh.basatashopping.Interface.Advertiser;
 import com.souqmaftoh.basatashopping.Interface.Items;
 import com.souqmaftoh.basatashopping.RegistrationActivityTow;
 import com.souqmaftoh.basatashopping.fragments.ItemsRecyclerFragment.ItemsRecyclerFragment;
@@ -37,6 +39,7 @@ import com.souqmaftoh.basatashopping.design.CurvedBottomNavigationView;
 import com.souqmaftoh.basatashopping.fragments.addAdv.AddAdvFragment;
 
 import org.jetbrains.annotations.NotNull;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -74,6 +77,9 @@ public class ItemDetailsFragment extends Fragment implements BottomNavigationVie
     MaterialButton btn_Edit_Choices;
     String message;
     int id;
+    Advertise advertise;
+    Advertiser advertiser;
+
 
 
 
@@ -158,12 +164,15 @@ public class ItemDetailsFragment extends Fragment implements BottomNavigationVie
 
             if(hashMapItem2.get("ad_key")!=null){
                 ad_key=hashMapItem2.get("ad_key");
-                getAdsApi(ad_key);
+                getAdApi(ad_key);
             }
 
-            if(hashMapItem2.get("Title")!=null){
-                edit_advName.setText(hashMapItem2.get("Title"));
-            }
+//            if(hashMapItem2.get("Title")!=null){
+//                edit_advName.setText(hashMapItem2.get("Title"));
+//            }
+//        if(advertise!= null)
+//            edit_advName.setText(advertise.getTitle());
+
             if(hashMapItem2.get("Item_condition")!=null){
                 if(hashMapItem2.get("Item_condition").equalsIgnoreCase("new"))
                     edit_AdvDescription.setText("جديد");
@@ -178,13 +187,13 @@ public class ItemDetailsFragment extends Fragment implements BottomNavigationVie
             if(hashMapItem2.get("Sub_category")!=null){
                 edit_AdvSubCategory.setText(hashMapItem2.get("Sub_category"));
             }
-            if(hashMapItem2.get("Active")!=null){
-                if(hashMapItem2.get("Active").equalsIgnoreCase("1")) {
-                    edit_AdvActive.setText("مفعل");
-                }else {
-                    edit_AdvActive.setText("غير مفعل");
-
-                }
+//            if(hashMapItem2.get("Active")!=null){
+//                if(hashMapItem2.get("Active").equalsIgnoreCase("1")) {
+//                    edit_AdvActive.setText("مفعل");
+//                }else {
+//                    edit_AdvActive.setText("غير مفعل");
+//
+//                }
             }
             if(hashMapItem2.get("Info")!=null){
                 edit_AdvPrice.setText(hashMapItem2.get("Info"));
@@ -201,12 +210,12 @@ public class ItemDetailsFragment extends Fragment implements BottomNavigationVie
 
         }
 
-    }
+//    }
 
 
 
 
-    private void getAdsApi(String ad_key) {
+    private void getAdApi(String ad_key) {
 
         ArrayList<Items> mSports = new ArrayList<>();
 
@@ -214,23 +223,71 @@ public class ItemDetailsFragment extends Fragment implements BottomNavigationVie
         Call<Object> call= RetrofitClient.
                 getInstance()
                 .getApi()
-                .get_ads(ad_key);
+                .get_ad(ad_key);
         call.enqueue(new Callback<Object>() {
             @Override
             public void onResponse(@NotNull Call<Object> call, @NotNull Response<Object> response) {
-                Log.e("gson:get_ads", new Gson().toJson(response.body()) );
+                Log.e("gson:get_ad", new Gson().toJson(response.body()) );
 
                 if(response!=null) {
 
                     if (response.body() != null) {
-                        Log.e("res:get_ads", "isSuccessful");
-//                        try {
-//                            JSONObject jsonObject = new JSONObject(new Gson().toJson(response.body()));
-//                            String message = jsonObject.getString("message");
-//                            if (message != null&&!message.isEmpty()) {
-//                                Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
-//                            }
-//                            JSONObject jsonData  = jsonObject.getJSONObject("data");
+                        Log.e("res:get_ad", "isSuccessful");
+                        try {
+                            JSONObject jsonObject = new JSONObject(new Gson().toJson(response.body()));
+                            String message = jsonObject.getString("message");
+                            if (message != null&&!message.isEmpty()) {
+                                Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+                            }
+                            JSONObject jsonData  = jsonObject.getJSONObject("data");
+                            JSONObject jsonadvertiser=jsonData.getJSONObject("advertiser");
+                            JSONObject jsonadvertise=jsonData.getJSONObject("advertise");
+
+                            //get Advertiser information
+                            String name=jsonadvertiser.getString("name");
+                            String image=jsonadvertiser.getString("image");
+                            String market_name=jsonadvertiser.getString("market_name");
+                            String address=jsonadvertiser.getString("address");
+                            String lat=jsonadvertiser.getString("lat");
+                            String lng=jsonadvertiser.getString("lng");
+                            String phone=jsonadvertiser.getString("phone");
+                            String description=jsonadvertiser.getString("description");
+                            JSONArray social_links=jsonadvertiser.getJSONArray("social_links");
+                            String[] arr_social_links = new String[social_links.length()];
+                            for(int i = 0; i < social_links.length(); i++)
+                                arr_social_links[i] = social_links.getString(i);
+
+                             advertiser=new Advertiser(name,image,market_name,address,lat,lng,phone,description,arr_social_links);
+
+                            //get Advertise information
+                            String active=jsonadvertise.getString("active");
+                            String offer=jsonadvertise.getString("offer");
+                            String title=jsonadvertise.getString("title");
+                            String main_image=jsonadvertise.getString("main_image");
+                            String price=jsonadvertise.getString("price");
+                            String descriptionAdv=jsonadvertise.getString("description");
+                            String category=jsonadvertise.getString("category");
+                            String sub_category_id=jsonadvertise.getString("sub_category_id");
+                            String sub_category=jsonadvertise.getString("sub_category");
+                            String is_favorite=jsonadvertise.getString("is_favorite");
+                            String rate=jsonadvertise.getString("rate");
+                            String rate_users=jsonadvertise.getString("rate_users");
+                            String item_condition=jsonadvertise.getString("item_condition");
+                            String status=jsonadvertise.getString("status");
+                            JSONArray images=jsonadvertise.getJSONArray("images");
+                            String[] arr_images = new String[images.length()];
+                            for(int i = 0; i < images.length(); i++)
+                                arr_images[i] = images.getString(i);
+
+                            advertise=new Advertise(active,offer,title,main_image,price,descriptionAdv,category,sub_category_id,sub_category,
+                                    is_favorite,rate,rate_users,item_condition,status,arr_images);
+                            if(advertise!= null)
+                                setAdDetails();
+
+
+
+
+
 //                            JSONArray arrJson = jsonData.getJSONArray("ads");
 //                            JSONObject[] arr=new JSONObject[arrJson.length()];
 //
@@ -254,15 +311,15 @@ public class ItemDetailsFragment extends Fragment implements BottomNavigationVie
 //
 //
 //
-//                        } catch (JSONException e) {
-//                            e.printStackTrace();
-//                        }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
 ////
                     }
 
                 } else if (response.errorBody() != null) {
                     try {
-                        Log.e("gson:get_ads_error", response.errorBody().string());
+                        Log.e("gson:get_ad_error", response.errorBody().string());
                         Toast.makeText(getActivity(), response.errorBody().string(), Toast.LENGTH_SHORT).show();
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -274,15 +331,24 @@ public class ItemDetailsFragment extends Fragment implements BottomNavigationVie
 
             @Override
             public void onFailure(Call<Object> call, Throwable t) {
-                Log.e("get_ads:onFailure", String.valueOf(t));
+                Log.e("get_ad:onFailure", String.valueOf(t));
 
             }
         });
 
     }
 
+    private void setAdDetails() {
+        edit_advName.setText(advertise.getTitle());
+        edit_AdvDescription.setText(advertise.getDescriptionAdv());
+        if(advertise.getActive().equalsIgnoreCase("1")) {
+            edit_AdvActive.setText("مفعل");
+        }else {
+            edit_AdvActive.setText("غير مفعل");
 
+        }
 
+    }
 
 
     @Override
@@ -394,9 +460,17 @@ public class ItemDetailsFragment extends Fragment implements BottomNavigationVie
                                 AddAdvFragment addAdvFragment= new AddAdvFragment();
                                 Bundle args = new Bundle();
                                 args.putString("fragment", "editAdv");
+                                args.putString("ad_key",ad_key);
                                 addAdvFragment.setArguments(args);
 
-                                Toast.makeText(getContext(), selected, Toast.LENGTH_SHORT).show();
+
+                                Objects.requireNonNull(getActivity()).getSupportFragmentManager().beginTransaction()
+                                        .replace(R.id.item_details_container, addAdvFragment, "findThisFragment")
+                                        .addToBackStack(null)
+                                        .commit();
+
+
+//                                Toast.makeText(getContext(), selected, Toast.LENGTH_SHORT).show();
                                 break;
                             case "تفعيل/الغاء تفعيل الاعلان":
                                 openDialogActivateAd();
