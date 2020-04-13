@@ -4,12 +4,14 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -62,6 +64,7 @@ public class ItemDetailsFragment extends Fragment implements BottomNavigationVie
     TextView edit_advName,edit_AdvDescription,edit_AdvCategory,edit_AdvSubCategory,edit_AdvActive,edit_AdvStatus,edit_AdvPrice;
     AlertDialog.Builder builder;
     String selected;
+    private String offer_price = "";
 
 
     //    List<category> historicList = new ArrayList<>();
@@ -73,6 +76,8 @@ public class ItemDetailsFragment extends Fragment implements BottomNavigationVie
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
     private HashMap<String, String> hashMapItem2;
+    private HashMap<String, String> hashMapEditAd=new HashMap<String, String>();
+
     String ad_key;
     MaterialButton btn_Edit_Choices;
     String message;
@@ -281,36 +286,11 @@ public class ItemDetailsFragment extends Fragment implements BottomNavigationVie
 
                             advertise=new Advertise(active,offer,title,main_image,price,descriptionAdv,category,sub_category_id,sub_category,
                                     is_favorite,rate,rate_users,item_condition,status,arr_images);
-                            if(advertise!= null)
+                            if(advertise!= null&&advertiser!=null)
                                 setAdDetails();
 
 
 
-
-
-//                            JSONArray arrJson = jsonData.getJSONArray("ads");
-//                            JSONObject[] arr=new JSONObject[arrJson.length()];
-//
-//                            for(int i = 0; i < arrJson.length(); i++) {
-//                                arr[i] = arrJson.getJSONObject(i);
-//                                Log.e("tag", String.valueOf(arr[i]));
-//                                String ad_key=arr[i].getString("ad_key");
-//                                String title=arr[i].getString("title");
-//                                String offer=arr[i].getString("offer");
-//                                String main_image=arr[i].getString("main_image");
-//                                String price=arr[i].getString("price");
-//                                String category=arr[i].getString("category");
-//                                String sub_category=arr[i].getString("sub_category");
-//                                String active=arr[i].getString("active");
-//                                String item_condition=arr[i].getString("item_condition");
-//                                String status=arr[i].getString("status");
-//                                mSports.add(new Items(ad_key,main_image,item_condition , title, price,offer,category,sub_category,active,status));
-//                            }
-//                            mSportAdapter.addItems(mSports);
-//                            mRecyclerView.setAdapter(mSportAdapter);
-//
-//
-//
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -339,14 +319,35 @@ public class ItemDetailsFragment extends Fragment implements BottomNavigationVie
     }
 
     private void setAdDetails() {
-        edit_advName.setText(advertise.getTitle());
-        edit_AdvDescription.setText(advertise.getDescriptionAdv());
-        if(advertise.getActive().equalsIgnoreCase("1")) {
-            edit_AdvActive.setText("مفعل");
-        }else {
-            edit_AdvActive.setText("غير مفعل");
-
+        if(advertise.getTitle()!=null){
+            hashMapEditAd.put("title",advertise.getTitle());
+            edit_advName.setText(advertise.getTitle());
         }
+
+        if(advertise.getPrice()!=null){
+            hashMapEditAd.put("price",advertise.getPrice());
+        }
+
+
+        if(advertise.getDescriptionAdv()!=null){
+            hashMapEditAd.put("description",advertise.getDescriptionAdv());
+            edit_AdvDescription.setText(advertise.getDescriptionAdv());
+        }
+
+        if(advertise.getMain_image()!=null){
+            hashMapEditAd.put("main_image",advertise.getMain_image());
+        }
+
+        if(advertise.getActive()!=null) {
+            if(advertise.getActive().equalsIgnoreCase("1")) {
+                edit_AdvActive.setText("مفعل");
+            }else {
+                edit_AdvActive.setText("غير مفعل");
+
+            }
+        }
+
+
 
     }
 
@@ -461,6 +462,7 @@ public class ItemDetailsFragment extends Fragment implements BottomNavigationVie
                                 Bundle args = new Bundle();
                                 args.putString("fragment", "editAdv");
                                 args.putString("ad_key",ad_key);
+                                args.putSerializable("hashMapEditAd",hashMapEditAd);
                                 addAdvFragment.setArguments(args);
 
 
@@ -469,8 +471,6 @@ public class ItemDetailsFragment extends Fragment implements BottomNavigationVie
                                         .addToBackStack(null)
                                         .commit();
 
-
-//                                Toast.makeText(getContext(), selected, Toast.LENGTH_SHORT).show();
                                 break;
                             case "تفعيل/الغاء تفعيل الاعلان":
                                 openDialogActivateAd();
@@ -481,11 +481,18 @@ public class ItemDetailsFragment extends Fragment implements BottomNavigationVie
                                 openCheckDialog(message,id);
                                 break;
                             case "عمل عرض/الغاء عرض":
-                                Toast.makeText(getContext(), selected, Toast.LENGTH_SHORT).show();
+                               if(advertise.getOffer()!=null&&!advertise.getOffer().isEmpty()) {
+                                   message="هل انت متأكد انك تريد الغاء العرض؟";
+                                   id=2;
+                                   openCheckDialog(message,id);
+
+                               }else {
+                                   createOfferDialog();
+                               }
                                 break;
                             case "المنتج مباع":
                                 message="هل انت متأكد انك تريد جعل الاعلان مباع؟";
-                                id=2;
+                                id=3;
                                 openCheckDialog(message,id);
                                 break;
 
@@ -499,7 +506,138 @@ public class ItemDetailsFragment extends Fragment implements BottomNavigationVie
 
     }
 
+    private void createOfferDialog() {
 
+        AlertDialog.Builder builder = new AlertDialog.Builder(Objects.requireNonNull(getActivity()));
+        builder.setTitle("السعر الجديد بعد العرض");
+
+// Set up the input
+        final EditText input = new EditText(getActivity());
+// Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
+        input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_CLASS_NUMBER);
+        builder.setView(input);
+
+// Set up the buttons
+        builder.setPositiveButton("موافق", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                offer_price = input.getText().toString();
+                createOfferApi(offer_price);
+                Toast.makeText(getContext(), offer_price, Toast.LENGTH_SHORT).show();
+            }
+        });
+        builder.setNegativeButton("الغاء", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        builder.show();
+    }
+
+    private void deleteOfferApi() {
+        Call call= RetrofitClient.
+                getInstance().getApi()
+                .delete_offer(ad_key);
+        call.enqueue(new Callback() {
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) {
+                if(response!=null) {
+
+                    if (response.body() != null) {
+                        Log.e("gson:delete_offer", new Gson().toJson(response.body()));
+                        try {
+                            JSONObject jsonObject = new JSONObject(new Gson().toJson(response.body()));
+                            String msg = jsonObject.getString("message");
+//                            if (msg != null&&msg.equalsIgnoreCase("تم حذف الإعلان بنجاح")) {
+                            Toast.makeText(getActivity(), msg, Toast.LENGTH_SHORT).show();
+                            Log.e("delete_offer",msg);
+                            Intent intent_log =new Intent(getActivity(), MainActivity.class);
+                            intent_log.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            startActivity(intent_log);
+
+//                            }
+
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    } else if (response.errorBody() != null) {
+                        try {
+                            Log.e("gson:error_delete_offer", response.errorBody().string());
+                            Toast.makeText(getActivity(), response.errorBody().string(), Toast.LENGTH_SHORT).show();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                }
+            }
+
+
+            @Override
+            public void onFailure(Call call, Throwable t) {
+//                Toast.makeText(RegistrationActivityOne.this, t, Toast.LENGTH_SHORT).show();
+                Log.e("delete_offer:onFailure", String.valueOf(t));
+
+            }
+        });
+
+    }
+
+
+    private void createOfferApi(String offer_price) {
+        Call call= RetrofitClient.
+                getInstance().getApi()
+                .create_offer(ad_key,offer_price);
+        call.enqueue(new Callback() {
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) {
+                if(response!=null) {
+
+                    if (response.body() != null) {
+                        Log.e("gson:create_offer", new Gson().toJson(response.body()));
+                        try {
+                            JSONObject jsonObject = new JSONObject(new Gson().toJson(response.body()));
+                            String msg = jsonObject.getString("message");
+//                            if (msg != null&&msg.equalsIgnoreCase("تم حذف الإعلان بنجاح")) {
+                            Toast.makeText(getActivity(), msg, Toast.LENGTH_SHORT).show();
+                            Log.e("create_offer",msg);
+                            Intent intent_log =new Intent(getActivity(), MainActivity.class);
+                            intent_log.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            startActivity(intent_log);
+
+//                            }
+
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    } else if (response.errorBody() != null) {
+                        try {
+                            Log.e("gson:error_create_offer", response.errorBody().string());
+                            Toast.makeText(getActivity(), response.errorBody().string(), Toast.LENGTH_SHORT).show();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                }
+            }
+
+
+            @Override
+            public void onFailure(Call call, Throwable t) {
+//                Toast.makeText(RegistrationActivityOne.this, t, Toast.LENGTH_SHORT).show();
+                Log.e("create_offer:onFailure", String.valueOf(t));
+
+            }
+        });
+
+    }
 
 
     private void openDialogActivateAd() {
@@ -542,6 +680,9 @@ public class ItemDetailsFragment extends Fragment implements BottomNavigationVie
         builder.show();
 
     }
+
+
+
 
     private void activateAdApi() {
         Call call= RetrofitClient.
@@ -656,9 +797,14 @@ public class ItemDetailsFragment extends Fragment implements BottomNavigationVie
                         switch (i){
                             case 1:
                                 deleteAdApi();
-                                Toast.makeText(getContext(), "تم المسح", Toast.LENGTH_SHORT).show();
+//                                Toast.makeText(getContext(), "تم المسح", Toast.LENGTH_SHORT).show();
                                 break;
+
                             case 2:
+                                deleteOfferApi();
+//                                Toast.makeText(getContext(), "تم المسح", Toast.LENGTH_SHORT).show();
+                                break;
+                            case 3:
 //                                Toast.makeText(getContext(), "تم جعل المنتج مباع", Toast.LENGTH_SHORT).show();
                                 setAsSoldApi();
                                 break;

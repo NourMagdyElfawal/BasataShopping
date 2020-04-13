@@ -4,7 +4,6 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -16,7 +15,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
@@ -39,7 +37,6 @@ import com.souqmaftoh.basatashopping.Api.RetrofitClient;
 import com.souqmaftoh.basatashopping.Interface.addAdvImageModelClass;
 import com.souqmaftoh.basatashopping.LoginActivity;
 import com.souqmaftoh.basatashopping.MainActivity;
-import com.souqmaftoh.basatashopping.Models.DefaultResponse;
 import com.souqmaftoh.basatashopping.Interface.User;
 import com.souqmaftoh.basatashopping.R;
 import com.souqmaftoh.basatashopping.Storage.SharedPrefManager;
@@ -52,6 +49,7 @@ import org.json.JSONObject;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
@@ -66,7 +64,7 @@ public class AddAdvFragment extends Fragment implements BottomNavigationView.OnN
     private SlideshowViewModel addAdvViewModel;
     CurvedBottomNavigationView mView;
     MainActivity mainActivity;
-    CardView card_telephone,card_confirm;
+    CardView card_telephone,card_confirm,card_spin_sub,card_spinner,card_spin_con;
     ImageView addProductImg;
     private static final int PICK_PHOTO_FOR_AVATAR = 0;
     private static final int PICK_IMAGE_MULTIPLE = 1;
@@ -74,7 +72,7 @@ public class AddAdvFragment extends Fragment implements BottomNavigationView.OnN
     List<String> imagesEncodedList;
     ArrayList<addAdvImageModelClass> items = new ArrayList<>();
     addAdvAdapter adapter;
-    EditText et_advName,et_AdvDescription,et_AdvAddress,et_telephone;
+    EditText et_advName,et_AdvDescription,et_AdvPrice,et_telephone;
     String encodedImage,token;
     String item_condition,category;
     int sub_category;
@@ -88,6 +86,8 @@ public class AddAdvFragment extends Fragment implements BottomNavigationView.OnN
     // TODO: Rename and change types of parameters
     private String fragment;
     private String ad_key;
+    private HashMap<String, String> hashMapEditAd2;
+
     MaterialButton btn_addAdv;
     Spinner   spinnerCat,spin_sub_cat,spin_spin_con;
 
@@ -114,9 +114,11 @@ public class AddAdvFragment extends Fragment implements BottomNavigationView.OnN
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
+        if (getArguments() != null&& getArguments().getSerializable("hashMapEditAd") != null
+                &&getArguments().getString("fragment")!=null&&getArguments().getString("ad_key")!=null) {
             fragment = getArguments().getString("fragment");
             ad_key = getArguments().getString("ad_key");
+            hashMapEditAd2=(HashMap<String, String>)getArguments().getSerializable("hashMapEditAd");
         }
     }
 
@@ -130,7 +132,7 @@ public class AddAdvFragment extends Fragment implements BottomNavigationView.OnN
 
         et_advName=root.findViewById(R.id.et_advName);
         et_AdvDescription=root.findViewById(R.id.et_AdvDescription);
-        et_AdvAddress=root.findViewById(R.id.et_AdvAddress);
+        et_AdvPrice=root.findViewById(R.id.et_AdvPrice);
         et_telephone=root.findViewById(R.id.et_telephone);
 
         btn_addAdv=root.findViewById(R.id.btn_addAdv);
@@ -144,10 +146,6 @@ public class AddAdvFragment extends Fragment implements BottomNavigationView.OnN
                 token = user.getToken();
 
             }
-        }
-
-        if(!ad_key.isEmpty()){
-
         }
 
 
@@ -188,6 +186,12 @@ public class AddAdvFragment extends Fragment implements BottomNavigationView.OnN
 
         card_telephone=root.findViewById(R.id.card_telephone);
         card_confirm=root.findViewById(R.id.card_AdvAddress);
+        card_spinner=root.findViewById(R.id.card_spinner);
+        card_spin_sub=root.findViewById(R.id.card_spin_sub);
+        card_spin_con=root.findViewById(R.id.card_spin_con);
+
+
+
         mView = root.findViewById(R.id.customBottomBar);
         mView.setOnNavigationItemSelectedListener(AddAdvFragment.this);
 
@@ -209,7 +213,34 @@ public class AddAdvFragment extends Fragment implements BottomNavigationView.OnN
 //                textView.setText(s);
 //            }
 //        });
+
+//        Edit Advertise
+
+        if(fragment!=null) {
+            if (fragment.equalsIgnoreCase("editAdv")) {
+                card_telephone.setVisibility(View.GONE);
+                card_spinner.setVisibility(View.GONE);
+                card_spin_sub.setVisibility(View.GONE);
+                card_spin_con.setVisibility(View.GONE);
+
+                et_advName.setText(hashMapEditAd2.get("title"));
+                et_AdvDescription.setText(hashMapEditAd2.get("description"));
+                et_AdvPrice.setText(hashMapEditAd2.get("price"));
+
+
+
+                btn_addAdv.setText("تعديل");
+
+            }
+        }
+
+
+
         return root;
+    }
+
+    private void setAdvDetails() {
+
     }
 
     private void spinnerCondition() {
@@ -588,7 +619,7 @@ public class AddAdvFragment extends Fragment implements BottomNavigationView.OnN
     }
     private void editAdvertiseByApi(String ad_key) {
         String title=et_advName.getText().toString();
-        int price= Integer.parseInt(et_AdvAddress.getText().toString());
+        int price= Integer.parseInt(et_AdvPrice.getText().toString());
         String description=et_AdvDescription.getText().toString();
 //        int sub_category= Integer.parseInt(et_advName.getText().toString());
         String main_image=encodedImage;
@@ -670,7 +701,7 @@ public class AddAdvFragment extends Fragment implements BottomNavigationView.OnN
     private void AddAdvertiseByApi() {
 
         String title=et_advName.getText().toString();
-        int price= Integer.parseInt(et_AdvAddress.getText().toString());
+        int price= Integer.parseInt(et_AdvPrice.getText().toString());
         String description=et_AdvDescription.getText().toString();
 //        int sub_category= Integer.parseInt(et_advName.getText().toString());
         String main_image=encodedImage;

@@ -259,6 +259,25 @@ public interface Api {
             @Field("push_token") String push_token
 
     );
+    @Headers({
+            "Accept: application/json",
+    })
+    @FormUrlEncoded
+    @POST("create_offer")
+    Call<Object> create_offer(
+            @Field("ad_key") String ad_key,
+            @Field("price") String price
+
+    );
+    @Headers({
+            "Accept: application/json",
+    })
+    @FormUrlEncoded
+    @POST("delete_offer")
+    Call<Void> delete_offer(
+            @Field("ad_key") String ad_key
+
+    );
 
 
 
