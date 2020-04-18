@@ -34,6 +34,9 @@ import com.google.android.material.button.MaterialButton;
 import com.google.gson.Gson;
 import com.souqmaftoh.basatashopping.Adapter.addAdvAdapter;
 import com.souqmaftoh.basatashopping.Api.RetrofitClient;
+import com.souqmaftoh.basatashopping.Interface.Advertise;
+import com.souqmaftoh.basatashopping.Interface.Categories;
+import com.souqmaftoh.basatashopping.Interface.Items;
 import com.souqmaftoh.basatashopping.Interface.addAdvImageModelClass;
 import com.souqmaftoh.basatashopping.LoginActivity;
 import com.souqmaftoh.basatashopping.MainActivity;
@@ -43,6 +46,7 @@ import com.souqmaftoh.basatashopping.Storage.SharedPrefManager;
 import com.souqmaftoh.basatashopping.design.CurvedBottomNavigationView;
 
 import org.jetbrains.annotations.NotNull;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -154,8 +158,8 @@ public class AddAdvFragment extends Fragment implements BottomNavigationView.OnN
         spin_sub_cat = root.findViewById(R.id.spin_sub_cat);
         spin_spin_con = root.findViewById(R.id.spin_spin_con);
 
+        getCategoryApi();
 
-        spinnerCategories();
         spinnerSunCategories();
         spinnerCondition();
 
@@ -239,9 +243,88 @@ public class AddAdvFragment extends Fragment implements BottomNavigationView.OnN
         return root;
     }
 
-    private void setAdvDetails() {
+    private void getCategoryApi() {
+
+        ArrayList<Categories> mCategories = new ArrayList<>();
+
+        Call call= RetrofitClient.
+                getInstance()
+                .getApi()
+                .get_categories();
+        call.enqueue(new Callback<Object>() {
+            @Override
+            public void onResponse(@NotNull Call<Object> call, @NotNull Response<Object> response) {
+                Log.e("gson:get_categories", new Gson().toJson(response.body()) );
+
+                if(response!=null) {
+
+                    if (response.body() != null) {
+                        Log.e("res:get_categories", "isSuccessful");
+                        try {
+                            JSONObject jsonObject = new JSONObject(new Gson().toJson(response.body()));
+                            String message = jsonObject.getString("message");
+                            if (message != null&&!message.isEmpty()) {
+                                Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+                            }
+                            JSONObject jsonData  = jsonObject.getJSONObject("data");
+                            JSONArray arrJson = jsonData.getJSONArray("data");
+                            JSONObject[] arr=new JSONObject[arrJson.length()];
+
+                            for(int i = 0; i < arrJson.length(); i++) {
+                                arr[i] = arrJson.getJSONObject(i);
+                                Log.e("tag", String.valueOf(arr[i]));
+                                String category=arr[i].getString("name_ar");
+                                int id=arr[i].getInt("id");
+
+                                //                                String offer=arr[i].getString("offer");
+//                                String main_image=arr[i].getString("main_image");
+//                                String price=arr[i].getString("price");
+//                                String category=arr[i].getString("category");
+//                                String sub_category=arr[i].getString("sub_category");
+//                                String active=arr[i].getString("active");
+//                                String item_condition=arr[i].getString("item_condition");
+//                                String status=arr[i].getString("status");
+                                mCategories.add(new Categories(category,id));
+                            }
+                            Log.e("category", String.valueOf(mCategories));
+                            if(mCategories!=null){
+                                spinnerCategories(mCategories);
+                            }
+//                            mSportAdapter.addItems(mSports);
+//                            mRecyclerView.setAdapter(mSportAdapter);
+
+
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+//
+                    }
+
+                } else if (response.errorBody() != null) {
+                    try {
+                        Log.e("gson:categories_error", response.errorBody().string());
+                        Toast.makeText(getActivity(), response.errorBody().string(), Toast.LENGTH_SHORT).show();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+
+
+            @Override
+            public void onFailure(Call<Object> call, Throwable t) {
+                Log.e("categories:onFailure", String.valueOf(t));
+
+            }
+        });
+
+
+
 
     }
+
 
     private void spinnerCondition() {
 
@@ -338,7 +421,7 @@ public class AddAdvFragment extends Fragment implements BottomNavigationView.OnN
 
     }
 
-    private void spinnerCategories() {
+    private void spinnerCategories(ArrayList<Categories> mCategories) {
         // Spinner click listener
         spinnerCat.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View view,
@@ -346,20 +429,26 @@ public class AddAdvFragment extends Fragment implements BottomNavigationView.OnN
                 Log.e("position", String.valueOf(position));
 //                Log.e("category", String.valueOf(view));
 
-
+                for(int i = 0; i <= position; i++) {
+                    String[] arr = new String[mCategories.size()];
+                    arr[i] = mCategories.get(0).getCategory();
+                }
                 switch (position){
                     case 0:
-                        category="جوالات";
+                        category=mCategories.get(0).getCategory();
                         break;
                     case 1:
-                        category="تابلت";
-                        break;
-                    case 2:
-                        category="اكسسوارات";
-                        break;
-                    case 3:
-                        category="أخرى";
-                        break;
+//                        category=mCategories.get(1);
+//                        break;
+//                    case 2:
+//                        category=mCategories.get(2);
+//                        break;
+//                    case 3:
+//                        category=mCategories.get(3);
+//                        break;
+//                    case 4:
+//                        category=mCategories.get(4);
+//                        break;
 
 
                 }
@@ -370,18 +459,19 @@ public class AddAdvFragment extends Fragment implements BottomNavigationView.OnN
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-                category="جوالات";
+//                category=mCategories.get(4);
 
             }
         });
 
         // Spinner Drop down elements
         List<String> categories = new ArrayList<String>();
-        categories.add("جوالات");
-        categories.add("تابلت");
-        categories.add("اكسسوارات");
-        categories.add("أخرى");
-
+//        categories.add(mCategories.get(0));
+//        categories.add(mCategories.get(1));
+//        categories.add(mCategories.get(2));
+//        categories.add(mCategories.get(3));
+//        categories.add(mCategories.get(4));
+//
         // Creating adapter for spinner
         ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, categories);
 

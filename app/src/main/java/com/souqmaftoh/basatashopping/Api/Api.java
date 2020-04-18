@@ -22,8 +22,6 @@ public interface Api {
 
             @Headers({
             "Accept: application/json",
-//            "Content-Type: application/json",
-//            "Authorization: Bearer token"
     })
     @FormUrlEncoded
     @POST("register")
@@ -37,8 +35,6 @@ public interface Api {
 
     @Headers({
             "Accept: application/json",
-//            "Content-Type: application/json",
-//            "Authorization: Bearer token"
     })
     @FormUrlEncoded
     @POST("register")
@@ -157,8 +153,6 @@ public interface Api {
 
     @Headers({
             "Accept: application/json",
-//            "Content-Type: application/json"
-//            "Authorization: Bearer token"
     })
     @FormUrlEncoded
     @POST("reset_password")
@@ -228,6 +222,11 @@ public interface Api {
             @Field("ad_key") String ad_key
     );
 
+    @Headers({
+            "Accept: application/json",
+    })
+    @GET("categories")
+    Call<Object> get_categories();
 
 
     @Headers({
@@ -274,7 +273,7 @@ public interface Api {
     })
     @FormUrlEncoded
     @POST("delete_offer")
-    Call<Void> delete_offer(
+    Call<Object> delete_offer(
             @Field("ad_key") String ad_key
 
     );

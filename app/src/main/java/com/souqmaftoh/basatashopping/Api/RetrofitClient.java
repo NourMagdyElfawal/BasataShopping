@@ -24,40 +24,6 @@ public class RetrofitClient {
     private Retrofit retrofit;
     private String token;
 
-//    OkHttpClient client = new OkHttpClient.Builder()
-//            .addInterceptor(new Interceptor() {
-//                @Override
-//                public Response intercept(Chain chain) throws IOException {
-//                    Request.Builder ongoing = chain.request().newBuilder();
-////                    ongoing.addHeader("Accept", "application/json;versions=1");
-//                    if (SharedPrefManager.getInstance().getUser()!=null) {
-//                        User user = SharedPrefManager.getInstance().getUser();
-//                        if (user.getToken() != null && !user.getToken().isEmpty()) {
-//                            token=user.getToken();
-//                            ongoing.addHeader("Authorization", token);
-//
-//                        }
-//
-//                    }
-//                    return chain.proceed(ongoing.build());
-//                }
-//            })
-//            .build();
-
-//    private boolean isUserLoggedIn() {
-//        User user = SharedPrefManager.getInstance().getUser();
-//        if (user != null) {
-//            if (user.getToken() != null && !user.getToken().isEmpty()) {
-//                token=user.getToken();
-//            }
-//            return true;
-//
-//        }else {
-//            return false;
-//        }
-//    }
-
-
 
     OkHttpClient client = new OkHttpClient.Builder().addInterceptor(new Interceptor() {
         @Override
@@ -90,17 +56,6 @@ public class RetrofitClient {
                 .addConverterFactory(ScalarsConverterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .build();
-
-
-//        HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
-//        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
-//        OkHttpClient client = new OkHttpClient.Builder().addInterceptor(interceptor).build();
-//
-//        Retrofit retrofit = new Retrofit.Builder()
-//                .baseUrl(BASE_URL)
-//                .client(client)
-//                .addConverterFactory(GsonConverterFactory.create())
-//                .build();
 
     }
     public static synchronized RetrofitClient getInstance(){

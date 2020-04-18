@@ -58,10 +58,11 @@ public class ItemDetailsFragment extends Fragment implements BottomNavigationVie
 
     CurvedBottomNavigationView mView;
     MainActivity mainActivity;
-    CardView card_telephone,card_confirm;
+    CardView card_telephone,card_confirm,card_AdvPriceOffer;
 
     ImageView imgV_adv;
-    TextView edit_advName,edit_AdvDescription,edit_AdvCategory,edit_AdvSubCategory,edit_AdvActive,edit_AdvStatus,edit_AdvPrice;
+    TextView edit_advName,edit_AdvDescription,edit_AdvCategory,edit_AdvSubCategory,edit_AdvActive,
+            edit_AdvStatus,edit_AdvPriceOffer,edit_AdvPrice;
     AlertDialog.Builder builder;
     String selected;
     private String offer_price = "";
@@ -84,6 +85,7 @@ public class ItemDetailsFragment extends Fragment implements BottomNavigationVie
     int id;
     Advertise advertise;
     Advertiser advertiser;
+    String TAG ="Api";
 
 
 
@@ -143,8 +145,12 @@ public class ItemDetailsFragment extends Fragment implements BottomNavigationVie
         edit_AdvSubCategory=root.findViewById(R.id.edit_AdvSubCategory);
         edit_AdvActive=root.findViewById(R.id.edit_AdvActive);
         edit_AdvStatus=root.findViewById(R.id.edit_AdvStatus);
+        edit_AdvPriceOffer=root.findViewById(R.id.edit_AdvPriceOffer);
         edit_AdvPrice=root.findViewById(R.id.edit_AdvPrice);
         btn_Edit_Choices=root.findViewById(R.id.btn_Edit_Choices);
+
+
+        card_AdvPriceOffer=root.findViewById(R.id.card_AdvPriceOffer);
         addAdvDetails();
 
         //navigationBottom Bar
@@ -327,6 +333,13 @@ public class ItemDetailsFragment extends Fragment implements BottomNavigationVie
         if(advertise.getPrice()!=null){
             hashMapEditAd.put("price",advertise.getPrice());
         }
+
+        if(advertise.getOffer()!=null&&!
+                advertise.getOffer().isEmpty()){
+            card_AdvPriceOffer.setVisibility(View.VISIBLE);
+            edit_AdvPriceOffer.setText(advertise.getOffer());
+        }
+
 
 
         if(advertise.getDescriptionAdv()!=null){
@@ -650,7 +663,7 @@ public class ItemDetailsFragment extends Fragment implements BottomNavigationVie
                     public void onClick(DialogInterface arg0, int arg1) {
                         // TODO Auto-generated method stub
                         selected = array[arg1].toString();
-//                        Toast.makeText(getContext(), selected, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), selected, Toast.LENGTH_SHORT).show();
 
                     }
                 })
@@ -664,12 +677,13 @@ public class ItemDetailsFragment extends Fragment implements BottomNavigationVie
                     public void onClick(DialogInterface dialog, int which) {
                         switch (selected){
                             case "تفعيل الاعلان":
-                                Toast.makeText(getContext(), selected, Toast.LENGTH_SHORT).show();
                                 activateAdApi();
+                                Log.e(TAG,"activateAdApi");
                                 break;
+
                             case "الغاء تفعيل الاعلان":
-//                                Toast.makeText(getContext(), selected, Toast.LENGTH_SHORT).show();
                                 deActivateAdApi();
+                                Log.e(TAG,"deActivateAdApi");
                                 break;
 
                         }
@@ -797,16 +811,16 @@ public class ItemDetailsFragment extends Fragment implements BottomNavigationVie
                         switch (i){
                             case 1:
                                 deleteAdApi();
-//                                Toast.makeText(getContext(), "تم المسح", Toast.LENGTH_SHORT).show();
+                                Log.e(TAG,"deleteAdApi");
                                 break;
 
                             case 2:
                                 deleteOfferApi();
-//                                Toast.makeText(getContext(), "تم المسح", Toast.LENGTH_SHORT).show();
+                                Log.e(TAG,"deleteOfferApi");
                                 break;
                             case 3:
-//                                Toast.makeText(getContext(), "تم جعل المنتج مباع", Toast.LENGTH_SHORT).show();
                                 setAsSoldApi();
+                                Log.e(TAG,"setAsSoldApi");
                                 break;
                         }
                     }
