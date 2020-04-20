@@ -107,7 +107,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         String serverClientId = getString(R.string.server_client_id);
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestScopes(new Scope(Scopes.DRIVE_APPFOLDER))
-                .requestServerAuthCode(serverClientId)
+                .requestIdToken(serverClientId)
                 .requestEmail()
                 .build();
 // Build a GoogleSignInClient with the options specified by gso.
@@ -210,13 +210,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     private void socialUserApi(String token, String type, String device_id, String push_token) {
 
-        Call call= RetrofitClient.
+        Call<Object> call= RetrofitClient.
                 getInstance()
                 .getApi()
                 .social_user(token,type,device_id,push_token);
-        call.enqueue(new Callback() {
+        call.enqueue(new Callback<Object>() {
             @Override
-            public void onResponse(Call call, Response response) {
+            public void onResponse(Call<Object> call, Response<Object> response) {
                 Log.e("gson:loginSocial", new Gson().toJson(response.body()) );
 
                 if(response.isSuccessful()) {
@@ -287,7 +287,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             }
 
             @Override
-            public void onFailure(Call call, Throwable t) {
+            public void onFailure(Call<Object> call, Throwable t) {
                 Log.e("loginSocial:onFailure", String.valueOf(t));
 
 
@@ -338,12 +338,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             // Signed in successfully.
             if(account!=null){
                 String authCode = account.getServerAuthCode();
-            if (authCode != null) {
-                Log.e("google_token",authCode);
-                socialUserApi(authCode,"google",device_id,push_token);
+                String tk=account.getIdToken();
+
+            if (tk != null) {
+                Log.e("google_token",tk);
+                socialUserApi(tk,"google",device_id,push_token);
 
             }
-            String token = account.getIdToken();
 
             }
 

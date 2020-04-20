@@ -429,15 +429,17 @@ public class AddAdvFragment extends Fragment implements BottomNavigationView.OnN
                 Log.e("position", String.valueOf(position));
 //                Log.e("category", String.valueOf(view));
 
-                for(int i = 0; i <= position; i++) {
-                    String[] arr = new String[mCategories.size()];
-                    arr[i] = mCategories.get(0).getCategory();
-                }
-                switch (position){
-                    case 0:
-                        category=mCategories.get(0).getCategory();
-                        break;
-                    case 1:
+//                for(int i = 0; i < position; i++) {
+//                    String[] arr = new String[mCategories.size()];
+//                    arr[i] = mCategories.get(0).getCategory();
+                    category=mCategories.get(position).getCategory();
+
+//                }
+//                switch (position){
+//                    case 0:
+//                        category=mCategories.get(0).getCategory();
+//                        break;
+//                    case 1:
 //                        category=mCategories.get(1);
 //                        break;
 //                    case 2:
@@ -451,7 +453,7 @@ public class AddAdvFragment extends Fragment implements BottomNavigationView.OnN
 //                        break;
 
 
-                }
+//                }
 
 
 
@@ -459,13 +461,18 @@ public class AddAdvFragment extends Fragment implements BottomNavigationView.OnN
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-//                category=mCategories.get(4);
+                category=mCategories.get(0).getCategory();
 
             }
         });
 
         // Spinner Drop down elements
         List<String> categories = new ArrayList<String>();
+        for(int i = 0; i < mCategories.size(); i++) {
+            String[] arr = new String[mCategories.size()];
+//            arr[i] = mCategories.get(i).getCategory();
+            categories.add(mCategories.get(i).getCategory());
+        }
 //        categories.add(mCategories.get(0));
 //        categories.add(mCategories.get(1));
 //        categories.add(mCategories.get(2));
@@ -534,7 +541,7 @@ public class AddAdvFragment extends Fragment implements BottomNavigationView.OnN
 //
 //                android.app.Fragment fr = new Coupon_fragment();
 //                FragmentManager fmc = getFragmentManager();
-//                fmc.beginTransaction().replace(R.id.contentPanel, fr).addToBackStack(null).commit();
+//                fmc.beginTransactiaction().replace(R.id.contentPanel, fr).addToBackStack(null).commit();
 //
 ////                        Bundle args = new Bundle();
 ////                        Fragment fm = new Product_fragment();
@@ -802,7 +809,7 @@ public class AddAdvFragment extends Fragment implements BottomNavigationView.OnN
         Call call= RetrofitClient.
                 getInstance()
                 .getApi()
-                .createAd(title,price,description,1,item_condition,main_image);
+                .createAd(title,price,description,1,category,item_condition,main_image);
         call.enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) {

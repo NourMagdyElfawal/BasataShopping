@@ -17,6 +17,7 @@ import retrofit2.http.Header;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 public interface Api {
 
@@ -133,6 +134,7 @@ public interface Api {
             @Field("price") int price,
             @Field("description") String description,
             @Field("sub_category") int sub_category,
+            @Field("category") String category,
             @Field("item_condition") String item_condition,
             @Field("main_image") String main_image
 
@@ -236,6 +238,13 @@ public interface Api {
     Call<Object> get_my_ads();
 
 
+    @Headers({
+            "Accept: application/json",
+    })
+    @GET("search_ads")
+    Call<Object> search_ads();
+
+
 
     @Headers({
             "Accept: application/json",
@@ -258,6 +267,8 @@ public interface Api {
             @Field("push_token") String push_token
 
     );
+
+
     @Headers({
             "Accept: application/json",
     })
@@ -268,6 +279,8 @@ public interface Api {
             @Field("price") String price
 
     );
+
+
     @Headers({
             "Accept: application/json",
     })
@@ -275,8 +288,27 @@ public interface Api {
     @POST("delete_offer")
     Call<Object> delete_offer(
             @Field("ad_key") String ad_key
-
     );
+
+
+
+    @Headers({
+            "Accept: application/json",
+    })
+    @POST("logout")
+    Call<Object> logout();
+
+
+    @Headers({
+            "Accept: application/json",
+    })
+    @FormUrlEncoded
+    @POST("set_as_favorite")
+    Call<Object> set_as_favorite(
+            @Field("ad_key") String ad_key
+    );
+
+
 
 
 

@@ -851,6 +851,7 @@ public class MyAccountFragment extends Fragment implements View.OnClickListener 
     }
 
 
+
     private void editMerchantProfileApi(String name, String email, String market_name, String address, String lat,String lng, String phone, String description) {
 
 
@@ -979,6 +980,7 @@ public class MyAccountFragment extends Fragment implements View.OnClickListener 
     private void logOut() {
         SharedPrefManager.getInstance(getActivity()).clear();
         Toast.makeText(getActivity(), "User Sign out!", Toast.LENGTH_SHORT).show();
+        logOutApi();
 //        startActivity(new Intent(getActivity(), LoginActivity.class));
         Intent intent_log =new Intent(getActivity(), LoginActivity.class);
         intent_log.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -1011,6 +1013,53 @@ public class MyAccountFragment extends Fragment implements View.OnClickListener 
             Objects.requireNonNull(getFragmentManager()).popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
 
         }
+
+    }
+
+    private void logOutApi() {
+        Call<Object> call= RetrofitClient.
+                getInstance().getApi()
+                .logout();
+        call.enqueue(new Callback<Object>() {
+            @Override
+            public void onResponse(@NotNull Call<Object> call, @NotNull Response<Object> response) {
+                if(response!=null) {
+
+                    if (response.body() != null) {
+                        Log.e("gson:logout", new Gson().toJson(response.body()));
+                        try {
+                            JSONObject jsonObject = new JSONObject(new Gson().toJson(response.body()));
+                            String msg = jsonObject.getString("message");
+
+//                            if (msg != null) {
+//                                Toast.makeText(getActivity(), msg, Toast.LENGTH_SHORT).show();
+//                            }
+//
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    } else if (response.errorBody() != null) {
+                        try {
+                            Log.e("gson:errorlogout", response.errorBody().string());
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                }
+            }
+
+
+            @Override
+            public void onFailure(Call<Object> call, Throwable t) {
+//                Toast.makeText(RegistrationActivityOne.this, t, Toast.LENGTH_SHORT).show();
+                Log.e("logout:onFailure", String.valueOf(t));
+
+            }
+        });
+
 
     }
 

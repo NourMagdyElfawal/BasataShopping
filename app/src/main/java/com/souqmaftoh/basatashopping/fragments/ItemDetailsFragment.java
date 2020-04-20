@@ -86,6 +86,7 @@ public class ItemDetailsFragment extends Fragment implements BottomNavigationVie
     Advertise advertise;
     Advertiser advertiser;
     String TAG ="Api";
+    private boolean flag=false;
 
 
 
@@ -118,12 +119,21 @@ public class ItemDetailsFragment extends Fragment implements BottomNavigationVie
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null && getArguments().getSerializable("hashMapItem") != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-            hashMapItem2 = (HashMap<String, String>)getArguments().getSerializable("hashMapItem");
-            Log.e("hashMapItem2", String.valueOf(hashMapItem2));
+        if (getArguments() != null ) {
+            if (getArguments().getSerializable("hashMapItem") != null) {
+                mParam1 = getArguments().getString(ARG_PARAM1);
+                mParam2 = getArguments().getString(ARG_PARAM2);
+                hashMapItem2 = (HashMap<String, String>) getArguments().getSerializable("hashMapItem");
+                Log.e("hashMapItem2", String.valueOf(hashMapItem2));
 
+            }
+
+            if (getArguments().getString("fragment") != null) {
+                if (getArguments().getString("fragment").equalsIgnoreCase("itemsAdapter")) {
+                    flag = true;
+
+                }
+            }
         }
     }
 
@@ -160,7 +170,14 @@ public class ItemDetailsFragment extends Fragment implements BottomNavigationVie
         mView.setOnNavigationItemSelectedListener(ItemDetailsFragment.this);
 //        ((MainActivity) Objects.requireNonNull(getActivity())).hideFloatingActionButton();
 //        Objects.requireNonNull(((AppCompatActivity) Objects.requireNonNull(getActivity())).getSupportActionBar()).hide();
+
+        if(flag){
+            btn_Edit_Choices.setText("اضافه الاعلان الى المفضله");
+        }else {
+            btn_Edit_Choices.setText("خيارات التعديل");
+        }
         btn_Edit_Choices.setOnClickListener(this);
+
         return root;
     }
 
@@ -443,9 +460,65 @@ public class ItemDetailsFragment extends Fragment implements BottomNavigationVie
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_Edit_Choices:
-                openDialog();
+                if(flag){
+                    setAsFavoritApi();
+                }else {
+                    openDialog();
+                }
                 break;
         }
+    }
+    private void setAsFavoritApi() {
+        Call call= RetrofitClient.
+                getInstance().getApi()
+                .set_as_favorite(ad_key);
+        call.enqueue(new Callback() {
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) {
+                if(response!=null) {
+
+                    if (response.body() != null) {
+                        Log.e("gson:set_as_favorite", new Gson().toJson(response.body()));
+                        try {
+                            JSONObject jsonObject = new JSONObject(new Gson().toJson(response.body()));
+                            String msg = jsonObject.getString("message");
+//                            if (msg != null&&msg.equalsIgnoreCase("تم حذف الإعلان بنجاح")) {
+                            Toast.makeText(getActivity(), msg, Toast.LENGTH_SHORT).show();
+                            Log.e("set_as_favorite",msg);
+                            Intent intent_log =new Intent(getActivity(), MainActivity.class);
+                            intent_log.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            startActivity(intent_log);
+
+//                            }
+
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    } else if (response.errorBody() != null) {
+                        try {
+                            Log.e("gson:set_as_favorite", response.errorBody().string());
+                            Toast.makeText(getActivity(), response.errorBody().string(), Toast.LENGTH_SHORT).show();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                }
+            }
+
+
+            @Override
+            public void onFailure(Call call, Throwable t) {
+//                Toast.makeText(RegistrationActivityOne.this, t, Toast.LENGTH_SHORT).show();
+                Log.e("set_favorite:onFailure", String.valueOf(t));
+
+            }
+        });
+
+
+
     }
 
     private void openDialog() {
