@@ -201,6 +201,7 @@ public class MyItemsAdapter extends RecyclerView.Adapter<ItemsViewHolder> {
                     ItemDetailsFragment itemDetailsFragment = new ItemDetailsFragment();
                     Bundle args = new Bundle();
                     args.putSerializable("hashMapItem",hashMapItem);
+                    args.putString("ad_key",mSport.getmAdKey());
                     itemDetailsFragment.setArguments(args);
                     activity.getSupportFragmentManager().beginTransaction().add(R.id.items_main_content,itemDetailsFragment ).addToBackStack( "ItemsRecyclerFragment" ).commit();
 

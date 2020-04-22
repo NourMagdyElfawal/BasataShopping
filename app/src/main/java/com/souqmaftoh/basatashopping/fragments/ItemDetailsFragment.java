@@ -140,6 +140,7 @@ public class ItemDetailsFragment extends Fragment implements BottomNavigationVie
                 Log.e("ad_key",ad_key);
                 getAdApi(ad_key);
             }
+
             }
 
 
@@ -317,8 +318,9 @@ public class ItemDetailsFragment extends Fragment implements BottomNavigationVie
 
                             advertise=new Advertise(active,offer,title,main_image,price,descriptionAdv,category,sub_category_id,sub_category,
                                     is_favorite,rate,rate_users,item_condition,status,arr_images);
-                            if(advertise!= null&&advertiser!=null)
+                            if(advertise!= null&&advertiser!=null){
                                 setAdDetails();
+                            }
 
 
 
