@@ -134,7 +134,15 @@ public class ItemDetailsFragment extends Fragment implements BottomNavigationVie
 
                 }
             }
-        }
+            if (getArguments().getString("ad_key") != null) {
+                ad_key=getArguments().getString("ad_key");
+                if(ad_key!=null)
+                Log.e("ad_key",ad_key);
+                getAdApi(ad_key);
+            }
+            }
+
+
     }
 
 
@@ -161,7 +169,7 @@ public class ItemDetailsFragment extends Fragment implements BottomNavigationVie
 
 
         card_AdvPriceOffer=root.findViewById(R.id.card_AdvPriceOffer);
-        addAdvDetails();
+//        addAdvDetails();
 
         //navigationBottom Bar
         card_telephone=root.findViewById(R.id.card_telephone);
@@ -181,62 +189,62 @@ public class ItemDetailsFragment extends Fragment implements BottomNavigationVie
         return root;
     }
 
-    private void addAdvDetails() {
-        if(hashMapItem2!=null) {
-            if(hashMapItem2.get("ImageUrl")!=null) {
-                String ImageUrl = hashMapItem2.get("ImageUrl");
-                Glide.with(this)
-                        .load(ImageUrl)
-                        .into(imgV_adv);
-            }
-
-            if(hashMapItem2.get("ad_key")!=null){
-                ad_key=hashMapItem2.get("ad_key");
-                getAdApi(ad_key);
-            }
-
-//            if(hashMapItem2.get("Title")!=null){
-//                edit_advName.setText(hashMapItem2.get("Title"));
-//            }
-//        if(advertise!= null)
-//            edit_advName.setText(advertise.getTitle());
-
-            if(hashMapItem2.get("Item_condition")!=null){
-                if(hashMapItem2.get("Item_condition").equalsIgnoreCase("new"))
-                    edit_AdvDescription.setText("جديد");
-                else
-                    edit_AdvDescription.setText("قديم");
-
-            }
-
-            if(hashMapItem2.get("SubTitle")!=null){
-                edit_AdvCategory.setText(hashMapItem2.get("SubTitle"));
-            }
-            if(hashMapItem2.get("Sub_category")!=null){
-                edit_AdvSubCategory.setText(hashMapItem2.get("Sub_category"));
-            }
-//            if(hashMapItem2.get("Active")!=null){
-//                if(hashMapItem2.get("Active").equalsIgnoreCase("1")) {
-//                    edit_AdvActive.setText("مفعل");
-//                }else {
-//                    edit_AdvActive.setText("غير مفعل");
+//    private void addAdvDetails() {
+//        if(hashMapItem2!=null) {
+////            if(hashMapItem2.get("ImageUrl")!=null) {
+////                String ImageUrl = hashMapItem2.get("ImageUrl");
+////                Glide.with(this)
+////                        .load(ImageUrl)
+////                        .into(imgV_adv);
+////            }
 //
-//                }
-            }
-            if(hashMapItem2.get("Info")!=null){
-                edit_AdvPrice.setText(hashMapItem2.get("Info"));
-            }
-            if(hashMapItem2.get("Status")!=null){
-                if(hashMapItem2.get("Status").equalsIgnoreCase("sold"))
-                    edit_AdvStatus.setText("المنتج مباع");
-                else
-                    edit_AdvStatus.setText("المنتج غير مباع");
-
-            }
-
-
-
-        }
+////            if(hashMapItem2.get("ad_key")!=null){
+////                ad_key=hashMapItem2.get("ad_key");
+//                getAdApi(ad_key);
+////            }
+//
+////            if(hashMapItem2.get("Title")!=null){
+////                edit_advName.setText(hashMapItem2.get("Title"));
+////            }
+////        if(advertise!= null)
+////            edit_advName.setText(advertise.getTitle());
+//
+////            if(hashMapItem2.get("Item_condition")!=null){
+////                if(hashMapItem2.get("Item_condition").equalsIgnoreCase("new"))
+////                    edit_AdvDescription.setText("جديد");
+////                else
+////                    edit_AdvDescription.setText("قديم");
+////
+////            }
+////
+////            if(hashMapItem2.get("SubTitle")!=null){
+////                edit_AdvCategory.setText(hashMapItem2.get("SubTitle"));
+////            }
+////            if(hashMapItem2.get("Sub_category")!=null){
+////                edit_AdvSubCategory.setText(hashMapItem2.get("Sub_category"));
+////            }
+////            if(hashMapItem2.get("Active")!=null){
+////                if(hashMapItem2.get("Active").equalsIgnoreCase("1")) {
+////                    edit_AdvActive.setText("مفعل");
+////                }else {
+////                    edit_AdvActive.setText("غير مفعل");
+////
+////                }
+//            }
+////            if(hashMapItem2.get("Info")!=null){
+////                edit_AdvPrice.setText(hashMapItem2.get("Info"));
+////            }
+////            if(hashMapItem2.get("Status")!=null){
+////                if(hashMapItem2.get("Status").equalsIgnoreCase("sold"))
+////                    edit_AdvStatus.setText("المنتج مباع");
+////                else
+////                    edit_AdvStatus.setText("المنتج غير مباع");
+////
+////            }
+//
+//
+//
+//        }
 
 //    }
 
@@ -342,6 +350,15 @@ public class ItemDetailsFragment extends Fragment implements BottomNavigationVie
     }
 
     private void setAdDetails() {
+
+            if(advertise.getMain_image()!=null) {
+                String ImageUrl = advertise.getMain_image();
+                Glide.with(this)
+                        .load(ImageUrl)
+                        .into(imgV_adv);
+                hashMapEditAd.put("main_image",advertise.getMain_image());
+            }
+
         if(advertise.getTitle()!=null){
             hashMapEditAd.put("title",advertise.getTitle());
             edit_advName.setText(advertise.getTitle());
@@ -364,9 +381,15 @@ public class ItemDetailsFragment extends Fragment implements BottomNavigationVie
             edit_AdvDescription.setText(advertise.getDescriptionAdv());
         }
 
-        if(advertise.getMain_image()!=null){
-            hashMapEditAd.put("main_image",advertise.getMain_image());
-        }
+
+        if(advertise.getCategory()!=null){
+                edit_AdvCategory.setText(advertise.getCategory());
+            }
+            if(advertise.getSub_category()!=null){
+                edit_AdvSubCategory.setText(advertise.getSub_category());
+            }
+
+
 
         if(advertise.getActive()!=null) {
             if(advertise.getActive().equalsIgnoreCase("1")) {
@@ -375,6 +398,34 @@ public class ItemDetailsFragment extends Fragment implements BottomNavigationVie
                 edit_AdvActive.setText("غير مفعل");
 
             }
+        }
+
+        if(advertise.getIs_favorite()!=null){
+
+        }
+        if (advertise.getPrice()!=null){
+            edit_AdvPrice.setText(advertise.getPrice());
+        }
+
+        if(advertise.getStatus()!=null){
+                if(advertise.getStatus().equalsIgnoreCase("sold"))
+                    edit_AdvStatus.setText("المنتج مباع");
+                else
+                    edit_AdvStatus.setText("المنتج غير مباع");
+
+            }
+        if(advertise.getIs_favorite()!=null){
+            if (flag) {
+                if (advertise.getIs_favorite().equalsIgnoreCase("true")) {
+
+                    btn_Edit_Choices.setText("ازالة الاعلان من المفضله");
+
+                } else {
+                    btn_Edit_Choices.setText("اضافه الاعلان الى المفضله");
+
+                }
+            }
+            Log.e("fav",advertise.getIs_favorite());
         }
 
 

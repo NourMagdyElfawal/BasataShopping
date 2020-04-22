@@ -121,7 +121,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsViewHolder> {
         public void onBind(int position) {
             super.onBind(position);
 
-            final Items mSport = mSportList.get(position);
+             Items mSport = mSportList.get(position);
 
 
             if (mSport.getmAdKey() != null) {
@@ -204,6 +204,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsViewHolder> {
                     Bundle args = new Bundle();
                     args.putSerializable("hashMapItem",hashMapItem);
                     args.putString("fragment", "itemsAdapter");
+                    args.putString("ad_key",mSport.getmAdKey());
                     itemDetailsFragment.setArguments(args);
                     activity.getSupportFragmentManager().beginTransaction().add(R.id.items_main_content,itemDetailsFragment ).addToBackStack( "ItemsRecyclerFragment" ).commit();
 
