@@ -134,7 +134,6 @@ public interface Api {
             @Field("price") int price,
             @Field("description") String description,
             @Field("sub_category") int sub_category,
-            @Field("category") String category,
             @Field("item_condition") String item_condition,
             @Field("main_image") String main_image
 
@@ -229,6 +228,18 @@ public interface Api {
     })
     @GET("categories")
     Call<Object> get_categories();
+
+
+
+    @Headers({
+            "Accept: application/json",
+    })
+    @GET("subcategories/{categoriesId}")
+    Call<Object> get_subcategories(
+            @Path("categoriesId") int categoriesId
+
+    );
+
 
 
     @Headers({

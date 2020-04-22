@@ -104,6 +104,8 @@ public class ItemsRecyclerFragment extends Fragment {
                 if (getArguments().getString("fragment").equalsIgnoreCase("myacc")) {
                     flag = true;
 
+                }else {
+                    flag=false;
                 }
 
             }

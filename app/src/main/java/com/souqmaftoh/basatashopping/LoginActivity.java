@@ -108,6 +108,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestScopes(new Scope(Scopes.DRIVE_APPFOLDER))
                 .requestIdToken(serverClientId)
+                .requestServerAuthCode(serverClientId)
                 .requestEmail()
                 .build();
 // Build a GoogleSignInClient with the options specified by gso.
@@ -193,6 +194,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             Log.d(TAG, "signInWithCredential:success");
                             FirebaseUser user = mAuth.getCurrentUser();
                             if(token!=null){
+                                Log.e("token",token.getToken());
                                 facebookToken=token.getToken();
                                 socialUserApi(facebookToken,"facebook",device_id,push_token);
                             }
