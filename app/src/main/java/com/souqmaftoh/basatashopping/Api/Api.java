@@ -320,6 +320,15 @@ public interface Api {
     );
 
 
+    @Headers({
+            "Accept: application/json",
+    })
+    @FormUrlEncoded
+    @POST("rate_ad")
+    Call<Object> rate_ad(
+            @Field("ad_key") String ad_key,
+            @Field("rate") int rate
+    );
 
 
 

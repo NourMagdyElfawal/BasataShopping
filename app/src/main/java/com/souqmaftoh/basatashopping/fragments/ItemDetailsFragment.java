@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -80,13 +81,15 @@ public class ItemDetailsFragment extends Fragment implements BottomNavigationVie
     private HashMap<String, String> hashMapEditAd=new HashMap<String, String>();
 
     String ad_key;
-    MaterialButton btn_Edit_Choices;
+    MaterialButton btn_Edit_Choices,btn_add_rate;
     String message;
     int id;
     Advertise advertise;
     Advertiser advertiser;
     String TAG ="Api";
     private boolean flag=false;
+    RatingBar ratingBar;
+
 
 
 
@@ -167,7 +170,8 @@ public class ItemDetailsFragment extends Fragment implements BottomNavigationVie
         edit_AdvPriceOffer=root.findViewById(R.id.edit_AdvPriceOffer);
         edit_AdvPrice=root.findViewById(R.id.edit_AdvPrice);
         btn_Edit_Choices=root.findViewById(R.id.btn_Edit_Choices);
-
+        ratingBar =root.findViewById(R.id.ratingBar);
+        btn_add_rate=root.findViewById(R.id.btn_add_rate);
 
         card_AdvPriceOffer=root.findViewById(R.id.card_AdvPriceOffer);
 //        addAdvDetails();
@@ -182,6 +186,10 @@ public class ItemDetailsFragment extends Fragment implements BottomNavigationVie
 
         if(flag){
             btn_Edit_Choices.setText("اضافه الاعلان الى المفضله");
+            btn_add_rate.setVisibility(View.VISIBLE);
+            ratingBar.setVisibility(View.VISIBLE);
+            btn_add_rate.setOnClickListener(this);
+
         }else {
             btn_Edit_Choices.setText("خيارات التعديل");
         }
@@ -519,8 +527,66 @@ public class ItemDetailsFragment extends Fragment implements BottomNavigationVie
                     openDialog();
                 }
                 break;
+            case R.id.btn_add_rate:
+                getRating();
+                break;
         }
     }
+
+    private void getRating() {
+       int rate= (int) ratingBar.getRating();
+        Call call= RetrofitClient.
+                getInstance().getApi()
+                .rate_ad(ad_key,rate);
+        call.enqueue(new Callback() {
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) {
+                if(response!=null) {
+
+                    if (response.body() != null) {
+                        Log.e("gson:rate_ad", new Gson().toJson(response.body()));
+                        try {
+                            JSONObject jsonObject = new JSONObject(new Gson().toJson(response.body()));
+                            String msg = jsonObject.getString("message");
+//                            if (msg != null&&msg.equalsIgnoreCase("تم حذف الإعلان بنجاح")) {
+                            Toast.makeText(getActivity(), msg, Toast.LENGTH_SHORT).show();
+                            Log.e("rate_ad",msg);
+                            Intent intent_log =new Intent(getActivity(), MainActivity.class);
+                            intent_log.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            startActivity(intent_log);
+
+//                            }
+
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    } else if (response.errorBody() != null) {
+                        try {
+                            Log.e("gson:rate_ad", response.errorBody().string());
+                            Toast.makeText(getActivity(), response.errorBody().string(), Toast.LENGTH_SHORT).show();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                }
+            }
+
+
+            @Override
+            public void onFailure(Call call, Throwable t) {
+//                Toast.makeText(RegistrationActivityOne.this, t, Toast.LENGTH_SHORT).show();
+                Log.e("rate_ad:onFailure", String.valueOf(t));
+
+            }
+        });
+
+
+
+    }
+
     private void setAsFavoritApi() {
         Call call= RetrofitClient.
                 getInstance().getApi()

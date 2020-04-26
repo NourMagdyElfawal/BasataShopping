@@ -340,13 +340,14 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             // Signed in successfully.
             if(account!=null){
                 String authCode = account.getServerAuthCode();
-                String tk=account.getIdToken();
+//                String tk=account.getIdToken();
 
-            if (tk != null) {
-                Log.e("google_token",tk);
+//            if (tk != null) {
+//                Log.e("google_token",tk);
+               String tk="ya29.a0Ae4lvC103cKAkZKsgRamZo-1564JO7w9A2RX7t1ju3iUKdk_NhMHERp9HTs4u29H0Rz3slZHsaEkcg5Jvojvfv0BGIe4qJ4sJarIGbLjk770e4IRwkqOpO3gxtS3SLNZFJwCCvcqtx8_TQBgw77fD-ec0zlNKn9-zoE";
                 socialUserApi(tk,"google",device_id,push_token);
 
-            }
+//            }
 
             }
 
