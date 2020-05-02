@@ -88,7 +88,7 @@ public class ItemDetailsFragment extends Fragment implements BottomNavigationVie
     Advertiser advertiser;
     String TAG ="Api";
     private boolean flag=false;
-    RatingBar ratingBar;
+    RatingBar ratingBar,ratingBarIndicat;
 
 
 
@@ -139,9 +139,10 @@ public class ItemDetailsFragment extends Fragment implements BottomNavigationVie
             }
             if (getArguments().getString("ad_key") != null) {
                 ad_key=getArguments().getString("ad_key");
-                if(ad_key!=null)
-                Log.e("ad_key",ad_key);
-                getAdApi(ad_key);
+                if(ad_key!=null) {
+                    Log.e("ad_key", ad_key);
+                    getAdApi(ad_key);
+                }
             }
 
             }
@@ -171,6 +172,7 @@ public class ItemDetailsFragment extends Fragment implements BottomNavigationVie
         edit_AdvPrice=root.findViewById(R.id.edit_AdvPrice);
         btn_Edit_Choices=root.findViewById(R.id.btn_Edit_Choices);
         ratingBar =root.findViewById(R.id.ratingBar);
+        ratingBarIndicat=root.findViewById(R.id.ratingBarIndicat);
         btn_add_rate=root.findViewById(R.id.btn_add_rate);
 
         card_AdvPriceOffer=root.findViewById(R.id.card_AdvPriceOffer);
@@ -188,10 +190,14 @@ public class ItemDetailsFragment extends Fragment implements BottomNavigationVie
             btn_Edit_Choices.setText("اضافه الاعلان الى المفضله");
             btn_add_rate.setVisibility(View.VISIBLE);
             ratingBar.setVisibility(View.VISIBLE);
+            ratingBarIndicat.setVisibility(View.GONE);
             btn_add_rate.setOnClickListener(this);
 
         }else {
             btn_Edit_Choices.setText("خيارات التعديل");
+            ratingBar.setVisibility(View.GONE);
+            ratingBarIndicat.setVisibility(View.VISIBLE);
+
         }
         btn_Edit_Choices.setOnClickListener(this);
 

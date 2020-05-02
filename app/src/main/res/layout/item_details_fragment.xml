@@ -457,8 +457,9 @@
                                 android:id="@+id/ratingBarIndicat"
                                 style="@style/Widget.AppCompat.RatingBar.Indicator"
                                 android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
+                                android:layout_height="match_parent"
                                 android:layout_marginRight="10dp"
+                                android:visibility="gone"
                                 android:numStars="5"
                                 android:stepSize="1" />
                             <RatingBar
