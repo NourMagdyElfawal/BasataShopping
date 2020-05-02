@@ -1,6 +1,7 @@
 package com.souqmaftoh.basatashopping.Adapter;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +10,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -21,11 +23,24 @@ import java.util.List;
 
 public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.MyViewHolder> {
     private Context mContext;
-    private List<category> categoryList;
-    private List<category> imageTitleList;
+    private List<String> categoryList;
+    private List<String> imageTitleList;
+    private List<Integer> imageIdList;
+
+    private String categoryType="";
 
     public <E> HomeAdapter(ArrayList<E> es) {
     }
+
+    public HomeAdapter(FragmentActivity mContext, ArrayList<String> categoryList, ArrayList<String> imageTitleList, ArrayList<Integer> imageIdList) {
+        this.mContext = mContext;
+        this.categoryList = categoryList;
+        this.imageTitleList=imageTitleList;
+        this.imageIdList=imageIdList;
+
+    }
+
+
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView title;
@@ -40,12 +55,12 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.MyViewHolder> 
         }
     }
 
-    public HomeAdapter(Context mContext, List<category> categoryList, List<category> imageTitleList) {
-        this.mContext = mContext;
-        this.categoryList = categoryList;
-        this.imageTitleList=imageTitleList;
-    }
-
+//    public HomeAdapter(Context mContext, List<category> categoryList, List<category> imageTitleList) {
+//        this.mContext = mContext;
+//        this.categoryList = categoryList;
+//        this.imageTitleList=imageTitleList;
+//    }
+//
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         final View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.cardlayout, parent, false);
@@ -57,9 +72,11 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.MyViewHolder> 
     public void onBindViewHolder(final MyViewHolder holder, final int position) {
 //        Glide.with(mContext).load(categoryList.get(position).getImageUrl()).into(holder.thumbnail);
 
-        final category category = imageTitleList.get(position);
-        holder.title.setText(category.getName());
-        Glide.with(mContext).load(categoryList.get(position).getImageUrl()).into(holder.thumbnail);
+        final String title = imageTitleList.get(position);
+        final int subCategoryId = imageIdList.get(position);
+
+        holder.title.setText(title);
+        Glide.with(mContext).load(categoryList.get(position)).into(holder.thumbnail);
 //        Glide.with(mContext).load(category.getImage()).into(holder.thumbnail);
 
         holder.vRoot.setOnClickListener(new View.OnClickListener() {
@@ -68,6 +85,10 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.MyViewHolder> 
 
                 AppCompatActivity activity = (AppCompatActivity) view.getContext();
                 ItemsRecyclerFragment itemsRecyclerFragment = new ItemsRecyclerFragment();
+                Bundle args = new Bundle();
+                args.putInt("subCategoryId", subCategoryId);
+                itemsRecyclerFragment.setArguments(args);
+
                 activity.getSupportFragmentManager().beginTransaction().add(R.id.container, itemsRecyclerFragment).addToBackStack( "HomeAdapter" ).commit();
 
 //                Fragment fragment = new tasks();

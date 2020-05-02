@@ -72,6 +72,7 @@ public class ItemsRecyclerFragment extends Fragment {
     private String mParam1;
     private String mParam2,fragmentName;
     private boolean flag=false;
+    int subCategoryId;
 
     public ItemsRecyclerFragment() {
         // Required empty public constructor
@@ -105,10 +106,13 @@ public class ItemsRecyclerFragment extends Fragment {
                     flag = true;
 
                 }else {
-                    flag=false;
+                    flag = false;
                 }
-
             }
+
+            subCategoryId = getArguments().getInt("subCategoryId");
+            Log.e("subCategoryId", String.valueOf(subCategoryId));
+
         }
     }
 
@@ -173,6 +177,83 @@ public class ItemsRecyclerFragment extends Fragment {
 
         return view;
     }
+
+
+//    private void SearchdsApi() {
+//
+//        ArrayList<Items> mSports = new ArrayList<>();
+//
+//
+//        Call<Object> call= RetrofitClient.
+//                getInstance()
+//                .getApi()
+//                .search_ads(subCategoryId);
+//        call.enqueue(new Callback<Object>() {
+//            @Override
+//            public void onResponse(@NotNull Call<Object> call, @NotNull Response<Object> response) {
+//                Log.e("gson:search_ads", new Gson().toJson(response.body()) );
+//
+//                if(response!=null) {
+//
+//                    if (response.body() != null) {
+//                        Log.e("res:search_ads", "isSuccessful");
+//                        try {
+//                            JSONObject jsonObject = new JSONObject(new Gson().toJson(response.body()));
+//                            String message = jsonObject.getString("message");
+//                            if (message != null&&!message.isEmpty()) {
+//                                Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+//                            }
+//                            JSONObject jsonData  = jsonObject.getJSONObject("data");
+//                            JSONArray arrJson = jsonData.getJSONArray("ads");
+//                            JSONObject[] arr=new JSONObject[arrJson.length()];
+//
+//                            for(int i = 0; i < arrJson.length(); i++) {
+//                                arr[i] = arrJson.getJSONObject(i);
+//                                Log.e("tag", String.valueOf(arr[i]));
+//                                String ad_key=arr[i].getString("ad_key");
+//                                String title=arr[i].getString("title");
+//                                String offer=arr[i].getString("offer");
+//                                String main_image=arr[i].getString("main_image");
+//                                String price=arr[i].getString("price");
+//                                String category=arr[i].getString("category");
+//                                String sub_category=arr[i].getString("sub_category");
+//                                String active=arr[i].getString("active");
+//                                String item_condition=arr[i].getString("item_condition");
+//                                String status=arr[i].getString("status");
+//                                mSports.add(new Items(ad_key,main_image,item_condition , title, price,offer,category,sub_category,active,status));
+//                            }
+//                            mSportAdapter.addItems(mSports);
+//                            mRecyclerView.setAdapter(mSportAdapter);
+//
+//
+//
+//                        } catch (JSONException e) {
+//                            e.printStackTrace();
+//                        }
+////
+//                    }
+//
+//                } else if (response.errorBody() != null) {
+//                    try {
+//                        Log.e("gson:search_ads_error", response.errorBody().string());
+//                        Toast.makeText(getActivity(), response.errorBody().string(), Toast.LENGTH_SHORT).show();
+//                    } catch (IOException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//            }
+//
+//
+//
+//            @Override
+//            public void onFailure(Call<Object> call, Throwable t) {
+//                Log.e("search_ads:onFailure", String.valueOf(t));
+//
+//            }
+//        });
+//
+//    }
+//
 
     private void getMyAdsApi() {
 
@@ -270,7 +351,7 @@ public class ItemsRecyclerFragment extends Fragment {
         Call<Object> call= RetrofitClient.
                 getInstance()
                 .getApi()
-                .search_ads();
+                .search_ads(subCategoryId);
         call.enqueue(new Callback<Object>() {
             @Override
             public void onResponse(@NotNull Call<Object> call, @NotNull Response<Object> response) {

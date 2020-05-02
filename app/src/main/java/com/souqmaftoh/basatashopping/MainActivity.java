@@ -23,7 +23,11 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.gson.Gson;
 import com.robertlevonyan.views.customfloatingactionbutton.FloatingActionButton;
+import com.souqmaftoh.basatashopping.Api.RetrofitClient;
+import com.souqmaftoh.basatashopping.Interface.Categories;
+import com.souqmaftoh.basatashopping.Interface.SubCategory;
 import com.souqmaftoh.basatashopping.Interface.User;
 import com.souqmaftoh.basatashopping.Storage.SharedPrefManager;
 import com.souqmaftoh.basatashopping.fragments.MobileFragment.MobileFragment;
@@ -36,8 +40,18 @@ import com.souqmaftoh.basatashopping.fragments.notification.NotificationFragment
 import com.souqmaftoh.basatashopping.fragments.other.OthersFragment;
 import com.souqmaftoh.basatashopping.fragments.tablets.TabletsFragment;
 
+import org.jetbrains.annotations.NotNull;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import static androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE;
 
@@ -60,7 +74,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         imgV_myAccount.setOnClickListener(this);
 
         viewPager =findViewById(R.id.viewpager);
-        setupViewPager(viewPager);
+        getCategoryApi(viewPager);
+//        setupViewPager(viewPager);
 
         tabLayout = findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
@@ -179,16 +194,108 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
     //app bar
-    private void setupViewPager(ViewPager viewPager) {
+    private void setupViewPager(ViewPager viewPager, ArrayList<Categories> mCategories) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
-        adapter.addFragment(new OthersFragment(), "اخرى");
-        adapter.addFragment(new AccessoriesFragment(), "اكسسوارات");
-        adapter.addFragment(new TabletsFragment(), "تابلت");
-        adapter.addFragment(new MobileFragment(), "جوالات");
+//        List<String> categories = new ArrayList<String>();
+        for(int i = 0; i < mCategories.size(); i++) {
+            String[] arr = new String[mCategories.size()];
+//            arr[i] = mCategories.get(i).getCategory();
+//            getSubCategoryApi(mCategories.get(i).getId());
+            adapter.addFragment(new MobileFragment(),mCategories.get(i).getCategory(),mCategories.get(i).getId());
+        }
+
+//        adapter.addFragment(new OthersFragment(), "اخرى");
+//        adapter.addFragment(new AccessoriesFragment(), "اكسسوارات");
+//        adapter.addFragment(new TabletsFragment(), "تابلت");
+//        adapter.addFragment(new MobileFragment(), "جوالات");
 
         viewPager.setAdapter(adapter);
 
     }
+
+//    private void getSubCategoryApi(int categoryId) {
+//
+//        ArrayList<SubCategory> mSubCategories = new ArrayList<>();
+//
+//        Call call= RetrofitClient.
+//                getInstance()
+//                .getApi()
+//                .get_subcategories(categoryId);
+//        call.enqueue(new Callback<Object>() {
+//            @Override
+//            public void onResponse(@NotNull Call<Object> call, @NotNull Response<Object> response) {
+//                Log.e("gson:get_subcategories", new Gson().toJson(response.body()) );
+//
+//                if(response!=null) {
+//
+//                    if (response.body() != null) {
+//                        Log.e("res:get_subcategories", "isSuccessful");
+//                        try {
+//                            JSONObject jsonObject = new JSONObject(new Gson().toJson(response.body()));
+//                            String message = jsonObject.getString("message");
+//                            if (message != null&&!message.isEmpty()) {
+////                                Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+//                            }
+//                            JSONObject jsonData  = jsonObject.getJSONObject("data");
+//                            JSONArray arrJson = jsonData.getJSONArray("data");
+//                            JSONObject[] arr=new JSONObject[arrJson.length()];
+//
+//                            for(int i = 0; i < arrJson.length(); i++) {
+//                                arr[i] = arrJson.getJSONObject(i);
+//                                Log.e("tag", String.valueOf(arr[i]));
+//                                String subcategories=arr[i].getString("name_ar");
+//                                int id=arr[i].getInt("id");
+//                                String imageUrl=arr[i].getString("image");
+//
+//                                //                                String offer=arr[i].getString("offer");
+////                                String main_image=arr[i].getString("main_image");
+////                                String price=arr[i].getString("price");
+////                                String category=arr[i].getString("category");
+////                                String sub_category=arr[i].getString("sub_category");
+////                                String active=arr[i].getString("active");
+////                                String item_condition=arr[i].getString("item_condition");
+////                                String status=arr[i].getString("status");
+//                                mSubCategories.add(new SubCategory(subcategories,id,imageUrl));
+//                            }
+//                            Log.e("subcategories", String.valueOf(mSubCategories));
+//                            if(mSubCategories!=null){
+////                                spinnerSubCategories(mSubCategories);
+//                            }
+////                            mSportAdapter.addItems(mSports);
+////                            mRecyclerView.setAdapter(mSportAdapter);
+//
+//
+//
+//                        } catch (JSONException e) {
+//                            e.printStackTrace();
+//                        }
+////
+//                    }
+//
+//                } else if (response.errorBody() != null) {
+//                    try {
+//                        Log.e("gson:categories_error", response.errorBody().string());
+//                    } catch (IOException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//            }
+//
+//
+//
+//
+//            @Override
+//            public void onFailure(Call<Object> call, Throwable t) {
+//                Log.e("categories:onFailure", String.valueOf(t));
+//
+//            }
+//        });
+//
+//
+//
+//
+//    }
+
 
 
     public void showFloatingActionButton() {
@@ -274,12 +381,86 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+
+
+    public  void getCategoryApi(ViewPager viewPager) {
+
+        ArrayList<Categories> mCategories = new ArrayList<>();
+
+        Call call= RetrofitClient.
+                getInstance()
+                .getApi()
+                .get_categories();
+        call.enqueue(new Callback<Object>() {
+            @Override
+            public void onResponse(@NotNull Call<Object> call, @NotNull Response<Object> response) {
+                Log.e("gson:get_categories", new Gson().toJson(response.body()) );
+
+                if(response!=null) {
+
+                    if (response.body() != null) {
+                        Log.e("res:get_categories", "isSuccessful");
+                        try {
+                            JSONObject jsonObject = new JSONObject(new Gson().toJson(response.body()));
+                            String message = jsonObject.getString("message");
+//                            if (message != null&&!message.isEmpty()) {
+//                                Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+//                            }
+                            JSONObject jsonData  = jsonObject.getJSONObject("data");
+                            JSONArray arrJson = jsonData.getJSONArray("data");
+                            JSONObject[] arr=new JSONObject[arrJson.length()];
+
+                            for(int i = 0; i < arrJson.length(); i++) {
+                                arr[i] = arrJson.getJSONObject(i);
+                                Log.e("tag", String.valueOf(arr[i]));
+                                String category=arr[i].getString("name_ar");
+                                int id=arr[i].getInt("id");
+
+                                mCategories.add(new Categories(category,id));
+                            }
+                            Log.e("category", String.valueOf(mCategories));
+                            if(mCategories!=null){
+                                setupViewPager(viewPager,mCategories);
+                            }
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+//
+                    }
+
+                } else if (response.errorBody() != null) {
+                    try {
+                        Log.e("gson:categories_error", response.errorBody().string());
+//                        Toast.makeText(getActivity(), response.errorBody().string(), Toast.LENGTH_SHORT).show();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+
+
+
+            @Override
+            public void onFailure(Call<Object> call, Throwable t) {
+                Log.e("categories:onFailure", String.valueOf(t));
+
+            }
+        });
+
+
+    }
+
+
 }
 
 
 class ViewPagerAdapter extends FragmentPagerAdapter {
     private final List<Fragment> mFragmentList = new ArrayList<>();
     private final List<String> mFragmentTitleList = new ArrayList<>();
+    private final List<Integer> mFragmentIdList = new ArrayList<>();
+
 
     public ViewPagerAdapter(FragmentManager manager) {
         super(manager);
@@ -287,7 +468,12 @@ class ViewPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        return mFragmentList.get(position);
+
+        Fragment categoryFragment=mFragmentList.get(position);
+        Bundle bundle = new Bundle();
+        bundle.putInt("categoryId", mFragmentIdList.get(position));
+        categoryFragment.setArguments(bundle);
+        return categoryFragment;
     }
 
     @Override
@@ -295,9 +481,10 @@ class ViewPagerAdapter extends FragmentPagerAdapter {
         return mFragmentList.size();
     }
 
-    public void addFragment(Fragment fragment, String title) {
+    public void addFragment(Fragment fragment, String title, int id) {
         mFragmentList.add(fragment);
         mFragmentTitleList.add(title);
+        mFragmentIdList.add(id);
     }
 
     @Override

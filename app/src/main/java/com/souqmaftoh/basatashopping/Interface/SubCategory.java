@@ -1,12 +1,20 @@
 package com.souqmaftoh.basatashopping.Interface;
 
 public class SubCategory {
-    private String subCategory;
+    private String subCategory,imageUrl;
     private int id;
 
     public SubCategory(String subCategory, int id) {
         this.subCategory=subCategory;
         this.id=id;
+    }
+
+    public SubCategory(String subcategories, int id, String imageUrl) {
+        this.subCategory=subCategory;
+        this.id=id;
+        this.imageUrl=imageUrl;
+
+
     }
 
     public String getSubCategory() {
@@ -23,5 +31,13 @@ public class SubCategory {
 
     public void setSubCategoryId(int id) {
         this.id = id;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 }

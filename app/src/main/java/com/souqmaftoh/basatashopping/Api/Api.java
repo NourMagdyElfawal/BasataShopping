@@ -240,6 +240,14 @@ public interface Api {
 
     );
 
+//    @Headers({
+//            "Accept: application/json",
+//    })
+//    @POST("search_ads")
+//    Call<Object> search_ads(
+//            @Path("subcategory_id") int subcategory_id
+//
+//    );
 
 
     @Headers({
@@ -253,7 +261,7 @@ public interface Api {
             "Accept: application/json",
     })
     @GET("search_ads")
-    Call<Object> search_ads();
+    Call<Object> search_ads(@Query("subcategory_id") int subcategory_id);
 
 
 

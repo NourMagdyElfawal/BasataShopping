@@ -46,7 +46,7 @@ public class OthersFragment extends Fragment {
 
         ArrayList<category> imageUrlList = prepareImages();
         ArrayList<category> imageTitleList = prepareTitles();
-        homeAdapter = new HomeAdapter(getActivity(), imageUrlList, imageTitleList);
+//        homeAdapter = new HomeAdapter(getActivity(), imageUrlList, imageTitleList);
 
 //        homeAdapter = new HomeAdapter(getActivity(), historicList);
         recyclerView.setAdapter(homeAdapter);
