@@ -198,7 +198,8 @@ public class LoginByEmailActivity extends AppCompatActivity implements View.OnCl
                 startActivity(intent_login);
                 break;
             case R.id.btn_loginByEmail:
-                loginByEmail();
+                if(push_token!=null&&!push_token.isEmpty()&&device_id!=null&&!device_id.isEmpty())
+                loginByEmail(push_token,device_id);
                 break;
 
             case R.id.txtV_Forgot:
@@ -245,7 +246,7 @@ public class LoginByEmailActivity extends AppCompatActivity implements View.OnCl
 
     }
 
-    private void loginByEmail() {
+    private void loginByEmail(String push_token, String device_id) {
 
         String email = et_login_email.getText().toString();
         String password = et_login_pass.getText().toString();
@@ -272,7 +273,7 @@ public class LoginByEmailActivity extends AppCompatActivity implements View.OnCl
         Call call= RetrofitClient.
                 getInstance()
                 .getApi()
-                .userLogin(email,password,device_id,push_token);
+                .userLogin(email,password, device_id, push_token);
         call.enqueue(new Callback() {
             @Override
             public void onResponse(Call call, Response response) {

@@ -357,7 +357,7 @@
 
                     <com.souqmaftoh.basatashopping.Fonts.LatoBLack
                         android:id="@+id/btn_pro_logout"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:gravity="center"
                         android:text="تسجيل خروج"
@@ -380,7 +380,7 @@
 
                     <com.souqmaftoh.basatashopping.Fonts.LatoBLack
                         android:id="@+id/btn_pro_addv"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:gravity="center"
                         android:text="اعلاناتي"

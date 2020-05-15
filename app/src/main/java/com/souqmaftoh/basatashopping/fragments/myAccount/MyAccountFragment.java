@@ -93,6 +93,8 @@ public class MyAccountFragment extends Fragment implements View.OnClickListener 
     private String mParam1;
     private String mParam2;
     private GoogleApiClient mGoogleApiClient;
+    private HashMap<String, String> hashMapAccountSt2;
+    boolean flag;
 
     public static MyAccountFragment newInstance() {
         return new MyAccountFragment();
@@ -120,8 +122,15 @@ public class MyAccountFragment extends Fragment implements View.OnClickListener 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            if (getArguments().getSerializable("hashMapAccountDetails") != null) {
+                mParam1 = getArguments().getString(ARG_PARAM1);
+                mParam2 = getArguments().getString(ARG_PARAM2);
+                hashMapAccountSt2 = (HashMap<String, String>) getArguments().getSerializable("hashMapAccountDetails");
+                Log.e("hashMapAccountDetails", String.valueOf(hashMapAccountSt2));
+                flag=true;
+            }else {
+                flag=false;
+            }
         }
     }
 
@@ -202,8 +211,20 @@ public class MyAccountFragment extends Fragment implements View.OnClickListener 
 
         relative_conv_merch.setOnClickListener(this);
 
-        //get user from shared preference
-        SetUserDetailsFromSharedPref();
+
+
+        if(flag){
+            //get user from hashMap
+            SetUserDetailsFromHashMap();
+
+        }else {
+            //get user from shared preference
+            SetUserDetailsFromSharedPref();
+
+        }
+
+
+
 
 
 
@@ -244,7 +265,75 @@ public class MyAccountFragment extends Fragment implements View.OnClickListener 
         };
     }
 
-    private void SetUserDetailsFromSharedPref() {
+
+
+    private void SetUserDetailsFromHashMap() {
+        user = SharedPrefManager.getInstance(getActivity()).getUser();
+        if (user != null) {
+
+            if (user.getToken() != null && !user.getToken().isEmpty()) {
+                token = user.getToken();
+            }
+
+            if (user.getImage() != null && !user.getImage().isEmpty()) {
+                //Loading image using Picasso
+                String imageUrl = user.getImage();
+//                if(Patterns.WEB_URL.matcher(imageUrl).matches()){
+                Picasso.get().load(imageUrl).into(iv_pro_img);
+//                }else {
+//                    iv_pro_img.setImageURI(Uri.parse(imageUrl));
+//                }
+
+            }
+
+
+            if (user.getEmail() != null && !user.getEmail().isEmpty()) {
+                et_pro_email.setText(user.getEmail());
+
+            }
+
+            if (user.getIs_merchant()) {
+                linear_is_merchant.setVisibility(View.VISIBLE);
+                relative_conv_merch.setVisibility(View.GONE);
+            } else {
+                linear_is_merchant.setVisibility(View.GONE);
+                btn_pro_conv_merch.setText("تحويل الحساب لحساب محل تجاري");
+
+            }
+            is_merchant = user.getIs_merchant();
+
+
+            if (user.getName() != null && !user.getName().isEmpty()) {
+                et_pro_name.setText(user.getName());
+
+            }
+
+            if (user.getMarket_name() != null && !user.getMarket_name().isEmpty()) {
+                et_pro_storeName.setText(user.getMarket_name());
+
+            }
+
+            if (user.getAddress() != null && !user.getAddress().isEmpty()) {
+                et_pro_address.setText(user.getAddress());
+
+            }
+
+            if (user.getPhone() != null && !user.getPhone().isEmpty()) {
+                et_pro_phone.setText(user.getPhone());
+
+            }
+
+            if (user.getDescription() != null && !user.getDescription().isEmpty()) {
+                et_pro_storeDisc.setText(user.getDescription());
+
+            }
+            if (user.getLat() != null && !user.getLat().isEmpty() && user.getLng() != null && !user.getLng().isEmpty()) {
+                convertLatLngToAdd(user.getLat(), user.getLng());
+
+            }
+        }
+    }
+        private void SetUserDetailsFromSharedPref() {
          user = SharedPrefManager.getInstance(getActivity()).getUser();
         if (user != null) {
 

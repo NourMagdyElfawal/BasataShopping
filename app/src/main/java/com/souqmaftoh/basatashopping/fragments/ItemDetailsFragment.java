@@ -1,8 +1,8 @@
 package com.souqmaftoh.basatashopping.fragments;
 
-import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.InputType;
 import android.util.Log;
@@ -10,11 +10,9 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RatingBar;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,16 +28,16 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.button.MaterialButton;
 import com.google.gson.Gson;
 import com.souqmaftoh.basatashopping.Api.RetrofitClient;
+import com.souqmaftoh.basatashopping.Fonts.LatoBLack;
 import com.souqmaftoh.basatashopping.Interface.Advertise;
 import com.souqmaftoh.basatashopping.Interface.Advertiser;
 import com.souqmaftoh.basatashopping.Interface.Items;
-import com.souqmaftoh.basatashopping.RegistrationActivityTow;
-import com.souqmaftoh.basatashopping.fragments.ItemsRecyclerFragment.ItemsRecyclerFragment;
 import com.souqmaftoh.basatashopping.fragments.MobileFragment.MobileViewModel;
 import com.souqmaftoh.basatashopping.MainActivity;
 import com.souqmaftoh.basatashopping.R;
 import com.souqmaftoh.basatashopping.design.CurvedBottomNavigationView;
 import com.souqmaftoh.basatashopping.fragments.addAdv.AddAdvFragment;
+import com.souqmaftoh.basatashopping.fragments.myAccount.MyAccountFragment;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
@@ -79,6 +77,8 @@ public class ItemDetailsFragment extends Fragment implements BottomNavigationVie
     private static final String ARG_PARAM2 = "param2";
     private HashMap<String, String> hashMapItem2;
     private HashMap<String, String> hashMapEditAd=new HashMap<String, String>();
+    private HashMap<String, String> hashMapAccountDetails=new HashMap<String, String>();
+
 
     String ad_key;
     MaterialButton btn_Edit_Choices,btn_add_rate;
@@ -89,6 +89,8 @@ public class ItemDetailsFragment extends Fragment implements BottomNavigationVie
     String TAG ="Api";
     private boolean flag=false;
     RatingBar ratingBar,ratingBarIndicat;
+    LatoBLack txtV_advertiser;
+    ImageView imgV_call;
 
 
 
@@ -162,6 +164,8 @@ public class ItemDetailsFragment extends Fragment implements BottomNavigationVie
         View root= inflater.inflate(R.layout.item_details_fragment, container, false);
 
         imgV_adv=root.findViewById(R.id.imgV_adv);
+        txtV_advertiser=root.findViewById(R.id.txtV_advertiser);
+        imgV_call=root.findViewById(R.id.imgV_call);
         edit_advName=root.findViewById(R.id.edit_advName);
         edit_AdvDescription=root.findViewById(R.id.edit_AdvDescription);
         edit_AdvCategory=root.findViewById(R.id.edit_AdvCategory);
@@ -200,7 +204,8 @@ public class ItemDetailsFragment extends Fragment implements BottomNavigationVie
 
         }
         btn_Edit_Choices.setOnClickListener(this);
-
+        imgV_call.setOnClickListener(this);
+        txtV_advertiser.setOnClickListener(this);
         return root;
     }
 
@@ -375,6 +380,13 @@ public class ItemDetailsFragment extends Fragment implements BottomNavigationVie
                 hashMapEditAd.put("main_image",advertise.getMain_image());
             }
 
+
+            if(advertiser.getName()!=null){
+                txtV_advertiser.setText(advertiser.getName());
+            }
+
+
+
         if(advertise.getTitle()!=null){
             hashMapEditAd.put("title",advertise.getTitle());
             edit_advName.setText(advertise.getTitle());
@@ -526,6 +538,19 @@ public class ItemDetailsFragment extends Fragment implements BottomNavigationVie
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.imgV_call:
+                if(advertiser.getPhone()!=null){
+                    Intent call = new Intent(Intent.ACTION_DIAL);
+                    call.setData(Uri.parse("tel:" + advertiser.getPhone()));
+                    startActivity(call);
+                }else {
+                    Toast.makeText(mainActivity, "لا يوجد رقم هاتف", Toast.LENGTH_SHORT).show();
+                }
+                break;
+
+            case R.id.txtV_advertiser:
+                openAdvertiserDetailsFragment();
+                break;
             case R.id.btn_Edit_Choices:
                 if(flag){
                     setAsFavoritApi();
@@ -537,6 +562,46 @@ public class ItemDetailsFragment extends Fragment implements BottomNavigationVie
                 getRating();
                 break;
         }
+    }
+
+    private void openAdvertiserDetailsFragment() {
+        if(advertiser.getName()!=null){
+            hashMapAccountDetails.put("name",advertiser.getName());
+        }
+
+        if(advertiser.getImage()!=null){
+            hashMapAccountDetails.put("image",advertiser.getImage());
+        }
+        if(advertiser.getMarket_name()!=null){
+            hashMapAccountDetails.put("market_name",advertiser.getMarket_name());
+        }
+        if(advertiser.getLat()!=null){
+            hashMapAccountDetails.put("lat",advertiser.getLat());
+        }
+
+        if(advertiser.getLng()!=null){
+            hashMapAccountDetails.put("lng",advertiser.getLng());
+        }
+        if(advertiser.getPhone()!=null){
+            hashMapAccountDetails.put("phone",advertiser.getPhone());
+        }
+        if(advertiser.getDescription()!=null){
+            hashMapAccountDetails.put("description",advertiser.getDescription());
+        }
+
+
+        MyAccountFragment myAccountFragment= new MyAccountFragment();
+        Bundle args = new Bundle();
+        args.putSerializable("hashMapAccountDetails",hashMapAccountDetails);
+        myAccountFragment.setArguments(args);
+
+
+        Objects.requireNonNull(getActivity()).getSupportFragmentManager().beginTransaction()
+                .replace(R.id.item_details_container, myAccountFragment, "AccountFragment")
+                .addToBackStack(null)
+                .commit();
+
+
     }
 
     private void getRating() {
