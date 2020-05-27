@@ -111,6 +111,9 @@ public class MyFirebaseMessagingService  extends FirebaseMessagingService {
 
 
             Intent intent = new Intent(this, MainActivity.class);
+            if(ad_key!=null&&!ad_key.isEmpty()){
+                intent.putExtra("ad_key",ad_key);
+            }
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
             NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "M_CH_ID");
