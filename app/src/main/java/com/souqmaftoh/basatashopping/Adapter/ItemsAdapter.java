@@ -29,7 +29,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsViewHolder> {
     private static final String TAG = "ItemsAdapter";
     public static final int VIEW_TYPE_EMPTY = 0;
     public static final int VIEW_TYPE_NORMAL = 1;
-    public HashMap<String, String> hashMapItem = new HashMap<>();
+    private HashMap<String, String> hashMapItem = new HashMap<>();
 
     private Callback mCallback;
     private List<Items> mSportList;

@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -32,6 +33,8 @@ import com.souqmaftoh.basatashopping.Fonts.LatoBLack;
 import com.souqmaftoh.basatashopping.Interface.Advertise;
 import com.souqmaftoh.basatashopping.Interface.Advertiser;
 import com.souqmaftoh.basatashopping.Interface.Items;
+import com.souqmaftoh.basatashopping.Interface.User;
+import com.souqmaftoh.basatashopping.Storage.SharedPrefManager;
 import com.souqmaftoh.basatashopping.fragments.MobileFragment.MobileViewModel;
 import com.souqmaftoh.basatashopping.MainActivity;
 import com.souqmaftoh.basatashopping.R;
@@ -80,17 +83,18 @@ public class ItemDetailsFragment extends Fragment implements BottomNavigationVie
     private HashMap<String, String> hashMapAccountDetails=new HashMap<String, String>();
 
 
-    String ad_key;
+    String ad_key="";
     MaterialButton btn_Edit_Choices,btn_add_rate;
     String message;
     int id;
     Advertise advertise;
     Advertiser advertiser;
     String TAG ="Api";
-    private boolean flag=false;
+    private boolean flag=false,visitor=false;
     RatingBar ratingBar,ratingBarIndicat;
     LatoBLack txtV_advertiser;
     ImageView imgV_call;
+    LinearLayout advertiser_layout;
 
 
 
@@ -125,25 +129,48 @@ public class ItemDetailsFragment extends Fragment implements BottomNavigationVie
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null ) {
-            if (getArguments().getSerializable("hashMapItem") != null) {
-                mParam1 = getArguments().getString(ARG_PARAM1);
-                mParam2 = getArguments().getString(ARG_PARAM2);
-                hashMapItem2 = (HashMap<String, String>) getArguments().getSerializable("hashMapItem");
-                Log.e("hashMapItem2", String.valueOf(hashMapItem2));
 
-            }
 
-            if (getArguments().getString("fragment") != null) {
-                if (getArguments().getString("fragment").equalsIgnoreCase("itemsAdapter")) {
-                    flag = true;
+            if (SharedPrefManager.getInstance().getUser()!=null) {
+                User user = SharedPrefManager.getInstance().getUser();
+                if (user.getToken() != null && !user.getToken().isEmpty()) {
+//                    token = user.getToken();
+//                    Log.e("token",token);
 
-                }
-            }
-            if (getArguments().getString("ad_key") != null) {
-                ad_key=getArguments().getString("ad_key");
-                if(ad_key!=null) {
-                    Log.e("ad_key", ad_key);
-                    getAdApi(ad_key);
+
+                    if (getArguments().getString("fragment") != null) {
+                        if (getArguments().getString("fragment").equalsIgnoreCase("itemsAdapter")) {
+                            flag = true;
+
+                        }
+                    }
+
+                    if (getArguments().getString("ad_key") != null) {
+                        ad_key = getArguments().getString("ad_key");
+                        if (ad_key != null) {
+                            Log.e("ad_key", ad_key);
+                            getAdApi(ad_key);
+                        }
+                    }
+
+                } else {
+
+                    if (getArguments().getSerializable("hashMapItem") != null) {
+                        hashMapItem2 = (HashMap<String, String>) getArguments().getSerializable("hashMapItem");
+                        Log.e("hashMapItem2", String.valueOf(hashMapItem2));
+                            visitor=true;
+//                        if (hashMapItem2 != null) {
+////                    if (hashMapItem2.get("ad_key") != null) {
+////                        String    ad_key_2 = hashMapItem2.get("ad_key");
+////                        getAdApi(ad_key_2);
+////                    }
+//
+//                            addAdvDetails(hashMapItem2);
+//
+//                        }
+                    }
+
+
                 }
             }
 
@@ -178,7 +205,7 @@ public class ItemDetailsFragment extends Fragment implements BottomNavigationVie
         ratingBar =root.findViewById(R.id.ratingBar);
         ratingBarIndicat=root.findViewById(R.id.ratingBarIndicat);
         btn_add_rate=root.findViewById(R.id.btn_add_rate);
-
+        advertiser_layout=root.findViewById(R.id.advertiser_layout);
         card_AdvPriceOffer=root.findViewById(R.id.card_AdvPriceOffer);
 //        addAdvDetails();
 
@@ -189,6 +216,11 @@ public class ItemDetailsFragment extends Fragment implements BottomNavigationVie
         mView.setOnNavigationItemSelectedListener(ItemDetailsFragment.this);
 //        ((MainActivity) Objects.requireNonNull(getActivity())).hideFloatingActionButton();
 //        Objects.requireNonNull(((AppCompatActivity) Objects.requireNonNull(getActivity())).getSupportActionBar()).hide();
+                        if (hashMapItem2 != null) {
+
+                            addAdvDetails(hashMapItem2);
+
+                        }
 
         if(flag){
             btn_Edit_Choices.setText("اضافه الاعلان الى المفضله");
@@ -203,70 +235,82 @@ public class ItemDetailsFragment extends Fragment implements BottomNavigationVie
             ratingBarIndicat.setVisibility(View.VISIBLE);
 
         }
+        if(visitor){
+            advertiser_layout.setVisibility(View.GONE);
+            btn_Edit_Choices.setVisibility(View.GONE);
+            ratingBar.setVisibility(View.GONE);
+            ratingBarIndicat.setVisibility(View.VISIBLE);
+
+        }else {
+            advertiser_layout.setVisibility(View.VISIBLE);
+        }
         btn_Edit_Choices.setOnClickListener(this);
         imgV_call.setOnClickListener(this);
         txtV_advertiser.setOnClickListener(this);
         return root;
     }
 
-//    private void addAdvDetails() {
-//        if(hashMapItem2!=null) {
-////            if(hashMapItem2.get("ImageUrl")!=null) {
-////                String ImageUrl = hashMapItem2.get("ImageUrl");
-////                Glide.with(this)
-////                        .load(ImageUrl)
-////                        .into(imgV_adv);
-////            }
-//
-////            if(hashMapItem2.get("ad_key")!=null){
-////                ad_key=hashMapItem2.get("ad_key");
-//                getAdApi(ad_key);
-////            }
-//
-////            if(hashMapItem2.get("Title")!=null){
-////                edit_advName.setText(hashMapItem2.get("Title"));
-////            }
-////        if(advertise!= null)
-////            edit_advName.setText(advertise.getTitle());
-//
-////            if(hashMapItem2.get("Item_condition")!=null){
-////                if(hashMapItem2.get("Item_condition").equalsIgnoreCase("new"))
-////                    edit_AdvDescription.setText("جديد");
-////                else
-////                    edit_AdvDescription.setText("قديم");
-////
-////            }
-////
-////            if(hashMapItem2.get("SubTitle")!=null){
-////                edit_AdvCategory.setText(hashMapItem2.get("SubTitle"));
-////            }
-////            if(hashMapItem2.get("Sub_category")!=null){
-////                edit_AdvSubCategory.setText(hashMapItem2.get("Sub_category"));
-////            }
-////            if(hashMapItem2.get("Active")!=null){
-////                if(hashMapItem2.get("Active").equalsIgnoreCase("1")) {
-////                    edit_AdvActive.setText("مفعل");
-////                }else {
-////                    edit_AdvActive.setText("غير مفعل");
-////
-////                }
-//            }
-////            if(hashMapItem2.get("Info")!=null){
-////                edit_AdvPrice.setText(hashMapItem2.get("Info"));
-////            }
-////            if(hashMapItem2.get("Status")!=null){
-////                if(hashMapItem2.get("Status").equalsIgnoreCase("sold"))
-////                    edit_AdvStatus.setText("المنتج مباع");
-////                else
-////                    edit_AdvStatus.setText("المنتج غير مباع");
-////
-////            }
-//
-//
-//
-//        }
+    private void addAdvDetails(HashMap<String, String> hashMapItem2) {
+        if(hashMapItem2 !=null) {
+            Log.e("hash", String.valueOf(hashMapItem2));
+            if(hashMapItem2.get("ImageUrl")!=null) {
+                String ImageUrl = hashMapItem2.get("ImageUrl");
+                Glide.with(this)
+                        .load(ImageUrl)
+                        .into(imgV_adv);
+            }
 
-//    }
+            if(hashMapItem2.get("ad_key")!=null){
+                ad_key= this.hashMapItem2.get("ad_key");
+//                getAdApi(ad_key);
+            }
+//
+            if(hashMapItem2.get("Title")!=null){
+                Log.e("title", hashMapItem2.get("Title"));
+                String title=hashMapItem2.get("Title");
+                edit_advName.setText(title);
+            }
+//        if(advertise!= null)
+//            edit_advName.setText(advertise.getTitle());
+
+            if(hashMapItem2.get("Item_condition")!=null){
+                if(hashMapItem2.get("Item_condition").equalsIgnoreCase("new"))
+                    edit_AdvDescription.setText("جديد");
+                else
+                    edit_AdvDescription.setText("قديم");
+
+            }
+
+            if(hashMapItem2.get("SubTitle")!=null){
+                edit_AdvCategory.setText(this.hashMapItem2.get("SubTitle"));
+            }
+            if(hashMapItem2.get("Sub_category")!=null){
+                edit_AdvSubCategory.setText(this.hashMapItem2.get("Sub_category"));
+            }
+            if(hashMapItem2.get("Active")!=null){
+                if(hashMapItem2.get("Active").equalsIgnoreCase("1")) {
+                    edit_AdvActive.setText("مفعل");
+                }else {
+                    edit_AdvActive.setText("غير مفعل");
+
+                }
+            }
+            if(hashMapItem2.get("Info")!=null){
+                edit_AdvPrice.setText(this.hashMapItem2.get("Info"));
+            }
+            if(hashMapItem2.get("Status")!=null){
+                if(hashMapItem2.get("Status").equalsIgnoreCase("sold"))
+                    edit_AdvStatus.setText("المنتج مباع");
+                else
+                    edit_AdvStatus.setText("المنتج غير مباع");
+
+            }
+
+
+
+        }
+
+    }
 
 
 
@@ -383,6 +427,10 @@ public class ItemDetailsFragment extends Fragment implements BottomNavigationVie
 
             if(advertiser.getName()!=null){
                 txtV_advertiser.setText(advertiser.getName());
+            }else {
+                //TODO remove advertiser name and call icon
+                txtV_advertiser.setText("");
+
             }
 
 

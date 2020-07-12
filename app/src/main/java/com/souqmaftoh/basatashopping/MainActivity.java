@@ -174,21 +174,33 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         });
 
 
-        Intent intent = getIntent();
-        String ad_key = intent.getStringExtra("ad_key");
-        if (ad_key!=null) {
-            Log.e("ad_key_Main", ad_key);
-            ItemDetailsFragment itemDetailsFragment = new ItemDetailsFragment();
-            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            Bundle args = new Bundle();
-            args.putString("fragment", "itemsAdapter");
-            args.putString("ad_key", ad_key);
-            itemDetailsFragment.setArguments(args);
-            transaction.replace(R.id.main, itemDetailsFragment);
-            transaction.addToBackStack(null);
-            transaction.commit();
-        }
+
+    }
+
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+
+        Bundle extras = getIntent().getExtras();
+        if(extras!=null) {
+            Log.e("ad_key_Main", String.valueOf(extras));
+
+            String ad_key = extras.getString("ad_key");
+            if (ad_key != null) {
+                Log.e("ad_key_Main", ad_key);
+                ItemDetailsFragment itemDetailsFragment = new ItemDetailsFragment();
+                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                Bundle args = new Bundle();
+                args.putString("fragment", "itemsAdapter");
+                args.putString("ad_key", ad_key);
+                itemDetailsFragment.setArguments(args);
+                transaction.replace(R.id.main, itemDetailsFragment);
+                transaction.addToBackStack(null);
+                transaction.commit();
+            }
 //        activity.getSupportFragmentManager().beginTransaction().add(R.id.items_main_content,itemDetailsFragment ).addToBackStack( "ItemsRecyclerFragment" ).commit();
+        }
 
 
 

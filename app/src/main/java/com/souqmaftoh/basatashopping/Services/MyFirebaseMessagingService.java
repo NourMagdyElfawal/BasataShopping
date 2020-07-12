@@ -46,7 +46,7 @@ public class MyFirebaseMessagingService  extends FirebaseMessagingService {
     if(remoteMessage.getNotification()!=null) {
          title = remoteMessage.getNotification().getTitle();
          massage = remoteMessage.getNotification().getBody();
-        Log.e("DATA",remoteMessage.getData().toString());
+        Log.e("DATA",massage);
 
         try {
             Map<String, String> params = remoteMessage.getData();
@@ -69,7 +69,10 @@ public class MyFirebaseMessagingService  extends FirebaseMessagingService {
             NotificationCompat.Builder builder;
             Intent intent = new Intent(this, MainActivity.class);
             if(ad_key!=null&&!ad_key.isEmpty()){
+                Log.e("ad_key_service",ad_key);
                 intent.putExtra("ad_key",ad_key);
+                intent.setAction(Long.toString(System.currentTimeMillis()));
+
             }
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             PendingIntent pendingIntent;
@@ -94,7 +97,7 @@ public class MyFirebaseMessagingService  extends FirebaseMessagingService {
 
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |
                     Intent.FLAG_ACTIVITY_SINGLE_TOP);
-            pendingIntent = PendingIntent.getActivity(this, 1251, intent, PendingIntent.FLAG_ONE_SHOT);
+            pendingIntent = PendingIntent.getActivity(this, 1251, intent, PendingIntent.FLAG_UPDATE_CURRENT);
             builder.setContentTitle(title)
                     .setSmallIcon(R.drawable.ic_envelope) // required
                     .setContentText(massage)  // required
@@ -112,10 +115,11 @@ public class MyFirebaseMessagingService  extends FirebaseMessagingService {
 
             Intent intent = new Intent(this, MainActivity.class);
             if(ad_key!=null&&!ad_key.isEmpty()){
-                intent.putExtra("ad_key",ad_key);
+                intent.putExtra("ad_key_service",ad_key);
+                intent.setAction(Long.toString(System.currentTimeMillis()));
             }
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
+            PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
             NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "M_CH_ID");
             builder.setContentTitle(title);
             builder.setContentText(massage);

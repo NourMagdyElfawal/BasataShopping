@@ -9,7 +9,7 @@ public class SubCategory {
         this.id=id;
     }
 
-    public SubCategory(String subcategories, int id, String imageUrl) {
+    public SubCategory(String subCategory, int id, String imageUrl) {
         this.subCategory=subCategory;
         this.id=id;
         this.imageUrl=imageUrl;

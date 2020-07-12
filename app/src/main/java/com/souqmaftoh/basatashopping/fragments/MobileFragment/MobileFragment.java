@@ -2,6 +2,8 @@ package com.souqmaftoh.basatashopping.fragments.MobileFragment;
 
 import androidx.lifecycle.ViewModelProviders;
 
+import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -35,7 +37,7 @@ import retrofit2.Response;
 public class MobileFragment extends Fragment {
 
 //    List<category> historicList = new ArrayList<>();
-
+    private Activity mActivity;
     private MobileViewModel mobileViewModel;
     private RecyclerView recyclerView;
     // TODO: Rename parameter arguments, choose names that match
@@ -223,6 +225,10 @@ public class MobileFragment extends Fragment {
                             }
                             Log.e("subcategories", String.valueOf(mSubCategories));
                             if(mSubCategories!=null){
+                                if (mActivity == null) {
+                                    return;
+                                }
+
 //                                prepareImages(mSubCategories);
                                 imageUrlList = prepareImages(mSubCategories);
                                 imageTitleList = prepareTitles(mSubCategories);
@@ -268,5 +274,23 @@ public class MobileFragment extends Fragment {
 
     }
 
+    @Override
+    public void onAttach(@NotNull Context context) {
+        super.onAttach(context);
 
+        mActivity = getActivity();
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mActivity = null;
+    }
+
+    private void doAction() {
+        if (mActivity == null) {
+            return;
+        }
+
+    }
 }

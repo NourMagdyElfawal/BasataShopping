@@ -106,9 +106,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
         String serverClientId = getString(R.string.server_client_id);
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-//                .requestScopes(new Scope(Scopes.DRIVE_APPFOLDER))
+                .requestScopes(new Scope(Scopes.DRIVE_APPFOLDER))
                 .requestIdToken(serverClientId)
-//                .requestServerAuthCode(serverClientId)
+                .requestServerAuthCode(serverClientId)
                 .requestEmail()
                 .build();
 // Build a GoogleSignInClient with the options specified by gso.
@@ -299,6 +299,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     }
 
+
+
+
+
     private void updateUI() {
         startActivity(new Intent(LoginActivity.this, MainActivity.class));
         finish();
@@ -339,14 +343,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             GoogleSignInAccount account = completedTask.getResult(ApiException.class);
             // Signed in successfully.
             if(account!=null){
-                String authCode = account.getServerAuthCode();
-//                String authCode = account.getId();
-
                 String tk=account.getIdToken();
+
 
             if (tk != null) {
                 Log.e("google_token",tk);
-//               String tk="ya29.a0Ae4lvC2d_SDEztgrC-7Tb0AHWvzbmwxe83egVETyLivIouH7veGxRCUq__f7HrUNiYhjCDfYPEkpSH0xJnpAd7OU2nDFH3EldvmcSVVmbpGVJFIuILjzVVAp0NHF8LmJ_acHERYUPHYMn0hSBxyJOlveB";
                 socialUserApi(tk,"google",device_id,push_token);
 
             }

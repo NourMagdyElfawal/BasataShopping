@@ -140,7 +140,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:visibility="gone"
+                android:visibility="visible"
                 android:padding="10dp">
 
                 <LinearLayout
@@ -292,6 +292,166 @@
                     android:ems="10"
                     android:focusable="false"
                     android:inputType="text" />
+
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:visibility="gone"
+    android:orientation="vertical">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginBottom="15dp"
+                    android:text="روابط صفحات التواصل"
+                    android:textAlignment="center" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:orientation="horizontal">
+
+                    <com.souqmaftoh.basatashopping.Fonts.LatoBLack
+                        android:id="@+id/tv_pro_facebook"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="facebook"
+                        android:textAlignment="viewEnd"
+                        android:textColor="#000"
+                        android:textSize="14sp" />
+
+
+                </LinearLayout>
+
+
+
+                <FrameLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="9dp"
+                    android:padding="5dp">
+
+                    <EditText
+                        android:id="@+id/et_pro_facebook"
+                        android:layout_width="match_parent"
+                        android:layout_height="45dp"
+                        android:layout_marginBottom="5dp"
+                        android:layout_marginTop="4dp"
+                        android:textSize="14sp"
+                        android:background="@drawable/xml_textbox_bg"
+                        android:ems="10"
+                        android:focusable="false"
+                        android:inputType="text" />
+
+                    <Button
+                        android:id="@+id/clear_facebook"
+                        android:layout_width="10dp"
+                        android:layout_height="9dp"
+                        android:layout_gravity="right|center_vertical"
+                        android:layout_marginRight="10dp"
+                        android:background="@drawable/ic_remove" />
+
+                </FrameLayout>
+
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:orientation="horizontal">
+
+                    <com.souqmaftoh.basatashopping.Fonts.LatoBLack
+                        android:id="@+id/tv_pro_instagram"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="instagram"
+                        android:textAlignment="viewEnd"
+                        android:textColor="#000"
+                        android:textSize="14sp" />
+
+
+                </LinearLayout>
+
+
+
+
+                <FrameLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="9dp"
+                    android:padding="5dp">
+
+                    <EditText
+                        android:id="@+id/et_pro_instagram"
+                        android:layout_width="match_parent"
+                        android:layout_height="45dp"
+                        android:layout_marginBottom="5dp"
+                        android:layout_marginTop="4dp"
+                        android:textSize="14sp"
+                        android:background="@drawable/xml_textbox_bg"
+                        android:ems="10"
+                        android:focusable="false"
+                        android:inputType="text" />
+
+                    <Button
+                        android:id="@+id/clear_instagram"
+                        android:layout_width="15dp"
+                        android:layout_height="15dp"
+                        android:layout_marginRight="10dp"
+                        android:layout_gravity="right|center_vertical"
+                        android:background="@drawable/ic_remove" />
+
+                </FrameLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:orientation="horizontal">
+
+                    <com.souqmaftoh.basatashopping.Fonts.LatoBLack
+                        android:id="@+id/tv_pro_youtube"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="youtube"
+                        android:textAlignment="viewEnd"
+                        android:textColor="#000"
+                        android:textSize="14sp" />
+
+
+                </LinearLayout>
+
+
+
+                <FrameLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="9dp"
+                    android:padding="5dp">
+
+                    <EditText
+                        android:id="@+id/et_pro_youtube"
+                        android:layout_width="match_parent"
+                        android:layout_height="45dp"
+                        android:layout_marginBottom="5dp"
+                        android:layout_marginTop="4dp"
+                        android:textSize="14sp"
+                        android:background="@drawable/xml_textbox_bg"
+                        android:ems="10"
+                        android:focusable="false"
+                        android:inputType="text" />
+
+                    <Button
+                        android:id="@+id/clear_youtube"
+                        android:layout_width="15dp"
+                        android:layout_height="15dp"
+                        android:layout_marginRight="10dp"
+                        android:layout_gravity="right|center_vertical"
+                        android:background="@drawable/ic_remove" />
+
+                </FrameLayout>
+            </LinearLayout>
             </LinearLayout>
 
                 <RelativeLayout

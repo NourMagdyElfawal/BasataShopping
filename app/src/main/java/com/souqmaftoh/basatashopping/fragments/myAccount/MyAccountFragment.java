@@ -137,7 +137,7 @@ public class MyAccountFragment extends Fragment implements View.OnClickListener 
 
     LatoBLack btn_pro_logout, btn_pro_edit,btn_pro_addv,btn_pro_conv_merch;
     GoogleSignInClient mGoogleSignInClient;
-    EditText et_pro_name, et_pro_email, et_pro_storeName, et_pro_address, et_pro_location, et_pro_phone, et_pro_storeDisc;
+    EditText et_pro_name, et_pro_email, et_pro_storeName, et_pro_address, et_pro_location, et_pro_phone, et_pro_storeDisc,et_pro_facebook,et_pro_instagram,et_pro_youtube;
     TextView tv_pro_pass;
     String token;
     Boolean is_merchant;
@@ -154,6 +154,7 @@ public class MyAccountFragment extends Fragment implements View.OnClickListener 
     Uri selectedImage;
     RelativeLayout relative_conv_merch;
     LinearLayout linear_is_merchant;
+    Button clear_facebook,clear_instagram,clear_youtube;
 
     User user;
 
@@ -188,6 +189,14 @@ public class MyAccountFragment extends Fragment implements View.OnClickListener 
         et_pro_location = view.findViewById(R.id.et_pro_location);
         et_pro_phone = view.findViewById(R.id.et_pro_phone);
         et_pro_storeDisc = view.findViewById(R.id.et_pro_storeDisc);
+        et_pro_facebook=view.findViewById(R.id.et_pro_facebook);
+        et_pro_instagram=view.findViewById(R.id.et_pro_instagram);
+        et_pro_youtube=view.findViewById(R.id.et_pro_youtube);
+
+        clear_facebook=view.findViewById(R.id.clear_facebook);
+        clear_instagram=view.findViewById(R.id.clear_instagram);
+        clear_youtube=view.findViewById(R.id.clear_youtube);
+
         btn_pro_edit = view.findViewById(R.id.btn_pro_edit);
         btn_pro_addv=view.findViewById(R.id.btn_pro_addv);
         iv_pro_img=view.findViewById(R.id.iv_pro_img);
@@ -208,6 +217,10 @@ public class MyAccountFragment extends Fragment implements View.OnClickListener 
         et_pro_phone.setOnClickListener(this);
         et_pro_storeDisc.setOnClickListener(this);
         iv_pro_img.setOnClickListener(this);
+
+        clear_facebook.setOnClickListener(this);
+        clear_instagram.setOnClickListener(this);
+        clear_youtube.setOnClickListener(this);
 
         relative_conv_merch.setOnClickListener(this);
 
@@ -598,6 +611,23 @@ public class MyAccountFragment extends Fragment implements View.OnClickListener 
                 et_pro_name.setFocusableInTouchMode(false);
 
                 break;
+
+            case R.id.clear_facebook:
+                String facebookUrl=et_pro_facebook.getText().toString();
+                removeSocialLink("facebook",facebookUrl);
+                break;
+            case R.id.clear_instagram:
+                String instagramUrl=et_pro_instagram.getText().toString();
+                removeSocialLink("instagram",instagramUrl);
+
+                break;
+            case R.id.clear_youtube:
+                String youtubeUrl=et_pro_youtube.getText().toString();
+                removeSocialLink("youtube",youtubeUrl);
+
+                break;
+
+
             case R.id.relative_pro_conv_merch:
                 if (is_merchant) {
                     linear_is_merchant.setVisibility(View.GONE);
@@ -613,6 +643,58 @@ public class MyAccountFragment extends Fragment implements View.OnClickListener 
 
 
         }
+
+    }
+
+    private void removeSocialLink(String type, String link) {
+
+         Call<Object> call = RetrofitClient.
+                    getInstance()
+                    .getApi()
+                    .remove_social_link(type, link);
+            call.enqueue(new Callback<Object>() {
+                @Override
+                public void onResponse(Call<Object> call, Response<Object> response) {
+                    Log.e("gson:remove_social_link", new Gson().toJson(response.body()));
+
+                    if (response != null) {
+
+                        if (response.body() != null) {
+                            Log.e("res:remove_social_link", "isSuccessful");
+                            try {
+                                JSONObject jsonObject = new JSONObject(new Gson().toJson(response.body()));
+                                String message = jsonObject.getString("message");
+                                if (message != null) {
+//                                Toast.makeText(g, message, Toast.LENGTH_SHORT).show();
+                                    Log.e("gson:remove_social_link", message);
+
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+
+                        }
+
+                    } else if (response.errorBody() != null) {
+                        try {
+                            Log.e("gson:remove_social_link", response.errorBody().string());
+//                            Toast.makeText(LoginByEmailActivity.this, response.errorBody().string(), Toast.LENGTH_SHORT).show();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+
+
+                @Override
+                public void onFailure(Call<Object> call, Throwable t) {
+                    Log.e("rem_so_link:onFailure", String.valueOf(t));
+
+                }
+            });
+
+
+
 
     }
 

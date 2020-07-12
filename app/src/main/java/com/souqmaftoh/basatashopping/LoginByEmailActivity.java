@@ -156,7 +156,7 @@ public class LoginByEmailActivity extends AppCompatActivity implements View.OnCl
 
                 @Override
                 public void onFailure(Call<Object> call, Throwable t) {
-                    Log.e("reset_pass:onFailure", String.valueOf(t));
+                    Log.e("add_so_link:onFailure", String.valueOf(t));
 
                 }
             });

@@ -39,6 +39,7 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="28dp"
                     android:weightSum="5"
+                    android:id="@+id/advertiser_layout"
                     android:orientation="horizontal">
                     <RelativeLayout
                         android:layout_weight="1"

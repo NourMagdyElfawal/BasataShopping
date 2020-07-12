@@ -174,7 +174,6 @@ public interface Api {
             @Field("type") String type,
             @Field("link") String link
     );
-
     @Headers({
             "Accept: application/json",
     })
