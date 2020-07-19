@@ -138,5 +138,8 @@ public class MyFirebaseMessagingService  extends FirebaseMessagingService {
     public static String getToken(Context context) {
         return context.getSharedPreferences("_", MODE_PRIVATE).getString("fb", "empty");
     }
-//TODO Finally, you are able to use a static method from your Service MyFirebaseMessagingService.getToken(Context);
+//
+//
+//
+// a\\TODO Finally, you are able to use a static method from your Service MyFirebaseMessagingService.getToken(Context);
 }

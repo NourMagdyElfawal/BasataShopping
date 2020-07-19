@@ -182,7 +182,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
 
-        Bundle extras = getIntent().getExtras();
+        Bundle extras = intent.getExtras();
         if(extras!=null) {
             Log.e("ad_key_Main", String.valueOf(extras));
 
