@@ -43,9 +43,10 @@ public class MyFirebaseMessagingService  extends FirebaseMessagingService {
 
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
-    if(remoteMessage.getNotification()!=null) {
-         title = remoteMessage.getNotification().getTitle();
-         massage = remoteMessage.getNotification().getBody();
+    if(remoteMessage.getData()!=null) {
+         title = remoteMessage.getData().get("title");
+         massage = remoteMessage.getData().get("body");
+        assert massage != null;
         Log.e("DATA",massage);
 
         try {
@@ -101,7 +102,7 @@ public class MyFirebaseMessagingService  extends FirebaseMessagingService {
             builder.setContentTitle(title)
                     .setSmallIcon(R.drawable.ic_envelope) // required
                     .setContentText(massage)  // required
-                    .setDefaults(Notification.DEFAULT_ALL)
+//                    .setDefaults(Notification.DEFAULT_ALL)
                     .setAutoCancel(true)
 //                    .setLargeIcon(BitmapFactory.decodeResource
 //                            (getResources(), R.drawable.logo))

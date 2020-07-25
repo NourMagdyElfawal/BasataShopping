@@ -65,6 +65,18 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        if (getIntent().getExtras() != null) {
+            for (String key : getIntent().getExtras().keySet()) {
+                Object value = getIntent().getExtras().get(key);
+                Log.d("notify: ", "Key: " + key + " Value: " + value);
+            }
+                Bundle bundle = getIntent().getExtras();
+            String someData = bundle.getString("to");
+
+            if (someData != null) {
+                Log.e("notify", someData);
+            }
+        }
 
         //device id
         device_id = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);

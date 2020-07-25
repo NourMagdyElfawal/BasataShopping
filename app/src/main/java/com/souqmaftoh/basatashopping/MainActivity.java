@@ -89,7 +89,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
 
-        User user= SharedPrefManager.getInstance().getUser();
+        User user= SharedPrefManager.getInstance(this).getUser();
 
 
         fab = findViewById(R.id.fab);
