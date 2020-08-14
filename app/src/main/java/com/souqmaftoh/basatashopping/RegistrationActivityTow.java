@@ -75,6 +75,7 @@ public class RegistrationActivityTow extends AppCompatActivity implements View.O
         String market_name,address,phone,description;
         Geocoder geocoder;
         public HashMap<String, String> step2 = new HashMap<>();
+        Double latitude,longitude;
 
 
 
@@ -633,34 +634,35 @@ public class RegistrationActivityTow extends AppCompatActivity implements View.O
 private void convertLatLngToAdd(String lat, String lng) {
     geocoder = new Geocoder(this, Locale.getDefault());
     StringBuilder strReturnedAddress;
-    double latitude= Double.parseDouble(lat);
-    double longitude= Double.parseDouble(lng);
+    if(lat!=null&&lng!=null) {
+        latitude = Double.parseDouble(lat);
+        longitude = Double.parseDouble(lng);
 
-    try {
-        if (geocoder.isPresent()) {
-            List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1); // Here 1 represent max location result to returned, by documents it recommended 1 to 5
-            if (addresses != null&&addresses.size()>0 ) {
-                Address returnedAddress = addresses.get(0);
-                strReturnedAddress = new StringBuilder("");
-                Log.e("MaxAddressLine", String.valueOf(returnedAddress.getMaxAddressLineIndex()));
-                for (int i = 0; i <= returnedAddress.getMaxAddressLineIndex(); i++) {
-                    strReturnedAddress.append(returnedAddress.getAddressLine(i));
-                    Log.e("count", String.valueOf(i));
-                }
-                Log.e("Myaddress",strReturnedAddress.toString());
-                et_reg_location.setText(strReturnedAddress.toString());
+        try {
+            if (geocoder.isPresent()) {
+                List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1); // Here 1 represent max location result to returned, by documents it recommended 1 to 5
+                if (addresses != null && addresses.size() > 0) {
+                    Address returnedAddress = addresses.get(0);
+                    strReturnedAddress = new StringBuilder("");
+                    Log.e("MaxAddressLine", String.valueOf(returnedAddress.getMaxAddressLineIndex()));
+                    for (int i = 0; i <= returnedAddress.getMaxAddressLineIndex(); i++) {
+                        strReturnedAddress.append(returnedAddress.getAddressLine(i));
+                        Log.e("count", String.valueOf(i));
+                    }
+                    Log.e("Myaddress", strReturnedAddress.toString());
+                    et_reg_location.setText(strReturnedAddress.toString());
 
 //                    mptxt.setText(strReturnedAddress.toString());
-            } else {
-                Log.e("Myaddress", "No Address returned!");
-            }
+                } else {
+                    Log.e("Myaddress", "No Address returned!");
+                }
 //                String locdescSt = mptxt.getText().toString();
-            //    mapstep2.put("locdesc", Tools.encodeStr(locdescSt.replaceAll("\\r"," ").replaceAll("\\n"," ")).replace("+", "%20"));
+                //    mapstep2.put("locdesc", Tools.encodeStr(locdescSt.replaceAll("\\r"," ").replaceAll("\\n"," ")).replace("+", "%20"));
+            }
+        } catch (IOException e) {
+            Log.e("MyCurrentaddress", "Canont get Address!");
         }
-    } catch(IOException e){
-        Log.e("MyCurrentaddress", "Canont get Address!");
     }
-
 
 }
 
