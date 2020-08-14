@@ -50,6 +50,9 @@ public class SharedPrefManager {
         editor.putString("lng", user.getLng());
         editor.putString("phone", user.getPhone());
         editor.putString("description", user.getDescription());
+        editor.putString("facebookUrl", user.getFacebookUrl());
+        editor.putString("instagramUrl", user.getInstagramUrl());
+        editor.putString("youtubeUrl", user.getYoutubeUrl());
 
         editor.apply();
     }
@@ -58,7 +61,7 @@ public class SharedPrefManager {
         SharedPreferences sharedPreferences=mCtx.getSharedPreferences(SHARED_PREF_NAME,Context.MODE_PRIVATE);
         return sharedPreferences.getInt("id",-1)!=-1;
     }
-//TODO fix mCtx bug
+//TODO fix mCtx bug///i fix it check
     public User getUser(){
         SharedPreferences sharedPreferences=mCtx.getSharedPreferences(SHARED_PREF_NAME,Context.MODE_PRIVATE);
         return new User(
@@ -72,7 +75,11 @@ public class SharedPrefManager {
                 sharedPreferences.getString("lat",null),
                 sharedPreferences.getString("lng",null),
                 sharedPreferences.getString("phone",null),
-                sharedPreferences.getString("description",null)
+                sharedPreferences.getString("description",null),
+                sharedPreferences.getString("facebookUrl",null),
+                sharedPreferences.getString("instagramUrl",null),
+                sharedPreferences.getString("youtubeUrl",null)
+
         );
     }
 

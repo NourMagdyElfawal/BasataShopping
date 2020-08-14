@@ -16,6 +16,8 @@ public class User {
     private String lng;
     private String phone;
     private String description;
+    private String facebookUrl,instagramUrl,  youtubeUrl;
+
 
     public User(String token, String name, String email, String image, boolean is_merchant, String market_name, String address, String lat, String lng, String phone, String description, ArrayList<Object> social_links) {
         this.token = token;
@@ -101,6 +103,25 @@ public class User {
 
     }
 
+    public User(String token, String name, String email, String image, Boolean is_merchant, String market_name, String address, String lat, String lng, String phone, String description, String facebookUrl, String instagramUrl, String youtubeUrl) {
+        this.token=token;
+        this.name = name;
+        this.email = email;
+        this.image = image;
+        this.is_merchant = is_merchant;
+        this.market_name = market_name;
+        this.address = address;
+        this.lat = lat;
+        this.lng = lng;
+        this.phone = phone;
+        this.description = description;
+        this.facebookUrl=facebookUrl;
+        this.instagramUrl=instagramUrl;
+        this.youtubeUrl=youtubeUrl;
+
+
+    }
+
 
     // Getter Methods
 
@@ -166,6 +187,30 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getFacebookUrl() {
+        return facebookUrl;
+    }
+
+    public void setFacebookUrl(String facebookUrl) {
+        this.facebookUrl = facebookUrl;
+    }
+
+    public String getInstagramUrl() {
+        return instagramUrl;
+    }
+
+    public void setInstagramUrl(String instagramUrl) {
+        this.instagramUrl = instagramUrl;
+    }
+
+    public String getYoutubeUrl() {
+        return youtubeUrl;
+    }
+
+    public void setYoutubeUrl(String youtubeUrl) {
+        this.youtubeUrl = youtubeUrl;
     }
 }
 

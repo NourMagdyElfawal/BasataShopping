@@ -410,6 +410,21 @@ public class MyAccountFragment extends Fragment implements View.OnClickListener 
                 convertLatLngToAdd(user.getLat(), user.getLng());
 
             }
+            if (user.getFacebookUrl() != null && !user.getFacebookUrl().isEmpty()) {
+                et_pro_facebook.setText(user.getFacebookUrl());
+
+            }
+            if (user.getInstagramUrl() != null && !user.getInstagramUrl().isEmpty()) {
+                et_pro_instagram.setText(user.getInstagramUrl());
+
+            }
+            if (user.getYoutubeUrl() != null && !user.getYoutubeUrl().isEmpty()) {
+                et_pro_youtube.setText(user.getYoutubeUrl());
+
+            }
+
+
+
         }
     }
 
@@ -664,10 +679,15 @@ public class MyAccountFragment extends Fragment implements View.OnClickListener 
                             try {
                                 JSONObject jsonObject = new JSONObject(new Gson().toJson(response.body()));
                                 String message = jsonObject.getString("message");
-                                if (message != null) {
-//                                Toast.makeText(g, message, Toast.LENGTH_SHORT).show();
+                                if (message != null&&message.equalsIgnoreCase("تم حذف الرابط بنجاح")) {
+                                Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
                                     Log.e("gson:remove_social_link", message);
-
+                                    if(type.equals("facebook"))
+                                        et_pro_facebook.setText("");
+                                    else if(type.equals("instagram"))
+                                        et_pro_instagram.setText("");
+                                    else if(type.equals("youtube"))
+                                        et_pro_youtube.setText("");
                                 }
                             } catch (JSONException e) {
                                 e.printStackTrace();

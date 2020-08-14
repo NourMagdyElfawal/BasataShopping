@@ -301,19 +301,36 @@ public class LoginByEmailActivity extends AppCompatActivity implements View.OnCl
                                 String lng = data.getString("lng");
                                 String phone = data.getString("phone");
                                 String description = data.getString("description");
-                                JSONArray social_links = data.getJSONArray("social_links");
+                                JSONObject social_links = data.getJSONObject("social_links");
 
-                                int length = social_links.length();
-//                    ArrayList<Object>  socialLinks = new ArrayList<>();
-                                for (int i = 0; i < length; i++) {
-                                    JSONObject links = social_links.getJSONObject(i);
-                                    String type = links.getString("type");
-                                    String link = links.getString("link");
-                                    Log.e("social_links", type + "  " + link);
+//                                int length = social_links.length();
+////                    ArrayList<Object>  socialLinks = new ArrayList<>();
+//                                for (int i = 0; i < length; i++) {
+//                                    JSONObject links = social_links.getJSONObject(i);
+//                                    String type = links.getString("type");
+//                                    String link = links.getString("link");
 
+                                String facebookUrl="",instagramUrl="",youtubeUrl="";
+
+                                if(social_links.has("facebook")) {
+                                     facebookUrl = social_links.getString("facebook");
                                 }
+                                if(social_links.has("instagram")) {
 
-                                User user = new User(token, name, email, image, is_merchant, market_name, address, lat, lng, phone, description);
+                                     instagramUrl = social_links.getString("instagram");
+                                }
+                                 if(social_links.has("youtube")) {
+
+                                      youtubeUrl = social_links.getString("youtube");
+                                 }
+//
+//                                        Log.e("social_links", String.valueOf(social_links));
+
+
+
+//                                }
+
+                                User user = new User(token, name, email, image, is_merchant, market_name, address, lat, lng, phone, description,facebookUrl,instagramUrl,youtubeUrl);
 
 
                                 SharedPrefManager.getInstance(LoginByEmailActivity.this)

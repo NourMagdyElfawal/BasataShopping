@@ -131,8 +131,8 @@ public class ItemDetailsFragment extends Fragment implements BottomNavigationVie
         if (getArguments() != null ) {
 
 
-            if (SharedPrefManager.getInstance().getUser()!=null) {
-                User user = SharedPrefManager.getInstance().getUser();
+            if (SharedPrefManager.getInstance(getActivity()).getUser()!=null) {
+                User user = SharedPrefManager.getInstance(getActivity()).getUser();
                 if (user.getToken() != null && !user.getToken().isEmpty()) {
 //                    token = user.getToken();
 //                    Log.e("token",token);
