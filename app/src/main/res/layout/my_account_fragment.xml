@@ -322,7 +322,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="facebook"
-                        android:textAlignment="viewEnd"
+                        android:textAlignment="center"
                         android:textColor="#000"
                         android:textSize="14sp" />
 
@@ -331,33 +331,45 @@
 
 
 
-                <FrameLayout
+                <LinearLayout
                     android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="9dp"
-                    android:padding="5dp">
+                    android:layout_height="45dp"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginTop="4dp"
+                    android:weightSum="6"
+                    android:orientation="horizontal">
 
                     <EditText
                         android:id="@+id/et_pro_facebook"
-                        android:layout_width="match_parent"
-                        android:layout_height="45dp"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
                         android:layout_marginBottom="5dp"
                         android:layout_marginTop="4dp"
                         android:textSize="14sp"
                         android:background="@drawable/xml_textbox_bg"
                         android:ems="10"
-                        android:focusable="false"
+                        android:layout_weight="5"
                         android:inputType="text" />
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:orientation="horizontal"
+                    >
 
                     <Button
                         android:id="@+id/clear_facebook"
-                        android:layout_width="15dp"
-                        android:layout_height="15dp"
-                        android:layout_marginRight="10dp"
-                        android:layout_gravity="right|center_vertical"
-                        android:background="@drawable/ic_remove" />
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
+                        android:background="@drawable/ic_remove"
+                        android:gravity="center"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
-                </FrameLayout>
+                </LinearLayout>
 
 
 
@@ -371,7 +383,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="instagram"
-                        android:textAlignment="viewEnd"
+                        android:textAlignment="center"
                         android:textColor="#000"
                         android:textSize="14sp" />
 
@@ -381,33 +393,46 @@
 
 
 
-                <FrameLayout
+                <LinearLayout
                     android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="9dp"
-                    android:padding="5dp">
+                    android:layout_height="45dp"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginTop="4dp"
+                    android:weightSum="6"
+                    android:orientation="horizontal">
 
                     <EditText
                         android:id="@+id/et_pro_instagram"
-                        android:layout_width="match_parent"
-                        android:layout_height="45dp"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
                         android:layout_marginBottom="5dp"
                         android:layout_marginTop="4dp"
-                        android:textSize="14sp"
                         android:background="@drawable/xml_textbox_bg"
                         android:ems="10"
-                        android:focusable="false"
+                        android:textSize="14sp"
+                        android:layout_weight="5"
                         android:inputType="text" />
 
-                    <Button
-                        android:id="@+id/clear_instagram"
-                        android:layout_width="15dp"
-                        android:layout_height="15dp"
-                        android:layout_marginRight="10dp"
-                        android:layout_gravity="right|center_vertical"
-                        android:background="@drawable/ic_remove" />
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:orientation="horizontal"
+                        >
 
-                </FrameLayout>
+                        <Button
+                            android:id="@+id/clear_instagram"
+                            android:layout_width="22dp"
+                            android:layout_height="22dp"
+                            android:background="@drawable/ic_remove"
+                            android:gravity="center"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                </LinearLayout>
 
 <!--                <LinearLayout-->
 <!--                    android:layout_width="match_parent"-->
@@ -419,7 +444,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="youtube"
-                        android:textAlignment="viewEnd"
+                        android:textAlignment="center"
                         android:textColor="#000"
                         android:textSize="14sp" />
 
@@ -428,33 +453,44 @@
 
 
 
-                <FrameLayout
+                <LinearLayout
                     android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="9dp"
-                    android:padding="5dp">
+                    android:layout_height="45dp"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginTop="4dp"
+                    android:weightSum="6"
+                    android:orientation="horizontal">
 
                     <EditText
                         android:id="@+id/et_pro_youtube"
-                        android:layout_width="match_parent"
-                        android:layout_height="45dp"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
                         android:layout_marginBottom="5dp"
                         android:layout_marginTop="4dp"
-                        android:textSize="14sp"
                         android:background="@drawable/xml_textbox_bg"
                         android:ems="10"
-                        android:focusable="false"
+                        android:textSize="14sp"
+                        android:layout_weight="5"
                         android:inputType="text" />
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:orientation="horizontal"
+                        >
 
                     <Button
                         android:id="@+id/clear_youtube"
-                        android:layout_width="15dp"
-                        android:layout_height="15dp"
-                        android:layout_marginRight="10dp"
-                        android:layout_gravity="right|center_vertical"
-                        android:background="@drawable/ic_remove" />
-
-                </FrameLayout>
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
+                        android:background="@drawable/ic_remove"
+                        android:gravity="center"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </LinearLayout>
             </LinearLayout>
             </LinearLayout>
 

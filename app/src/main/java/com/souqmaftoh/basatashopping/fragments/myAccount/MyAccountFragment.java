@@ -155,7 +155,7 @@ public class MyAccountFragment extends Fragment implements View.OnClickListener 
     RelativeLayout relative_conv_merch;
     LinearLayout linear_is_merchant;
     Button clear_facebook,clear_instagram,clear_youtube;
-
+    Boolean flagFUrl,flagInsUrl,flagYUrl;
     User user;
 
     private static final int PICK_PHOTO_FOR_AVATAR = 0;
@@ -412,19 +412,31 @@ public class MyAccountFragment extends Fragment implements View.OnClickListener 
             }
             if (user.getFacebookUrl() != null && !user.getFacebookUrl().isEmpty()) {
                 et_pro_facebook.setText(user.getFacebookUrl());
-
+                clear_facebook.setBackgroundResource(R.drawable.ic_remove);
+                flagFUrl=true;
+            }else{
+                clear_facebook.setBackgroundResource(R.drawable.ic_add_image);
+                flagFUrl=false;
             }
             if (user.getInstagramUrl() != null && !user.getInstagramUrl().isEmpty()) {
                 et_pro_instagram.setText(user.getInstagramUrl());
-
+                clear_instagram.setBackgroundResource(R.drawable.ic_remove);
+                flagInsUrl=true;
+            }else{
+                clear_instagram.setBackgroundResource(R.drawable.ic_add_image);
+                flagInsUrl=false;
             }
+
+
             if (user.getYoutubeUrl() != null && !user.getYoutubeUrl().isEmpty()) {
                 et_pro_youtube.setText(user.getYoutubeUrl());
 
+                clear_youtube.setBackgroundResource(R.drawable.ic_remove);
+                flagYUrl=true;
+            }else{
+                clear_youtube.setBackgroundResource(R.drawable.ic_add_image);
+                flagYUrl=false;
             }
-
-
-
         }
     }
 
@@ -629,17 +641,32 @@ public class MyAccountFragment extends Fragment implements View.OnClickListener 
 
             case R.id.clear_facebook:
                 String facebookUrl=et_pro_facebook.getText().toString();
-                removeSocialLink("facebook",facebookUrl);
+                if(flagFUrl){
+                    removeSocialLink("facebook",facebookUrl);
+                }
+                else {
+                    addSocialLink("facebook",facebookUrl);
+                }
                 break;
             case R.id.clear_instagram:
                 String instagramUrl=et_pro_instagram.getText().toString();
-                removeSocialLink("instagram",instagramUrl);
+
+                if(flagInsUrl){
+                    removeSocialLink("instagram",instagramUrl);
+                }
+                else {
+                    addSocialLink("instagram",instagramUrl);
+                }
 
                 break;
             case R.id.clear_youtube:
                 String youtubeUrl=et_pro_youtube.getText().toString();
-                removeSocialLink("youtube",youtubeUrl);
-
+                if(flagYUrl){
+                    removeSocialLink("youtube",youtubeUrl);
+                }
+                else {
+                    addSocialLink("youtube",youtubeUrl);
+                }
                 break;
 
 
@@ -682,12 +709,27 @@ public class MyAccountFragment extends Fragment implements View.OnClickListener 
                                 if (message != null&&message.equalsIgnoreCase("تم حذف الرابط بنجاح")) {
                                 Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
                                     Log.e("gson:remove_social_link", message);
-                                    if(type.equals("facebook"))
+                                    if(type.equals("facebook")) {
                                         et_pro_facebook.setText("");
-                                    else if(type.equals("instagram"))
+                                        clear_facebook.setBackgroundResource(R.drawable.ic_add_image);
+                                        flagFUrl=false;
+                                        SharedPrefManager.getInstance(getActivity()).editSingleValue("facebookUrl", "");
+                                    }
+                                    else if(type.equals("instagram")){
                                         et_pro_instagram.setText("");
-                                    else if(type.equals("youtube"))
+                                        clear_instagram.setBackgroundResource(R.drawable.ic_add_image);
+                                        flagInsUrl=false;
+                                        SharedPrefManager.getInstance(getActivity()).editSingleValue("instagramUrl", "");
+
+                                    }
+                                    else if(type.equals("youtube")){
                                         et_pro_youtube.setText("");
+                                        clear_youtube.setBackgroundResource(R.drawable.ic_add_image);
+                                        flagYUrl=false;
+                                        SharedPrefManager.getInstance(getActivity()).editSingleValue("youtubeUrl", "");
+
+
+                                    }
                                 }
                             } catch (JSONException e) {
                                 e.printStackTrace();
@@ -717,6 +759,77 @@ public class MyAccountFragment extends Fragment implements View.OnClickListener 
 
 
     }
+
+
+    private void addSocialLink(String type, String link) {
+
+        Call<Object> call = RetrofitClient.
+                getInstance()
+                .getApi()
+                .add_social_link(type, link);
+        call.enqueue(new Callback<Object>() {
+            @Override
+            public void onResponse(Call<Object> call, Response<Object> response) {
+                Log.e("gson:add_social_link", new Gson().toJson(response.body()));
+
+                if (response != null) {
+
+                    if (response.body() != null) {
+                        Log.e("res:add_social_link", "isSuccessful");
+                        try {
+                            JSONObject jsonObject = new JSONObject(new Gson().toJson(response.body()));
+                            String message = jsonObject.getString("message");
+                            if (message != null&&message.equalsIgnoreCase("تم إضافة الرابط بنجاح")) {
+                                Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+                                Log.e("gson:add_social_link", message);
+                                if(type.equals("facebook")){
+                                    clear_facebook.setBackgroundResource(R.drawable.ic_remove);
+                                    flagFUrl=true;
+                                    SharedPrefManager.getInstance(getActivity()).editSingleValue("facebookUrl", link);
+
+                                }
+                                else if(type.equals("instagram")){
+                                    clear_instagram.setBackgroundResource(R.drawable.ic_remove);
+                                    flagInsUrl=true;
+                                    SharedPrefManager.getInstance(getActivity()).editSingleValue("instagramUrl", link);
+
+                                }
+                                else if(type.equals("youtube")){
+                                    clear_youtube.setBackgroundResource(R.drawable.ic_remove);
+                                    flagYUrl=true;
+                                    SharedPrefManager.getInstance(getActivity()).editSingleValue("youtubeUrl", link);
+
+                                }
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+
+                } else if (response.errorBody() != null) {
+                    try {
+                        Log.e("gson:add_social_link", response.errorBody().string());
+//                            Toast.makeText(LoginByEmailActivity.this, response.errorBody().string(), Toast.LENGTH_SHORT).show();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+
+            @Override
+            public void onFailure(Call<Object> call, Throwable t) {
+                Log.e("add_so_link:onFailure", String.valueOf(t));
+
+            }
+        });
+
+
+
+
+    }
+
 
 
     private void openGallery() {
