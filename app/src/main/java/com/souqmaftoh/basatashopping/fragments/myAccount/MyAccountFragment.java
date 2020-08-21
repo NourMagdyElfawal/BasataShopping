@@ -1,6 +1,7 @@
 package com.souqmaftoh.basatashopping.fragments.myAccount;
 
 import androidx.appcompat.app.AlertDialog;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentManager;
@@ -135,7 +136,7 @@ public class MyAccountFragment extends Fragment implements View.OnClickListener 
     }
 
 
-    LatoBLack btn_pro_logout, btn_pro_edit,btn_pro_addv,btn_pro_conv_merch;
+    LatoBLack btn_pro_logout,btn_pro_addv,btn_pro_conv_merch;
     GoogleSignInClient mGoogleSignInClient;
     EditText et_pro_name, et_pro_email, et_pro_storeName, et_pro_address, et_pro_location, et_pro_phone, et_pro_storeDisc,et_pro_facebook,et_pro_instagram,et_pro_youtube;
     TextView tv_pro_pass;
@@ -152,11 +153,13 @@ public class MyAccountFragment extends Fragment implements View.OnClickListener 
     Geocoder geocoder;
     Dialog dialog;
     Uri selectedImage;
-    RelativeLayout relative_conv_merch;
+    RelativeLayout relative_conv_merch,relative_pro_edit,relative_pro_conv_merch;
     LinearLayout linear_is_merchant;
     Button clear_facebook,clear_instagram,clear_youtube;
     Boolean flagFUrl,flagInsUrl,flagYUrl;
     User user;
+    LinearLayout ly_email,ly_password,ly_logout_adv;
+    ConstraintLayout con_fb_remove,con_ins_remove,con_yout_remove;
 
     private static final int PICK_PHOTO_FOR_AVATAR = 0;
 
@@ -182,13 +185,23 @@ public class MyAccountFragment extends Fragment implements View.OnClickListener 
         View view = inflater.inflate(R.layout.my_account_fragment, container, false);
         btn_pro_logout = view.findViewById(R.id.btn_pro_logout);
         et_pro_name = view.findViewById(R.id.et_pro_name);
-        et_pro_email = view.findViewById(R.id.et_pro_email);
-        tv_pro_pass=view.findViewById(R.id.tv_pro_pass);
+
+        ly_email=view.findViewById(R.id.ly_email);//
+        et_pro_email = view.findViewById(R.id.et_pro_email);//
+
+        ly_password=view.findViewById(R.id.ly_password);//
+        tv_pro_pass=view.findViewById(R.id.tv_pro_pass);//
+
         et_pro_storeName = view.findViewById(R.id.et_pro_storeName);
         et_pro_address = view.findViewById(R.id.et_pro_address);
         et_pro_location = view.findViewById(R.id.et_pro_location);
         et_pro_phone = view.findViewById(R.id.et_pro_phone);
         et_pro_storeDisc = view.findViewById(R.id.et_pro_storeDisc);
+
+        con_fb_remove=view.findViewById(R.id.con_fb_remove);//
+        con_ins_remove=view.findViewById(R.id.con_ins_remove);//
+        con_yout_remove=view.findViewById(R.id.con_yout_remove);//
+
         et_pro_facebook=view.findViewById(R.id.et_pro_facebook);
         et_pro_instagram=view.findViewById(R.id.et_pro_instagram);
         et_pro_youtube=view.findViewById(R.id.et_pro_youtube);
@@ -197,17 +210,22 @@ public class MyAccountFragment extends Fragment implements View.OnClickListener 
         clear_instagram=view.findViewById(R.id.clear_instagram);
         clear_youtube=view.findViewById(R.id.clear_youtube);
 
-        btn_pro_edit = view.findViewById(R.id.btn_pro_edit);
+        relative_pro_edit = view.findViewById(R.id.relative_pro_edit);//
+
         btn_pro_addv=view.findViewById(R.id.btn_pro_addv);
         iv_pro_img=view.findViewById(R.id.iv_pro_img);
 
+        relative_pro_conv_merch=view.findViewById(R.id.relative_pro_conv_merch);
         linear_is_merchant=view.findViewById(R.id.linear_is_merchant);
-        relative_conv_merch=view.findViewById(R.id.relative_pro_conv_merch);
+        relative_conv_merch=view.findViewById(R.id.relative_pro_conv_merch);//
+
+        ly_logout_adv=view.findViewById(R.id.ly_logout_adv);//
+
         btn_pro_conv_merch=view.findViewById(R.id.btn_pro_conv_merch);
 
 
         btn_pro_logout.setOnClickListener(this);
-        btn_pro_edit.setOnClickListener(this);
+        relative_pro_edit.setOnClickListener(this);
         btn_pro_addv.setOnClickListener(this);
         et_pro_name.setOnClickListener(this);
         tv_pro_pass.setOnClickListener(this);
@@ -229,7 +247,16 @@ public class MyAccountFragment extends Fragment implements View.OnClickListener 
         if(flag){
             //get user from hashMap
             SetUserDetailsFromHashMap();
-
+            ly_email.setVisibility(View.GONE);
+            et_pro_email.setVisibility(View.GONE);
+            ly_password.setVisibility(View.GONE);
+            tv_pro_pass.setVisibility(View.GONE);
+            con_fb_remove.setVisibility(View.GONE);
+            con_ins_remove.setVisibility(View.GONE);
+            con_yout_remove.setVisibility(View.GONE);
+            relative_pro_conv_merch.setVisibility(View.GONE);
+            relative_pro_edit.setVisibility(View.GONE);
+            ly_logout_adv.setVisibility(View.GONE);
         }else {
             //get user from shared preference
             SetUserDetailsFromSharedPref();
@@ -281,16 +308,19 @@ public class MyAccountFragment extends Fragment implements View.OnClickListener 
 
 
     private void SetUserDetailsFromHashMap() {
-        user = SharedPrefManager.getInstance(getActivity()).getUser();
-        if (user != null) {
+//        user = SharedPrefManager.getInstance(getActivity()).getUser();
 
-            if (user.getToken() != null && !user.getToken().isEmpty()) {
-                token = user.getToken();
-            }
+        if (hashMapAccountSt2 != null) {
 
-            if (user.getImage() != null && !user.getImage().isEmpty()) {
+
+
+//            if (user.getToken() != null && !user.getToken().isEmpty()) {
+//                token = user.getToken();
+//            }
+
+            if (hashMapAccountSt2.get("image") != null) {
                 //Loading image using Picasso
-                String imageUrl = user.getImage();
+                String imageUrl = hashMapAccountSt2.get("image");
 //                if(Patterns.WEB_URL.matcher(imageUrl).matches()){
                 Picasso.get().load(imageUrl).into(iv_pro_img);
 //                }else {
@@ -300,51 +330,61 @@ public class MyAccountFragment extends Fragment implements View.OnClickListener 
             }
 
 
-            if (user.getEmail() != null && !user.getEmail().isEmpty()) {
-                et_pro_email.setText(user.getEmail());
+//            if (hashMapAccountSt2.get("image") != null) {
+//                et_pro_email.setText(user.getEmail());
+//
+//            }
+
+//            if (user.getIs_merchant()) {
+//                linear_is_merchant.setVisibility(View.VISIBLE);
+//                relative_conv_merch.setVisibility(View.GONE);
+//            } else {
+//                linear_is_merchant.setVisibility(View.GONE);
+//                btn_pro_conv_merch.setText("تحويل الحساب لحساب محل تجاري");
+//
+//            }
+//            is_merchant = user.getIs_merchant();
+
+
+            if (hashMapAccountSt2.get("name") != null) {
+                et_pro_name.setText(hashMapAccountSt2.get("name"));
 
             }
 
-            if (user.getIs_merchant()) {
-                linear_is_merchant.setVisibility(View.VISIBLE);
-                relative_conv_merch.setVisibility(View.GONE);
-            } else {
-                linear_is_merchant.setVisibility(View.GONE);
-                btn_pro_conv_merch.setText("تحويل الحساب لحساب محل تجاري");
-
-            }
-            is_merchant = user.getIs_merchant();
-
-
-            if (user.getName() != null && !user.getName().isEmpty()) {
-                et_pro_name.setText(user.getName());
+            if (hashMapAccountSt2.get("market_name") != null) {
+                et_pro_storeName.setText(hashMapAccountSt2.get("market_name"));
 
             }
 
-            if (user.getMarket_name() != null && !user.getMarket_name().isEmpty()) {
-                et_pro_storeName.setText(user.getMarket_name());
+            if (hashMapAccountSt2.get("address")!=null) {
+                et_pro_address.setText(hashMapAccountSt2.get("address"));
 
             }
 
-            if (user.getAddress() != null && !user.getAddress().isEmpty()) {
-                et_pro_address.setText(user.getAddress());
+            if (hashMapAccountSt2.get("phone") != null) {
+                et_pro_phone.setText(hashMapAccountSt2.get("phone"));
 
             }
 
-            if (user.getPhone() != null && !user.getPhone().isEmpty()) {
-                et_pro_phone.setText(user.getPhone());
+            if (hashMapAccountSt2.get("description") != null) {
+                et_pro_storeDisc.setText(hashMapAccountSt2.get("description"));
 
             }
+            if (hashMapAccountSt2.get("lat") != null&& hashMapAccountSt2.get("lng") != null ) {
+                convertLatLngToAdd(hashMapAccountSt2.get("lat"), hashMapAccountSt2.get("lng"));
+            }
+            if (hashMapAccountSt2.get("facebookUrl") != null) {
+                et_pro_facebook.setText(hashMapAccountSt2.get("facebookUrl"));
+            }
+            if (hashMapAccountSt2.get("instagramUrl") != null) {
+                et_pro_instagram.setText(hashMapAccountSt2.get("instagramUrl"));
+            }
+            if (hashMapAccountSt2.get("youtubeUrl") != null) {
+                et_pro_youtube.setText(hashMapAccountSt2.get("youtubeUrl"));
+            }
 
-            if (user.getDescription() != null && !user.getDescription().isEmpty()) {
-                et_pro_storeDisc.setText(user.getDescription());
 
             }
-            if (user.getLat() != null && !user.getLat().isEmpty() && user.getLng() != null && !user.getLng().isEmpty()) {
-                convertLatLngToAdd(user.getLat(), user.getLng());
-
-            }
-        }
     }
         private void SetUserDetailsFromSharedPref() {
          user = SharedPrefManager.getInstance(getActivity()).getUser();
@@ -492,7 +532,7 @@ public class MyAccountFragment extends Fragment implements View.OnClickListener 
             case R.id.iv_pro_img:
                 openGallery();
                 break;
-            case R.id.btn_pro_edit:
+            case R.id.relative_pro_edit:
                 if(is_merchant){
                     editMerchantProfile();
                 }else {

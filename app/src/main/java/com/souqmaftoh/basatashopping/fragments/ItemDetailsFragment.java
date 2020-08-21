@@ -352,12 +352,25 @@ public class ItemDetailsFragment extends Fragment implements BottomNavigationVie
                             String lng=jsonadvertiser.getString("lng");
                             String phone=jsonadvertiser.getString("phone");
                             String description=jsonadvertiser.getString("description");
-                            JSONArray social_links=jsonadvertiser.getJSONArray("social_links");
-                            String[] arr_social_links = new String[social_links.length()];
-                            for(int i = 0; i < social_links.length(); i++)
-                                arr_social_links[i] = social_links.getString(i);
+                            JSONObject social_links=jsonadvertiser.getJSONObject("social_links");
+//                            String[] arr_social_links = new String[social_links.length()];
+//                            for(int i = 0; i < social_links.length(); i++)
+//                                arr_social_links[i] = social_links.getString(i);
+                            String facebookUrl="",instagramUrl="",youtubeUrl="";
 
-                             advertiser=new Advertiser(name,image,market_name,address,lat,lng,phone,description,arr_social_links);
+                            if(social_links.has("facebook")) {
+                                facebookUrl = social_links.getString("facebook");
+                            }
+                            if(social_links.has("instagram")) {
+
+                                instagramUrl = social_links.getString("instagram");
+                            }
+                            if(social_links.has("youtube")) {
+
+                                youtubeUrl = social_links.getString("youtube");
+                            }
+
+                             advertiser=new Advertiser(name,image,market_name,address,lat,lng,phone,description,facebookUrl,instagramUrl,youtubeUrl);
 
                             //get Advertise information
                             String active=jsonadvertise.getString("active");
@@ -428,8 +441,9 @@ public class ItemDetailsFragment extends Fragment implements BottomNavigationVie
             if(advertiser.getName()!=null){
                 txtV_advertiser.setText(advertiser.getName());
             }else {
-                //TODO remove advertiser name and call icon
-                txtV_advertiser.setText("");
+                //TODO remove advertiser name and call icon  TEST
+                advertiser_layout.setVisibility(View.GONE);
+//                txtV_advertiser.setText("");
 
             }
 
@@ -623,6 +637,11 @@ public class ItemDetailsFragment extends Fragment implements BottomNavigationVie
         if(advertiser.getMarket_name()!=null){
             hashMapAccountDetails.put("market_name",advertiser.getMarket_name());
         }
+        if(advertiser.getAddress()!=null){
+            hashMapAccountDetails.put("address",advertiser.getAddress());
+        }
+
+
         if(advertiser.getLat()!=null){
             hashMapAccountDetails.put("lat",advertiser.getLat());
         }
@@ -635,6 +654,15 @@ public class ItemDetailsFragment extends Fragment implements BottomNavigationVie
         }
         if(advertiser.getDescription()!=null){
             hashMapAccountDetails.put("description",advertiser.getDescription());
+        }
+        if (advertiser.getFacebookUrl()!=null){
+            hashMapAccountDetails.put("facebookUrl",advertiser.getFacebookUrl());
+        }
+        if (advertiser.getInstagramUrl()!=null){
+            hashMapAccountDetails.put("instagramUrl",advertiser.getInstagramUrl());
+        }
+        if (advertiser.getYoutubeUrl()!=null){
+            hashMapAccountDetails.put("youtubeUrl",advertiser.getYoutubeUrl());
         }
 
 

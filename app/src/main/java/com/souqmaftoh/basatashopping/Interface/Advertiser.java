@@ -12,9 +12,9 @@ public class Advertiser {
     private String lng;
     private String phone;
     private String description;
-    private String[] arr_social_links;
+    private String facebookUrl,instagramUrl,  youtubeUrl;
 
-    public Advertiser(String name, String image, String market_name, String address, String lat, String lng, String phone, String description, String[] arr_social_links) {
+    public Advertiser(String name, String image, String market_name, String address, String lat, String lng, String phone, String description, String facebookUrl, String instagramUrl, String youtubeUrl) {
         this.name = name;
         this.image = image;
         this.market_name = market_name;
@@ -23,7 +23,9 @@ public class Advertiser {
         this.lng = lng;
         this.phone = phone;
         this.description = description;
-        this.arr_social_links = arr_social_links;
+        this.facebookUrl=facebookUrl;
+        this.instagramUrl=instagramUrl;
+        this.youtubeUrl=youtubeUrl;
     }
 
     public String getName() {
@@ -90,11 +92,29 @@ public class Advertiser {
         this.description = description;
     }
 
-    public String[] getArr_social_links() {
-        return arr_social_links;
+    public String getFacebookUrl() {
+        return facebookUrl;
     }
 
-    public void setArr_social_links(String[] arr_social_links) {
-        this.arr_social_links = arr_social_links;
+    public void setFacebookUrl(String facebookUrl) {
+        this.facebookUrl = facebookUrl;
     }
+
+    public String getInstagramUrl() {
+        return instagramUrl;
+    }
+
+    public void setInstagramUrl(String instagramUrl) {
+        this.instagramUrl = instagramUrl;
+    }
+
+    public String getYoutubeUrl() {
+        return youtubeUrl;
+    }
+
+    public void setYoutubeUrl(String youtubeUrl) {
+        this.youtubeUrl = youtubeUrl;
+    }
+
+
 }

@@ -260,7 +260,9 @@ public interface Api {
             "Accept: application/json",
     })
     @GET("search_ads")
-    Call<Object> search_ads(@Query("subcategory_id") int subcategory_id);
+    Call<Object> search_ads(
+            @Query("subcategory_id") int subcategory_id
+    );
 
 
 

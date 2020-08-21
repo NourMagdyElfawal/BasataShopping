@@ -72,12 +72,12 @@
 
 
                 <LinearLayout
+                    android:id="@+id/ly_email"
                     android:layout_width="match_parent"
                     android:layout_height="30dp"
                     android:orientation="horizontal">
 
                     <com.souqmaftoh.basatashopping.Fonts.LatoBLack
-                        android:id="@+id/tv_pro_email"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="البريد الاكتروني"
@@ -104,12 +104,12 @@
                      />
 
                 <LinearLayout
+                    android:id="@+id/ly_password"
                     android:layout_width="match_parent"
                     android:layout_height="30dp"
                     android:orientation="horizontal">
 
                     <com.souqmaftoh.basatashopping.Fonts.LatoBLack
-                        android:id="@+id/tv_pro_password"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="الرقم السري"
@@ -351,6 +351,7 @@
                         android:layout_weight="5"
                         android:inputType="text" />
                 <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/con_fb_remove"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
@@ -414,6 +415,7 @@
                         android:inputType="text" />
 
                     <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/con_ins_remove"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
@@ -473,6 +475,7 @@
                         android:layout_weight="5"
                         android:inputType="text" />
                     <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/con_yout_remove"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
@@ -515,6 +518,7 @@
 
 
                 <RelativeLayout
+                    android:id="@+id/relative_pro_edit"
                     android:layout_width="match_parent"
                     android:layout_height="45dp"
                     android:layout_margin="12dp"
@@ -522,7 +526,6 @@
                     android:padding="12dp">
 
                     <com.souqmaftoh.basatashopping.Fonts.LatoBLack
-                        android:id="@+id/btn_pro_edit"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:gravity="center"
@@ -539,6 +542,7 @@
 
 
                 <LinearLayout
+                    android:id="@+id/ly_logout_adv"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
