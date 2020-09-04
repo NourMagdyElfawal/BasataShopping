@@ -246,6 +246,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             JSONObject data = jsonObject.getJSONObject("data");
                             if (data != null) {
                                 String token = data.getString("token");
+                                String firebase_token=data.getString("firebase_token");
                                 String name = data.getString("name");
                                 String email = data.getString("email");
                                 String image = data.getString("image");
@@ -281,7 +282,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                     youtubeUrl = social_links.getString("youtube");
                                 }
 
-                                User user = new User(token, name, email, image, is_merchant, market_name, address, lat, lng, phone, description,facebookUrl,instagramUrl,youtubeUrl);
+                                User user = new User(token,firebase_token, name, email, image, is_merchant, market_name, address, lat, lng, phone, description,facebookUrl,instagramUrl,youtubeUrl);
 
 
                                 SharedPrefManager.getInstance(LoginActivity.this)

@@ -5,7 +5,7 @@ import android.net.Uri;
 import java.util.ArrayList;
 
 public class User {
-    private String token;
+    private String token,firebase_token;
     private String name;
     private String email;
     private String image;
@@ -103,8 +103,9 @@ public class User {
 
     }
 
-    public User(String token, String name, String email, String image, Boolean is_merchant, String market_name, String address, String lat, String lng, String phone, String description, String facebookUrl, String instagramUrl, String youtubeUrl) {
+    public User(String token,String firebase_token, String name, String email, String image, Boolean is_merchant, String market_name, String address, String lat, String lng, String phone, String description, String facebookUrl, String instagramUrl, String youtubeUrl) {
         this.token=token;
+        this.firebase_token=firebase_token;
         this.name = name;
         this.email = email;
         this.image = image;
@@ -127,6 +128,10 @@ public class User {
 
     public String getToken() {
         return token;
+    }
+
+    public String getFirebase_token() {
+        return firebase_token;
     }
 
     public String getName() {

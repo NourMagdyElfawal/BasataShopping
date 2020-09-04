@@ -101,6 +101,7 @@ public interface Api {
     Call<Object> edit_profile(
                     @Field("name") String name,
                     @Field("email") String email,
+                    @Field("market_region") int market_region,
                     @Field("is_merchant") Boolean is_merchant
 
                     );
@@ -115,6 +116,7 @@ public interface Api {
     Call<Object> edit_merchant_profile(
                     @Field("name") String name,
                     @Field("email") String email,
+                    @Field("market_region") int market_region,
                     @Field("market_name") String market_name,
                     @Field("is_merchant") Boolean is_merchant,
                     @Field("address") String address,

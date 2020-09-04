@@ -32,11 +32,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -54,6 +57,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.gson.Gson;
 import com.souqmaftoh.basatashopping.Api.RetrofitClient;
 import com.souqmaftoh.basatashopping.Fonts.LatoBLack;
+import com.souqmaftoh.basatashopping.Interface.Governorates;
+import com.souqmaftoh.basatashopping.Interface.Regions;
 import com.souqmaftoh.basatashopping.LoginActivity;
 import com.souqmaftoh.basatashopping.LoginByEmailActivity;
 import com.souqmaftoh.basatashopping.MainActivity;
@@ -66,11 +71,13 @@ import com.souqmaftoh.basatashopping.fragments.mapFragment.MapFragment;
 import com.squareup.picasso.Picasso;
 
 import org.jetbrains.annotations.NotNull;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -153,13 +160,15 @@ public class MyAccountFragment extends Fragment implements View.OnClickListener 
     Geocoder geocoder;
     Dialog dialog;
     Uri selectedImage;
-    RelativeLayout relative_conv_merch,relative_pro_edit,relative_pro_conv_merch;
+    RelativeLayout relative_pro_conv_merch,relative_pro_edit;
     LinearLayout linear_is_merchant;
     Button clear_facebook,clear_instagram,clear_youtube;
     Boolean flagFUrl,flagInsUrl,flagYUrl;
     User user;
     LinearLayout ly_email,ly_password,ly_logout_adv;
     ConstraintLayout con_fb_remove,con_ins_remove,con_yout_remove;
+    private Spinner spinGovernorate,spinRegion;
+    int regionId,governorateId;
 
     private static final int PICK_PHOTO_FOR_AVATAR = 0;
 
@@ -189,6 +198,11 @@ public class MyAccountFragment extends Fragment implements View.OnClickListener 
         ly_email=view.findViewById(R.id.ly_email);//
         et_pro_email = view.findViewById(R.id.et_pro_email);//
 
+        // Spinner element
+        spinGovernorate = view.findViewById(R.id.spinner_gov);
+        spinRegion = view.findViewById(R.id.spin_reg);
+
+
         ly_password=view.findViewById(R.id.ly_password);//
         tv_pro_pass=view.findViewById(R.id.tv_pro_pass);//
 
@@ -215,9 +229,8 @@ public class MyAccountFragment extends Fragment implements View.OnClickListener 
         btn_pro_addv=view.findViewById(R.id.btn_pro_addv);
         iv_pro_img=view.findViewById(R.id.iv_pro_img);
 
-        relative_pro_conv_merch=view.findViewById(R.id.relative_pro_conv_merch);
         linear_is_merchant=view.findViewById(R.id.linear_is_merchant);
-        relative_conv_merch=view.findViewById(R.id.relative_pro_conv_merch);//
+        relative_pro_conv_merch=view.findViewById(R.id.relative_pro_conv_merch);//
 
         ly_logout_adv=view.findViewById(R.id.ly_logout_adv);//
 
@@ -240,7 +253,8 @@ public class MyAccountFragment extends Fragment implements View.OnClickListener 
         clear_instagram.setOnClickListener(this);
         clear_youtube.setOnClickListener(this);
 
-        relative_conv_merch.setOnClickListener(this);
+        relative_pro_conv_merch.setOnClickListener(this);
+        getGovernoratesApi();
 
 
 
@@ -281,6 +295,241 @@ public class MyAccountFragment extends Fragment implements View.OnClickListener 
 
         return view;
     }
+
+
+    private void getGovernoratesApi() {
+
+        ArrayList<Governorates> mGovernorates = new ArrayList<>();
+
+        Call call= RetrofitClient.
+                getInstance()
+                .getApi()
+                .get_governorates();
+        call.enqueue(new Callback<Object>() {
+            @Override
+            public void onResponse(@NotNull Call<Object> call, @NotNull Response<Object> response) {
+                Log.e("gson:get_governorates", new Gson().toJson(response.body()) );
+
+                if(response!=null) {
+
+                    if (response.body() != null) {
+                        Log.e("res:get_governorates", "isSuccessful");
+                        try {
+                            JSONObject jsonObject = new JSONObject(new Gson().toJson(response.body()));
+                            String message = jsonObject.getString("message");
+                            if (message != null&&!message.isEmpty()) {
+                                Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+                            }
+                            JSONObject jsonData  = jsonObject.getJSONObject("data");
+                            JSONArray arrJson = jsonData.getJSONArray("data");
+                            JSONObject[] arr=new JSONObject[arrJson.length()];
+
+                            for(int i = 0; i < arrJson.length(); i++) {
+                                arr[i] = arrJson.getJSONObject(i);
+                                Log.e("tag", String.valueOf(arr[i]));
+                                String governorate=arr[i].getString("name_ar");
+                                int id=arr[i].getInt("id");
+
+                                mGovernorates.add(new Governorates(governorate,id));
+                            }
+                            Log.e("governorate", String.valueOf(mGovernorates));
+                            if(mGovernorates!=null){
+                                spinnerGovernorates(mGovernorates);
+                            }
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+//
+                    }
+
+                } else if (response.errorBody() != null) {
+                    try {
+                        Log.e("gson:governorates_error", response.errorBody().string());
+                        Toast.makeText(getActivity(), response.errorBody().string(), Toast.LENGTH_SHORT).show();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+
+
+
+            @Override
+            public void onFailure(Call<Object> call, Throwable t) {
+                Log.e("categories:onFailure", String.valueOf(t));
+
+            }
+        });
+
+
+    }
+
+
+
+    private void getRegionApi(int governorateId) {
+
+        ArrayList<Regions> mRegions = new ArrayList<>();
+
+        Call call= RetrofitClient.
+                getInstance()
+                .getApi()
+                .get_regions(governorateId);
+        call.enqueue(new Callback<Object>() {
+            @Override
+            public void onResponse(@NotNull Call<Object> call, @NotNull Response<Object> response) {
+                Log.e("gson:get_regions", new Gson().toJson(response.body()) );
+
+                if(response!=null) {
+
+                    if (response.body() != null) {
+                        Log.e("res:get_regions", "isSuccessful");
+                        try {
+                            JSONObject jsonObject = new JSONObject(new Gson().toJson(response.body()));
+                            String message = jsonObject.getString("message");
+                            if (message != null&&!message.isEmpty()) {
+//                                Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+                            }
+                            JSONObject jsonData  = jsonObject.getJSONObject("data");
+                            JSONArray arrJson = jsonData.getJSONArray("data");
+                            JSONObject[] arr=new JSONObject[arrJson.length()];
+
+                            for(int i = 0; i < arrJson.length(); i++) {
+                                arr[i] = arrJson.getJSONObject(i);
+                                Log.e("tag", String.valueOf(arr[i]));
+                                String region=arr[i].getString("name_ar");
+                                int id=arr[i].getInt("id");
+
+                                mRegions.add(new Regions(region,id));
+                            }
+                            Log.e("get_regions", String.valueOf(mRegions));
+                            if(mRegions!=null){
+                                spinnerRegions(mRegions);
+                            }
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+//
+                    }
+
+                } else if (response.errorBody() != null) {
+                    try {
+                        Log.e("gson:get_regions_error", response.errorBody().string());
+                        Toast.makeText(getActivity(), response.errorBody().string(), Toast.LENGTH_SHORT).show();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+
+
+
+            @Override
+            public void onFailure(Call<Object> call, Throwable t) {
+                Log.e("get_regions:onFailure", String.valueOf(t));
+
+            }
+        });
+
+
+
+
+    }
+
+
+
+
+
+    private void spinnerRegions(ArrayList<Regions> mRegion) {
+        // Spinner click listener
+        spinRegion.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            public void onItemSelected(AdapterView<?> parent, View view,
+                                       int position, long id) {
+                Log.e("position", String.valueOf(position));
+
+                regionId=mRegion.get(position).getId();
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                regionId=mRegion.get(0).getId();
+
+            }
+        });
+
+        // Spinner Drop down elements
+        List<String> regions = new ArrayList<String>();
+
+        for(int i = 0; i < mRegion.size(); i++) {
+            String[] arr = new String[mRegion.size()];
+//            arr[i] = mCategories.get(i).getCategory();
+            regions.add(mRegion.get(i).getRegion());
+        }
+
+//        regions.add("samsung");
+//        regions.add("iphon");
+//        regions.add("nokia");
+//        regions.add("infinix");
+
+        // Creating adapter for spinner
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, regions);
+
+        // Drop down layout style - list view with radio button
+        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        // attaching data adapter to spinner
+        spinRegion.setAdapter(dataAdapter);
+
+
+
+    }
+
+    private void spinnerGovernorates(ArrayList<Governorates> mGovernorates) {
+        // Spinner click listener
+        spinGovernorate.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            public void onItemSelected(AdapterView<?> parent, View view,
+                                       int position, long id) {
+                Log.e("position", String.valueOf(position));
+                governorateId=mGovernorates.get(position).getId();
+                Log.e("governorateId", String.valueOf(governorateId));
+
+                getRegionApi(governorateId);
+
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                governorateId=mGovernorates.get(0).getId();
+                if(governorateId!=-1)
+                    getRegionApi(governorateId);
+
+            }
+        });
+
+        // Spinner Drop down elements
+        List<String> governorates = new ArrayList<String>();
+        for(int i = 0; i < mGovernorates.size(); i++) {
+            String[] arr = new String[mGovernorates.size()];
+//            arr[i] = mCategories.get(i).getCategory();
+            governorates.add(mGovernorates.get(i).getGovernorate());
+        }
+        // Creating adapter for spinner
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, governorates);
+
+        // Drop down layout style - list view with radio button
+        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        // attaching data adapter to spinner
+        spinGovernorate.setAdapter(dataAdapter);
+
+
+    }
+
 
     private View.OnClickListener openMap() {
         return new View.OnClickListener() {
@@ -413,7 +662,7 @@ public class MyAccountFragment extends Fragment implements View.OnClickListener 
 
             if(user.getIs_merchant()){
                 linear_is_merchant.setVisibility(View.VISIBLE);
-                relative_conv_merch.setVisibility(View.GONE);
+                relative_pro_conv_merch.setVisibility(View.GONE);
             }else {
                 linear_is_merchant.setVisibility(View.GONE);
                 btn_pro_conv_merch.setText("تحويل الحساب لحساب محل تجاري");
@@ -1095,7 +1344,7 @@ public class MyAccountFragment extends Fragment implements View.OnClickListener 
         String name = et_pro_name.getText().toString();
         String email=et_pro_email.getText().toString();
         is_merchant=false;
-        editProfileApi(name,email,is_merchant);
+        editProfileApi(name,email,regionId,is_merchant);
         if(encodedImage!=null)
             AddImageProfileApi(encodedImage, selectedImage);
 
@@ -1128,16 +1377,16 @@ public class MyAccountFragment extends Fragment implements View.OnClickListener 
         String phone=et_pro_phone.getText().toString();
         String description=et_pro_storeDisc.getText().toString();
 
-        editMerchantProfileApi(name,email,market_name,address,lat,lng,phone,description);
+        editMerchantProfileApi(name,email,regionId,market_name,address,lat,lng,phone,description);
         if(encodedImage!=null)
         AddImageProfileApi(encodedImage, selectedImage);
     }
 
-    private void editProfileApi(String name, String email, Boolean is_merchant) {
+    private void editProfileApi(String name, String email,int regionId, Boolean is_merchant) {
         Call<Object> call= RetrofitClient.
                 getInstance()
                 .getApi()
-                .edit_profile(name,email,false);
+                .edit_profile(name,email,regionId,false);
 
         call.enqueue(new Callback<Object>() {
             @Override
@@ -1196,13 +1445,13 @@ public class MyAccountFragment extends Fragment implements View.OnClickListener 
 
 
 
-    private void editMerchantProfileApi(String name, String email, String market_name, String address, String lat,String lng, String phone, String description) {
+    private void editMerchantProfileApi(String name, String email,int regionId, String market_name, String address, String lat,String lng, String phone, String description) {
 
 
         Call<Object> call= RetrofitClient.
                 getInstance()
                 .getApi()
-                .edit_merchant_profile(name,email,market_name,true,address,lat,lng,phone,description);
+                .edit_merchant_profile(name,email,regionId,market_name,true,address,lat,lng,phone,description);
 
         call.enqueue(new Callback<Object>() {
             @Override

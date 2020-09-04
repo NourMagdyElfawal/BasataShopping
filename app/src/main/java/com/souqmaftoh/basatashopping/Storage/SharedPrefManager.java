@@ -40,6 +40,7 @@ public class SharedPrefManager {
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
         editor.putString("token", user.getToken());
+        editor.putString("firebase_token",user.getFirebase_token());
         editor.putString("name", user.getName());
         editor.putString("email", user.getEmail());
         editor.putString("image", user.getImage());
@@ -66,6 +67,7 @@ public class SharedPrefManager {
         SharedPreferences sharedPreferences=mCtx.getSharedPreferences(SHARED_PREF_NAME,Context.MODE_PRIVATE);
         return new User(
                 sharedPreferences.getString("token",null),
+                sharedPreferences.getString("firebase_token",null),
                 sharedPreferences.getString("name",null),
                 sharedPreferences.getString("email",null),
                 sharedPreferences.getString("image",null),
