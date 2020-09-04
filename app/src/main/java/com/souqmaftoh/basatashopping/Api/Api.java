@@ -29,6 +29,7 @@ public interface Api {
     Call<Object> createUser(
         @Field("name") String name,
         @Field("email") String email,
+        @Field("market_region") int market_region,
         @Field("password") String password,
         @Field("password_confirmation") String password_confirmation
 
@@ -42,6 +43,7 @@ public interface Api {
     Call<Object> createStore(
             @Field("name") String name,
             @Field("email") String email,
+            @Field("market_region") int market_region,
             @Field("password") String password,
             @Field("password_confirmation") String password_confirmation,
             @Field("market_name") String market_name,
@@ -239,6 +241,24 @@ public interface Api {
 
     );
 
+    @Headers({
+            "Accept: application/json",
+    })
+    @GET("governorates")
+    Call<Object> get_governorates();
+
+
+
+    @Headers({
+            "Accept: application/json",
+    })
+    @GET("regions/{governorate_id}")
+    Call<Object> get_regions(
+            @Path("governorate_id") int governorate_id
+
+    );
+
+
 //    @Headers({
 //            "Accept: application/json",
 //    })
@@ -261,7 +281,18 @@ public interface Api {
     })
     @GET("search_ads")
     Call<Object> search_ads(
+            @Query("subcategory_id") int subcategory_id,
+            @Query("order_by") String order_by
+
+            );
+
+    @Headers({
+            "Accept: application/json",
+    })
+    @GET("search_ads")
+    Call<Object> searchByDate(
             @Query("subcategory_id") int subcategory_id
+
     );
 
 

@@ -17,21 +17,27 @@ import android.util.Base64;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.gson.Gson;
 import com.souqmaftoh.basatashopping.Api.RetrofitClient;
+import com.souqmaftoh.basatashopping.Interface.Governorates;
+import com.souqmaftoh.basatashopping.Interface.Regions;
 import com.souqmaftoh.basatashopping.Models.DefaultResponse;
 import com.souqmaftoh.basatashopping.Interface.User;
 import com.souqmaftoh.basatashopping.Models.RegisterationUserResponse;
 import com.souqmaftoh.basatashopping.Storage.SharedPrefManager;
 
 import org.jetbrains.annotations.NotNull;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -39,7 +45,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Objects;
 
 import retrofit2.Call;
@@ -55,6 +63,9 @@ public class RegistrationActivityOne extends AppCompatActivity implements View.O
     Bitmap bitmap;
     String name,email,password;
     public HashMap<String, String> step1 = new HashMap<>();
+    private Spinner spinGovernorate,spinRegion;
+    int regionId,governorateId;
+
 
 
 
@@ -70,38 +81,280 @@ public class RegistrationActivityOne extends AppCompatActivity implements View.O
         btn_BusinessMan=findViewById(R.id.btn_BusinessMan);
         img_profile=findViewById(R.id.img_profile);
 
+        // Spinner element
+        spinGovernorate = findViewById(R.id.spinner_gov);
+        spinRegion = findViewById(R.id.spin_reg);
+
+
         img_profile.setOnClickListener(this);
         btn_Register.setOnClickListener(this);
         btn_BusinessMan.setOnClickListener(this);
 
-        Bundle bundle=new Bundle();
-        bundle = getIntent().getExtras();
-        if(bundle!=null){
-            name=bundle.getString("name");
-            email=bundle.getString("email");
-            password=bundle.getString("password");
-            RegistrationByApi(name,email,password,password);
+        getGovernoratesApi();
 
-        }
+
+//        Bundle bundle=new Bundle();
+//        bundle = getIntent().getExtras();
+//        if(bundle!=null){
+//            name=bundle.getString("name");
+//            email=bundle.getString("email");
+//            password=bundle.getString("password");
+//            RegistrationByApi(name,email,password,password);
+//
+//        }
 
 
         //get sign in user using gmaile
 
-        GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(this);
-        if (acct != null) {
-            String personName = acct.getDisplayName();
-            String personGivenName = acct.getGivenName();
-            String token = acct.getIdToken();
-            String personEmail = acct.getEmail();
-            String personId = acct.getId();
-            Uri personPhoto = acct.getPhotoUrl();
-//            Toast.makeText(this, "gmailInfo" + personName + personGivenName + personFamilyName + personEmail + personId, Toast.LENGTH_SHORT).show();
-//            Log.e("gmail","gmailInfo " + personName+" "+ personGivenName +" "+ token +" "+ personEmail +" "+ personId);
-            RegistrationByApi(personName,personEmail,personId,personId);
+//        GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(this);
+//        if (acct != null) {
+//            String personName = acct.getDisplayName();
+//            String personGivenName = acct.getGivenName();
+//            String token = acct.getIdToken();
+//            String personEmail = acct.getEmail();
+//            String personId = acct.getId();
+//            Uri personPhoto = acct.getPhotoUrl();
+////            Toast.makeText(this, "gmailInfo" + personName + personGivenName + personFamilyName + personEmail + personId, Toast.LENGTH_SHORT).show();
+////            Log.e("gmail","gmailInfo " + personName+" "+ personGivenName +" "+ token +" "+ personEmail +" "+ personId);
+//            RegistrationByApi(personName,personEmail,personId,personId);
+//
+//        }
+//
+    }
+    private void getGovernoratesApi() {
 
-        }
+        ArrayList<Governorates> mGovernorates = new ArrayList<>();
+
+        Call call= RetrofitClient.
+                getInstance()
+                .getApi()
+                .get_governorates();
+        call.enqueue(new Callback<Object>() {
+            @Override
+            public void onResponse(@NotNull Call<Object> call, @NotNull Response<Object> response) {
+                Log.e("gson:get_governorates", new Gson().toJson(response.body()) );
+
+                if(response!=null) {
+
+                    if (response.body() != null) {
+                        Log.e("res:get_governorates", "isSuccessful");
+                        try {
+                            JSONObject jsonObject = new JSONObject(new Gson().toJson(response.body()));
+                            String message = jsonObject.getString("message");
+                            if (message != null&&!message.isEmpty()) {
+                                Toast.makeText(RegistrationActivityOne.this, message, Toast.LENGTH_SHORT).show();
+                            }
+                            JSONObject jsonData  = jsonObject.getJSONObject("data");
+                            JSONArray arrJson = jsonData.getJSONArray("data");
+                            JSONObject[] arr=new JSONObject[arrJson.length()];
+
+                            for(int i = 0; i < arrJson.length(); i++) {
+                                arr[i] = arrJson.getJSONObject(i);
+                                Log.e("tag", String.valueOf(arr[i]));
+                                String governorate=arr[i].getString("name_ar");
+                                int id=arr[i].getInt("id");
+
+                                mGovernorates.add(new Governorates(governorate,id));
+                            }
+                            Log.e("governorate", String.valueOf(mGovernorates));
+                            if(mGovernorates!=null){
+                                spinnerGovernorates(mGovernorates);
+                            }
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+//
+                    }
+
+                } else if (response.errorBody() != null) {
+                    try {
+                        Log.e("gson:governorates_error", response.errorBody().string());
+                        Toast.makeText(RegistrationActivityOne.this, response.errorBody().string(), Toast.LENGTH_SHORT).show();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+
+
+
+            @Override
+            public void onFailure(Call<Object> call, Throwable t) {
+                Log.e("categories:onFailure", String.valueOf(t));
+
+            }
+        });
+
 
     }
+
+
+
+    private void getRegionApi(int governorateId) {
+
+        ArrayList<Regions> mRegions = new ArrayList<>();
+
+        Call call= RetrofitClient.
+                getInstance()
+                .getApi()
+                .get_regions(governorateId);
+        call.enqueue(new Callback<Object>() {
+            @Override
+            public void onResponse(@NotNull Call<Object> call, @NotNull Response<Object> response) {
+                Log.e("gson:get_regions", new Gson().toJson(response.body()) );
+
+                if(response!=null) {
+
+                    if (response.body() != null) {
+                        Log.e("res:get_regions", "isSuccessful");
+                        try {
+                            JSONObject jsonObject = new JSONObject(new Gson().toJson(response.body()));
+                            String message = jsonObject.getString("message");
+                            if (message != null&&!message.isEmpty()) {
+//                                Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+                            }
+                            JSONObject jsonData  = jsonObject.getJSONObject("data");
+                            JSONArray arrJson = jsonData.getJSONArray("data");
+                            JSONObject[] arr=new JSONObject[arrJson.length()];
+
+                            for(int i = 0; i < arrJson.length(); i++) {
+                                arr[i] = arrJson.getJSONObject(i);
+                                Log.e("tag", String.valueOf(arr[i]));
+                                String region=arr[i].getString("name_ar");
+                                int id=arr[i].getInt("id");
+
+                                mRegions.add(new Regions(region,id));
+                            }
+                            Log.e("get_regions", String.valueOf(mRegions));
+                            if(mRegions!=null){
+                                spinnerRegions(mRegions);
+                            }
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+//
+                    }
+
+                } else if (response.errorBody() != null) {
+                    try {
+                        Log.e("gson:get_regions_error", response.errorBody().string());
+                        Toast.makeText(RegistrationActivityOne.this, response.errorBody().string(), Toast.LENGTH_SHORT).show();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+
+
+
+            @Override
+            public void onFailure(Call<Object> call, Throwable t) {
+                Log.e("get_regions:onFailure", String.valueOf(t));
+
+            }
+        });
+
+
+
+
+    }
+
+
+
+
+
+    private void spinnerRegions(ArrayList<Regions> mRegion) {
+        // Spinner click listener
+        spinRegion.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            public void onItemSelected(AdapterView<?> parent, View view,
+                                       int position, long id) {
+                Log.e("position", String.valueOf(position));
+
+                regionId=mRegion.get(position).getId();
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                regionId=mRegion.get(0).getId();
+
+            }
+        });
+
+        // Spinner Drop down elements
+        List<String> regions = new ArrayList<String>();
+
+        for(int i = 0; i < mRegion.size(); i++) {
+            String[] arr = new String[mRegion.size()];
+//            arr[i] = mCategories.get(i).getCategory();
+            regions.add(mRegion.get(i).getRegion());
+        }
+
+//        regions.add("samsung");
+//        regions.add("iphon");
+//        regions.add("nokia");
+//        regions.add("infinix");
+
+        // Creating adapter for spinner
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, regions);
+
+        // Drop down layout style - list view with radio button
+        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        // attaching data adapter to spinner
+        spinRegion.setAdapter(dataAdapter);
+
+
+
+    }
+
+    private void spinnerGovernorates(ArrayList<Governorates> mGovernorates) {
+        // Spinner click listener
+        spinGovernorate.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            public void onItemSelected(AdapterView<?> parent, View view,
+                                       int position, long id) {
+                Log.e("position", String.valueOf(position));
+                governorateId=mGovernorates.get(position).getId();
+                Log.e("governorateId", String.valueOf(governorateId));
+
+                getRegionApi(governorateId);
+
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                governorateId=mGovernorates.get(0).getId();
+                if(governorateId!=-1)
+                    getRegionApi(governorateId);
+
+            }
+        });
+
+        // Spinner Drop down elements
+        List<String> governorates = new ArrayList<String>();
+        for(int i = 0; i < mGovernorates.size(); i++) {
+            String[] arr = new String[mGovernorates.size()];
+//            arr[i] = mCategories.get(i).getCategory();
+            governorates.add(mGovernorates.get(i).getGovernorate());
+        }
+        // Creating adapter for spinner
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, governorates);
+
+        // Drop down layout style - list view with radio button
+        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        // attaching data adapter to spinner
+        spinGovernorate.setAdapter(dataAdapter);
+
+
+    }
+
+
 
 
     /**
@@ -268,6 +521,7 @@ public class RegistrationActivityOne extends AppCompatActivity implements View.O
         step1.put("email", email);
         step1.put("password", password);
         step1.put("repPassword", repPassword);
+        step1.put("market_region", String.valueOf(regionId));
 
 
         Intent intent = new Intent(RegistrationActivityOne.this, RegistrationActivityTow.class);
@@ -373,7 +627,7 @@ public class RegistrationActivityOne extends AppCompatActivity implements View.O
             return;
 
         }
-        RegistrationByApi(name,email,password,repPassword);
+        RegistrationByApi(name,email,regionId,password,repPassword);
     }
 //    private void AddImageProfileApi() {
 //        Call call= RetrofitClient.
@@ -424,10 +678,10 @@ public class RegistrationActivityOne extends AppCompatActivity implements View.O
 //    }
 
 
-    private void RegistrationByApi(String name, String email, String password,String repPassword) {
+    private void RegistrationByApi(String name, String email,int regionId, String password,String repPassword) {
         Call call= RetrofitClient.
                 getInstance().getApi()
-                .createUser(name,email,password,repPassword);
+                .createUser(name,email,regionId,password,repPassword);
         call.enqueue(new Callback() {
                          @Override
                          public void onResponse(@NotNull Call call, @NotNull Response response) {

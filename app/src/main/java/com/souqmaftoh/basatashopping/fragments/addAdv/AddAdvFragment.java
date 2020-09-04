@@ -76,6 +76,7 @@ public class AddAdvFragment extends Fragment implements BottomNavigationView.OnN
     String imageEncoded;
     List<String> imagesEncodedList;
     ArrayList<addAdvImageModelClass> items = new ArrayList<>();
+    ArrayList<String> encodedImages=new ArrayList<>();
     addAdvAdapter adapter;
     EditText et_advName,et_AdvDescription,et_AdvPrice,et_telephone;
     String encodedImage,token;
@@ -93,8 +94,8 @@ public class AddAdvFragment extends Fragment implements BottomNavigationView.OnN
     private String ad_key;
     private HashMap<String, String> hashMapEditAd2;
 
-    MaterialButton btn_addAdv;
-    Spinner   spinnerCat,spin_sub_cat,spin_spin_con;
+    private MaterialButton btn_addAdv;
+    private Spinner   spinnerCat,spin_sub_cat,spin_spin_con;
 
     public AddAdvFragment() {
         // Required empty public constructor
@@ -162,12 +163,6 @@ public class AddAdvFragment extends Fragment implements BottomNavigationView.OnN
         getCategoryApi();
 
         spinnerCondition();
-
-
-
-
-
-
 
         adapter = new addAdvAdapter(getActivity(), items);
 
@@ -630,7 +625,7 @@ public class AddAdvFragment extends Fragment implements BottomNavigationView.OnN
             } else {
                 Intent intent = new Intent();
                 intent.setType("image/*");
-                intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+                intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, false);
                 intent.setAction(Intent.ACTION_GET_CONTENT);
 
 //                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
@@ -679,29 +674,8 @@ public class AddAdvFragment extends Fragment implements BottomNavigationView.OnN
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-//        if (requestCode == PICK_PHOTO_FOR_AVATAR && resultCode == Activity.RESULT_OK) {
-//            if (data == null) {
-//                //Display an error
-//                return;
-//            }
-//            InputStream inputStream = context.getContentResolver().openInputStream(data.getData());
-//            //Now you can do whatever you want with your inpustream, save it as file, upload to a server, decode a bitmap...
-//        }
         if (requestCode == PICK_PHOTO_FOR_AVATAR && resultCode == RESULT_OK && null != data) {
             Uri selectedImage = data.getData();
-//            String[] filePathColumn = { MediaStore.Images.Media.DATA };
-//
-//            Cursor cursor = getActivity().getContentResolver().query(selectedImage,
-//                    filePathColumn, null, null, null);
-//            cursor.moveToFirst();
-//
-//            int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-//            String picturePath = cursor.getString(columnIndex);
-//            cursor.close();
-//            Log.e("picturePath",picturePath);
-//            addProductImg.setImageBitmap(BitmapFactory.decodeFile(picturePath));
-//                                    addProductImg.setImageURI(selectedImage);
-
             try {
 
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(Objects.requireNonNull(getActivity()).getContentResolver(), selectedImage);
@@ -713,19 +687,19 @@ public class AddAdvFragment extends Fragment implements BottomNavigationView.OnN
 
                 encodedImage = Base64.encodeToString(b, Base64.DEFAULT);
 
+
             } catch (IOException e) {
                 e.printStackTrace();
             }
 
 //            Bitmap bm = BitmapFactory.decodeFile(String.valueOf(selectedImage));
+            for (int i = 0; i < 10; i++) {
+                encodedImages.add(i,encodedImage);
 
-
-
-
+            }
+            Log.e("encodedImages", String.valueOf(encodedImages));
             items.add(new addAdvImageModelClass(selectedImage));
             adapter.notifyDataSetChanged();
-//            items.add(new addAdvImageModelClass(selectedImage));
-//            adapter.notifyDataSetChanged();
 
 
 

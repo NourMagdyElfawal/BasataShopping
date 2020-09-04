@@ -1,5 +1,6 @@
 package com.souqmaftoh.basatashopping;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -13,7 +14,15 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.facebook.AccessToken;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.gson.Gson;
 import com.souqmaftoh.basatashopping.Api.RetrofitClient;
 import com.souqmaftoh.basatashopping.Fonts.LatoBLack;
@@ -45,6 +54,7 @@ public class LoginByEmailActivity extends AppCompatActivity implements View.OnCl
     Bitmap bitmap;
     String encodedImage;
     String facebookUrl,instagramUrl,youtubeUrl;
+    private FirebaseAuth mAuth;
 
 
 
@@ -112,7 +122,35 @@ public class LoginByEmailActivity extends AppCompatActivity implements View.OnCl
             Encode(bitmap);
 
         }
+        // Initialize Firebase Auth
+        mAuth = FirebaseAuth.getInstance();
 
+    }
+
+    private void handleCustomAccessToken(String mCustomToken) {
+
+        mAuth.signInWithCustomToken(mCustomToken).
+
+                addOnCompleteListener(this,new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete (@NonNull Task< AuthResult > task) {
+                        if (task.isSuccessful()) {
+                            // Sign in success, update UI with the signed-in user's information
+                            Log.e("mCustomToken", "signInWithCustomToken:success");
+                            FirebaseUser user = mAuth.getCurrentUser();
+                            Toast.makeText(LoginByEmailActivity.this, "Authentication success.",
+                                    Toast.LENGTH_SHORT).show();
+
+//                            updateUI(user);
+                        } else {
+                            // If sign in fails, display a message to the user.
+                            Log.w("mCustomToken", "signInWithCustomToken:failure", task.getException());
+                            Toast.makeText(LoginByEmailActivity.this, "Authentication failed.",
+                                    Toast.LENGTH_SHORT).show();
+//                            updateUI(null);
+                        }
+                    }
+                });
     }
 
     private void AddSocialMediaLinks(String type, String link) {
@@ -177,6 +215,9 @@ public class LoginByEmailActivity extends AppCompatActivity implements View.OnCl
     @Override
     protected void onStart() {
         super.onStart();
+        // Check if user is signed in (non-null) and update UI accordingly.
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+
         if(SharedPrefManager.getInstance(this).isLoggedIn()){
             Intent intent_log =new Intent(LoginByEmailActivity.this, MainActivity.class);
             intent_log.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -204,6 +245,8 @@ public class LoginByEmailActivity extends AppCompatActivity implements View.OnCl
 
             case R.id.txtV_Forgot:
                 forgetPassword();
+//                TODO remove access token and back forgot pass
+//                handleCustomAccessToken("eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJpc3MiOiJmaXJlYmFzZS1hZG1pbnNkay1oN3hueUBiYXNhdGFzaG9wcGluZy5pYW0uZ3NlcnZpY2VhY2NvdW50LmNvbSIsInN1YiI6ImZpcmViYXNlLWFkbWluc2RrLWg3eG55QGJhc2F0YXNob3BwaW5nLmlhbS5nc2VydmljZWFjY291bnQuY29tIiwiYXVkIjoiaHR0cHM6XC9cL2lkZW50aXR5dG9vbGtpdC5nb29nbGVhcGlzLmNvbVwvZ29vZ2xlLmlkZW50aXR5LmlkZW50aXR5dG9vbGtpdC52MS5JZGVudGl0eVRvb2xraXQiLCJpYXQiOjE1OTg5MTA5MDIsImV4cCI6MTU5ODkxNDUwMiwidWlkIjoiYWhtZWRfbW9oYW1lZHh5ekB5YWhvby5jb20ifQ.jZmeDQSGhzmCodfXYKlff9uSAyLyypEkPBY1LO8EcRT-EmnmGcdY19Z446Y9mtMnlISwBCtMeoCt1NrIU9XfUK8VMfwBcvN7wuBuHNS9cqB5QYdYZFOliOO_qvZkbpopCMQFgh0669mhxsqrhNNUSaNe9PK-0s3rZWH_JkDMkPzdyv-WGITcTGmZhVKj1DAHQD1yHcUM7BlQxHGaN0FxAPoGr038EIVAXkyFsHuBM0u5SQA4GfLdf9g_CcaQuu4QV0EBVLdvZOn-TEHQnR8hZTvxX9Yx5vmzL72MW8nVEEB2HqoASKHoN0mZ9JxkA9sHkbPZHKqRw5jjDpESphRrfw");
                 break;
         }
     }

@@ -53,13 +53,14 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     CallbackManager mCallbackManager;
     private static final String TAG = "facebook";
     private FirebaseAuth mAuth;
-    int RC_SIGN_IN=0;
-    Button next,btnLogin;
-    String facebookEmail,facebookToken,facebookName,facebookId;
-    String device_id,push_token;
+    int RC_SIGN_IN = 0;
+    Button next, btnLogin;
+    String facebookEmail, facebookToken, facebookName, facebookId;
+    String device_id, push_token;
 
     TextView registration;
     GoogleSignInClient mGoogleSignInClient;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,7 +71,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 Object value = getIntent().getExtras().get(key);
                 Log.d("notify: ", "Key: " + key + " Value: " + value);
             }
-                Bundle bundle = getIntent().getExtras();
+            Bundle bundle = getIntent().getExtras();
             String someData = bundle.getString("to");
 
             if (someData != null) {
@@ -80,30 +81,30 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         //device id
         device_id = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
-        if(device_id!=null)Log.e("device_id",device_id);
+        if (device_id != null) Log.e("device_id", device_id);
 
 //device token
 
 
 //        device_token=(String) ParseInstallation.getCurrentInstallation().get("deviceToken");
-        push_token= MyFirebaseMessagingService.getToken(this);
-        if(push_token!=null)Log.e("push_token",push_token);
+        push_token = MyFirebaseMessagingService.getToken(this);
+        if (push_token != null) Log.e("push_token", push_token);
 
 
-        User user= SharedPrefManager.getInstance(this).getUser();
-        if(user!=null) {
+        User user = SharedPrefManager.getInstance(this).getUser();
+        if (user != null) {
             if (user.getToken() != null && !user.getToken().isEmpty()) {
-                Intent intent_log =new Intent(LoginActivity.this, MainActivity.class);
-                intent_log.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                Intent intent_log = new Intent(LoginActivity.this, MainActivity.class);
+                intent_log.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(intent_log);
 
             }
         }
 
 
-        registration=findViewById(R.id.txtV_registration);
-        next=findViewById(R.id.next);
-        btnLogin=findViewById(R.id.btn_login);
+        registration = findViewById(R.id.txtV_registration);
+        next = findViewById(R.id.next);
+        btnLogin = findViewById(R.id.btn_login);
 
 
         registration.setOnClickListener(this);
@@ -159,7 +160,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
 
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -188,10 +188,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         // the GoogleSignInAccount will be non-null.
         GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
 
-        if ((currentUser != null)||(account != null) ){
+        if ((currentUser != null) || (account != null)) {
 //            updateUI();
         }
     }
+
 
     private void handleFacebookAccessToken(AccessToken token) {
         Log.d(TAG, "handleFacebookAccessToken:" + token);

@@ -76,6 +76,7 @@ public class RegistrationActivityTow extends AppCompatActivity implements View.O
         Geocoder geocoder;
         public HashMap<String, String> step2 = new HashMap<>();
         Double latitude,longitude;
+        String market_region;
 
 
 
@@ -399,7 +400,7 @@ public class RegistrationActivityTow extends AppCompatActivity implements View.O
             return;
         }
 
-        RegistrationStoreByApi(name,email,password,repPassword,market_name,address,lat,lng,phone,description);
+        RegistrationStoreByApi(name,email,market_region,password,repPassword,market_name,address,lat,lng,phone,description);
         AddImageProfileApi();
 
 
@@ -454,12 +455,11 @@ public class RegistrationActivityTow extends AppCompatActivity implements View.O
 
     }
 
-
-    private void RegistrationStoreByApi(String name, String email, String password, String repPassword,
+    private void RegistrationStoreByApi(String name, String email, String market_region,String password, String repPassword,
                                         String market_name, String address, String lat, String lng, String phone, String description) {
         Call call= RetrofitClient.
                 getInstance().getApi()
-                .createStore(name,email,password,repPassword,market_name,address,lat,lng,phone,description);
+                .createStore(name,email, Integer.parseInt(market_region),password,repPassword,market_name,address,lat,lng,phone,description);
         call.enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) {
@@ -680,6 +680,7 @@ private void convertLatLngToAdd(String lat, String lng) {
            convertLatLngToAdd(lat,lng);
             name=step2.get("name");
             email=step2.get("email");
+            market_region=step2.get("market_region");
             password=step2.get("password");
             repPassword=step2.get("repPassword");
 

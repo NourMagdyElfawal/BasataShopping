@@ -137,21 +137,57 @@ public class ItemsRecyclerFragment extends Fragment {
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View view,
                                        int position, long id) {
+// TODO check the search spinner
+                String items=spinner.getSelectedItem().toString();
+                Log.e("Selected item : ",items);
+                Log.e("Selected position : ", String.valueOf(position));
+                String orderBy;
+                switch (position) {
+                    case 0:
+                        setUpListOfItemsByDefault();
+                        break;
 
-            }
+                        case 1:
+                            orderBy="price_desc";
+                        setUpListOfItems(orderBy);
+                        break;
+
+                        case 2:
+                            orderBy="price_asc";
+                            setUpListOfItems(orderBy);
+
+                            break;
+
+
+                        case 3:
+                            orderBy="rate_desc";
+                            setUpListOfItems(orderBy);
+                        break;
+
+                        case 4:
+                            orderBy="rate_asc";
+                            setUpListOfItems(orderBy);
+                            break;
+
+
+                }
+
+                }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
+                setUpListOfItemsByDefault();
 
             }
         });
 
         // Spinner Drop down elements
         List<String> categories = new ArrayList<String>();
+        categories.add("الاحدث");
         categories.add("السعر: من الأعلى للأقل");
         categories.add("السعر: من الأقل للأعلى");
-        categories.add("الاحدث");
-        categories.add("الأكثر تقييما");
+        categories.add("التقييم: من الأعلى للأقل");
+        categories.add("التقييم: من الأقل للأعلى");
 
         // Creating adapter for spinner
         ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_item, categories);
@@ -169,7 +205,7 @@ public class ItemsRecyclerFragment extends Fragment {
         if(flag){
             setUpListOfMyItems();
         }else {
-            setUpListOfItems();
+            setUpListOfItemsByDefault();
         }
 
 
@@ -330,7 +366,7 @@ public class ItemsRecyclerFragment extends Fragment {
 
     }
 
-    private void setUpListOfItems() {
+    private void setUpListOfItemsByDefault() {
         mLayoutManager = new LinearLayoutManager(getActivity());
         mLayoutManager.setOrientation(RecyclerView.VERTICAL);
         mRecyclerView.setLayoutManager(mLayoutManager);
@@ -340,18 +376,110 @@ public class ItemsRecyclerFragment extends Fragment {
         itemsAdapter = new ItemsAdapter(new ArrayList<>());
 
 //        prepareDemoContent();
-        getAdsApi();
+        getAdsApiByDefault();
 
 
     }
 
-    private void getAdsApi() {
+
+    private void getAdsApiByDefault() {
         ArrayList<Items> mSports = new ArrayList<>();
 
         Call<Object> call= RetrofitClient.
                 getInstance()
                 .getApi()
-                .search_ads(subCategoryId);
+                .searchByDate(subCategoryId);
+        call.enqueue(new Callback<Object>() {
+            @Override
+            public void onResponse(@NotNull Call<Object> call, @NotNull Response<Object> response) {
+                Log.e("gson:search_ads", new Gson().toJson(response.body()) );
+
+                if(response!=null) {
+
+                    if (response.body() != null) {
+                        Log.e("res:search_ads", "isSuccessful");
+                        try {
+                            JSONObject jsonObject = new JSONObject(new Gson().toJson(response.body()));
+                            String message = jsonObject.getString("message");
+                            if (message != null&&!message.isEmpty()) {
+                                Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+                            }
+                            JSONObject jsonData  = jsonObject.getJSONObject("data");
+                            JSONArray arrJson = jsonData.getJSONArray("data");
+                            JSONObject[] arr=new JSONObject[arrJson.length()];
+
+                            for(int i = 0; i < arrJson.length(); i++) {
+                                arr[i] = arrJson.getJSONObject(i);
+                                Log.e("tag", String.valueOf(arr[i]));
+                                String ad_key=arr[i].getString("ad_key");
+                                String title=arr[i].getString("title");
+                                String offer=arr[i].getString("offer");
+                                String main_image=arr[i].getString("main_image");
+                                String price=arr[i].getString("price");
+                                String category=arr[i].getString("category");
+                                String sub_category=arr[i].getString("sub_category");
+                                String active=arr[i].getString("active");
+                                String item_condition=arr[i].getString("item_condition");
+                                String status=arr[i].getString("status");
+                                mSports.add(new Items(ad_key,main_image,item_condition , title, price,offer,category,sub_category,active,status));
+                            }
+                            itemsAdapter.addItems(mSports);
+                            mRecyclerView.setAdapter(itemsAdapter);
+
+
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+//
+                    }
+
+                } else if (response.errorBody() != null) {
+                    try {
+                        Log.e("gson:search_ads_error", response.errorBody().string());
+                        Toast.makeText(getActivity(), response.errorBody().string(), Toast.LENGTH_SHORT).show();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+
+
+            @Override
+            public void onFailure(Call<Object> call, Throwable t) {
+                Log.e("search_ads:onFailure", String.valueOf(t));
+
+            }
+        });
+
+
+    }
+
+
+
+    private void setUpListOfItems(String orderBy) {
+        mLayoutManager = new LinearLayoutManager(getActivity());
+        mLayoutManager.setOrientation(RecyclerView.VERTICAL);
+        mRecyclerView.setLayoutManager(mLayoutManager);
+        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+        Drawable dividerDrawable = ContextCompat.getDrawable(Objects.requireNonNull(getActivity()), R.drawable.divider_drawable);
+        mRecyclerView.addItemDecoration(new DividerItemDecoration(dividerDrawable));
+        itemsAdapter = new ItemsAdapter(new ArrayList<>());
+
+//        prepareDemoContent();
+        getAdsApi(orderBy);
+
+
+    }
+
+    private void getAdsApi(String orderBy) {
+        ArrayList<Items> mSports = new ArrayList<>();
+
+        Call<Object> call= RetrofitClient.
+                getInstance()
+                .getApi()
+                .search_ads(subCategoryId,orderBy);
         call.enqueue(new Callback<Object>() {
             @Override
             public void onResponse(@NotNull Call<Object> call, @NotNull Response<Object> response) {
