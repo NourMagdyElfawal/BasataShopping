@@ -23,6 +23,11 @@ import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 import com.souqmaftoh.basatashopping.Api.RetrofitClient;
 import com.souqmaftoh.basatashopping.Fonts.LatoBLack;
@@ -55,6 +60,8 @@ public class LoginByEmailActivity extends AppCompatActivity implements View.OnCl
     String encodedImage;
     String facebookUrl,instagramUrl,youtubeUrl;
     private FirebaseAuth mAuth;
+    private DatabaseReference RootRef;
+
 
 
 
@@ -124,10 +131,12 @@ public class LoginByEmailActivity extends AppCompatActivity implements View.OnCl
         }
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
+        RootRef = FirebaseDatabase.getInstance().getReference();
+
 
     }
 
-    private void handleCustomAccessToken(String mCustomToken) {
+    private void handleCustomAccessToken(String mCustomToken, String email) {
 
         mAuth.signInWithCustomToken(mCustomToken).
 
@@ -138,8 +147,14 @@ public class LoginByEmailActivity extends AppCompatActivity implements View.OnCl
                             // Sign in success, update UI with the signed-in user's information
                             Log.e("mCustomToken", "signInWithCustomToken:success");
                             FirebaseUser user = mAuth.getCurrentUser();
-                            Toast.makeText(LoginByEmailActivity.this, "Authentication success.",
-                                    Toast.LENGTH_SHORT).show();
+                            if(user!=null) {
+                                String currentUserID = user.getUid();
+                                //check if the user exist and add it to database if not
+                                checkUserExist(currentUserID,email);
+                                Toast.makeText(LoginByEmailActivity.this, "Authentication success.",
+                                        Toast.LENGTH_SHORT).show();
+
+                            }
 
 //                            updateUI(user);
                         } else {
@@ -151,6 +166,92 @@ public class LoginByEmailActivity extends AppCompatActivity implements View.OnCl
                         }
                     }
                 });
+    }
+
+    private void checkUserExist(String currentUserID, String email) {
+        DatabaseReference rootRef = FirebaseDatabase.getInstance().getReference("Users").child(currentUserID);
+        rootRef.addListenerForSingleValueEvent(new ValueEventListener() {
+
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    // Exist! Do whatever.
+                    Intent intent_log = new Intent(LoginByEmailActivity.this, MainActivity.class);
+                    intent_log.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(intent_log);
+
+                } else {
+                    // Don't exist! Do something.
+                    RootRef.child("Users").child(currentUserID).setValue("");
+                    RootRef.child("Users").child(currentUserID).child("id")
+                            .setValue(currentUserID);
+                    RootRef.child("Users").child(currentUserID).child("email")
+                            .setValue(email);
+                    addFirebaseIdToDatabase(currentUserID);
+                    Intent intent_log = new Intent(LoginByEmailActivity.this, MainActivity.class);
+                    intent_log.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(intent_log);
+
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                // Failed, how to handle?
+
+            }
+
+        });
+
+    }
+
+    private void addFirebaseIdToDatabase(String currentUserID) {
+        Call<Object> call = RetrofitClient.
+                getInstance()
+                .getApi()
+                .set_firebase_id(currentUserID);
+        call.enqueue(new Callback<Object>() {
+            @Override
+            public void onResponse(Call<Object> call, Response<Object> response) {
+                Log.e("gson:set_firebase_id", new Gson().toJson(response.body()));
+
+                if (response != null) {
+
+                    if (response.body() != null) {
+                        Log.e("res:set_firebase_id", "isSuccessful");
+                        try {
+                            JSONObject jsonObject = new JSONObject(new Gson().toJson(response.body()));
+                            String message = jsonObject.getString("message");
+                            if (message != null) {
+//                                Toast.makeText(g, message, Toast.LENGTH_SHORT).show();
+                                Log.e("gson:set_firebase_id", message);
+
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+
+                } else if (response.errorBody() != null) {
+                    try {
+                        Log.e("gson:set_firebase_id", response.errorBody().string());
+//                            Toast.makeText(LoginByEmailActivity.this, response.errorBody().string(), Toast.LENGTH_SHORT).show();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+
+            @Override
+            public void onFailure(Call<Object> call, Throwable t) {
+                Log.e("firebase_id:onFailure", String.valueOf(t));
+
+            }
+        });
+
+
     }
 
     private void AddSocialMediaLinks(String type, String link) {
@@ -375,10 +476,15 @@ public class LoginByEmailActivity extends AppCompatActivity implements View.OnCl
 //                                }
 
                                 User user = new User(token,firebase_token, name, email, image, is_merchant, market_name, address, lat, lng, phone, description,facebookUrl,instagramUrl,youtubeUrl);
-
-
                                 SharedPrefManager.getInstance(LoginByEmailActivity.this)
                                         .saveUser(user);
+
+                                if(firebase_token!=null&&!firebase_token.isEmpty()){
+                                    handleCustomAccessToken(firebase_token,email);
+
+                                }
+
+
                                 if(token!=null&&!token.isEmpty()) {
                                     //add image profile
                                     if(encodedImage!=null&&!encodedImage.isEmpty()){
@@ -399,9 +505,6 @@ public class LoginByEmailActivity extends AppCompatActivity implements View.OnCl
                                     }
                                 }
                             }
-                                Intent intent_log = new Intent(LoginByEmailActivity.this, MainActivity.class);
-                                intent_log.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                startActivity(intent_log);
 
 
 

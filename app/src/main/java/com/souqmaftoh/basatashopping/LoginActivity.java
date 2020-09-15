@@ -33,6 +33,11 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 import com.souqmaftoh.basatashopping.Api.RetrofitClient;
 import com.souqmaftoh.basatashopping.Interface.User;
@@ -53,6 +58,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     CallbackManager mCallbackManager;
     private static final String TAG = "facebook";
     private FirebaseAuth mAuth;
+    private DatabaseReference RootRef;
     int RC_SIGN_IN = 0;
     Button next, btnLogin;
     String facebookEmail, facebookToken, facebookName, facebookId;
@@ -156,6 +162,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             }
         });
 // ...
+        // Initialize Firebase Auth
+        mAuth = FirebaseAuth.getInstance();
+        RootRef = FirebaseDatabase.getInstance().getReference();
 
     }
 
@@ -282,11 +291,17 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                     youtubeUrl = social_links.getString("youtube");
                                 }
 
-                                User user = new User(token,firebase_token, name, email, image, is_merchant, market_name, address, lat, lng, phone, description,facebookUrl,instagramUrl,youtubeUrl);
+                                User user = new User(token, name, email, image, is_merchant, market_name, address, lat, lng, phone, description,facebookUrl,instagramUrl,youtubeUrl);
 
 
                                 SharedPrefManager.getInstance(LoginActivity.this)
                                         .saveUser(user);
+
+                                if(firebase_token!=null&&!firebase_token.isEmpty()){
+                                    handleCustomAccessToken(firebase_token,email);
+
+                                }
+
 
                             }
                             Intent intent_log = new Intent(LoginActivity.this, MainActivity.class);
@@ -326,8 +341,123 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     }
 
+    private void handleCustomAccessToken(String mCustomToken, String email) {
+
+        mAuth.signInWithCustomToken(mCustomToken).
+
+                addOnCompleteListener(this,new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete (@NonNull Task< AuthResult > task) {
+                        if (task.isSuccessful()) {
+                            // Sign in success, update UI with the signed-in user's information
+                            Log.e("mCustomToken", "signInWithCustomToken:success");
+                            FirebaseUser user = mAuth.getCurrentUser();
+                            if(user!=null) {
+                                String currentUserID = user.getUid();
+                                //check if the user exist and add it to database if not
+                                checkUserExist(currentUserID,email);
+                                Toast.makeText(LoginActivity.this, "Authentication success.",
+                                        Toast.LENGTH_SHORT).show();
+
+                            }
+
+//                            updateUI(user);
+                        } else {
+                            // If sign in fails, display a message to the user.
+                            Log.w("mCustomToken", "signInWithCustomToken:failure", task.getException());
+                            Toast.makeText(LoginActivity.this, "Authentication failed.",
+                                    Toast.LENGTH_SHORT).show();
+//                            updateUI(null);
+                        }
+                    }
+                });
+    }
+
+    private void checkUserExist(String currentUserID, String email) {
+        DatabaseReference rootRef = FirebaseDatabase.getInstance().getReference("Users").child(currentUserID);
+        rootRef.addListenerForSingleValueEvent(new ValueEventListener() {
+
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    // Exist! Do whatever.
+                    Intent intent_log = new Intent(LoginActivity.this, MainActivity.class);
+                    intent_log.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(intent_log);
+
+                } else {
+                    // Don't exist! Do something.
+                    RootRef.child("Users").child(currentUserID).setValue("");
+                    RootRef.child("Users").child(currentUserID).child("id")
+                            .setValue(currentUserID);
+                    RootRef.child("Users").child(currentUserID).child("email")
+                            .setValue(email);
+                    addFirebaseIdToDatabase(currentUserID);
+                    Intent intent_log = new Intent(LoginActivity.this, MainActivity.class);
+                    intent_log.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(intent_log);
+
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                // Failed, how to handle?
+
+            }
+
+        });
+
+    }
+
+    private void addFirebaseIdToDatabase(String currentUserID) {
+        Call<Object> call = RetrofitClient.
+                getInstance()
+                .getApi()
+                .set_firebase_id(currentUserID);
+        call.enqueue(new Callback<Object>() {
+            @Override
+            public void onResponse(Call<Object> call, Response<Object> response) {
+                Log.e("gson:set_firebase_id", new Gson().toJson(response.body()));
+
+                if (response != null) {
+
+                    if (response.body() != null) {
+                        Log.e("res:set_firebase_id", "isSuccessful");
+                        try {
+                            JSONObject jsonObject = new JSONObject(new Gson().toJson(response.body()));
+                            String message = jsonObject.getString("message");
+                            if (message != null) {
+//                                Toast.makeText(g, message, Toast.LENGTH_SHORT).show();
+                                Log.e("gson:set_firebase_id", message);
+
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+
+                } else if (response.errorBody() != null) {
+                    try {
+                        Log.e("gson:set_firebase_id", response.errorBody().string());
+//                            Toast.makeText(LoginByEmailActivity.this, response.errorBody().string(), Toast.LENGTH_SHORT).show();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
 
 
+            @Override
+            public void onFailure(Call<Object> call, Throwable t) {
+                Log.e("firebase_id:onFailure", String.valueOf(t));
+
+            }
+        });
+
+
+    }
 
 
     private void updateUI() {

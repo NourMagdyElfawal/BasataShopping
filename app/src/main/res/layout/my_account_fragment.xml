@@ -632,6 +632,28 @@
 
                 </RelativeLayout>
 
+                <RelativeLayout
+                    android:id="@+id/relative_pro_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp"
+                    android:layout_margin="12dp"
+                    android:visibility="gone"
+                    android:background="@drawable/bg_rounded_button"
+                    android:padding="12dp">
+
+                    <com.souqmaftoh.basatashopping.Fonts.LatoBLack
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:text="محادثة"
+                        android:textColor="#fff"
+                        />
+
+
+
+
+                </RelativeLayout>
+
 
 
                 <LinearLayout

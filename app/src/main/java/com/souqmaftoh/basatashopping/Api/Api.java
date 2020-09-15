@@ -373,6 +373,14 @@ public interface Api {
     );
 
 
+    @Headers({
+            "Accept: application/json",
+    })
+    @FormUrlEncoded
+    @POST("set_firebase_id")
+    Call<Object> set_firebase_id(
+            @Field("firebase_id") String firebase_id
+    );
 
 }
 

@@ -53,7 +53,14 @@ import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 import com.souqmaftoh.basatashopping.Api.RetrofitClient;
 import com.souqmaftoh.basatashopping.Fonts.LatoBLack;
@@ -104,6 +111,7 @@ public class MyAccountFragment extends Fragment implements View.OnClickListener 
     private HashMap<String, String> hashMapAccountSt2;
     boolean flag;
 
+
     public static MyAccountFragment newInstance() {
         return new MyAccountFragment();
     }
@@ -147,7 +155,7 @@ public class MyAccountFragment extends Fragment implements View.OnClickListener 
     GoogleSignInClient mGoogleSignInClient;
     EditText et_pro_name, et_pro_email, et_pro_storeName, et_pro_address, et_pro_location, et_pro_phone, et_pro_storeDisc,et_pro_facebook,et_pro_instagram,et_pro_youtube;
     TextView tv_pro_pass;
-    String token;
+    String token,firebase_token;
     Boolean is_merchant;
     EditText et_dia_oldPass,et_dia_newPass,et_dia_repPass;
     MapFragment mapFragment;
@@ -160,7 +168,7 @@ public class MyAccountFragment extends Fragment implements View.OnClickListener 
     Geocoder geocoder;
     Dialog dialog;
     Uri selectedImage;
-    RelativeLayout relative_pro_conv_merch,relative_pro_edit;
+    RelativeLayout relative_pro_conv_merch,relative_pro_edit,relative_pro_text;
     LinearLayout linear_is_merchant;
     Button clear_facebook,clear_instagram,clear_youtube;
     Boolean flagFUrl,flagInsUrl,flagYUrl;
@@ -169,6 +177,11 @@ public class MyAccountFragment extends Fragment implements View.OnClickListener 
     ConstraintLayout con_fb_remove,con_ins_remove,con_yout_remove;
     private Spinner spinGovernorate,spinRegion;
     int regionId,governorateId;
+    private FirebaseAuth mAuth;
+    private DatabaseReference ContactsRef;
+    private String receiverUserID, senderUserID,receiverUserEmail;
+
+
 
     private static final int PICK_PHOTO_FOR_AVATAR = 0;
 
@@ -225,6 +238,8 @@ public class MyAccountFragment extends Fragment implements View.OnClickListener 
         clear_youtube=view.findViewById(R.id.clear_youtube);
 
         relative_pro_edit = view.findViewById(R.id.relative_pro_edit);//
+        relative_pro_text = view.findViewById(R.id.relative_pro_text);//
+
 
         btn_pro_addv=view.findViewById(R.id.btn_pro_addv);
         iv_pro_img=view.findViewById(R.id.iv_pro_img);
@@ -239,6 +254,7 @@ public class MyAccountFragment extends Fragment implements View.OnClickListener 
 
         btn_pro_logout.setOnClickListener(this);
         relative_pro_edit.setOnClickListener(this);
+        relative_pro_text.setOnClickListener(this);
         btn_pro_addv.setOnClickListener(this);
         et_pro_name.setOnClickListener(this);
         tv_pro_pass.setOnClickListener(this);
@@ -256,8 +272,13 @@ public class MyAccountFragment extends Fragment implements View.OnClickListener 
         relative_pro_conv_merch.setOnClickListener(this);
         getGovernoratesApi();
 
+        user = SharedPrefManager.getInstance(getActivity()).getUser();
+        if (user != null) {
 
-
+            if (user.getFirebase_token() != null && !user.getFirebase_token().isEmpty()) {
+                firebase_token = user.getFirebase_token();
+            }
+        }
         if(flag){
             //get user from hashMap
             SetUserDetailsFromHashMap();
@@ -270,10 +291,35 @@ public class MyAccountFragment extends Fragment implements View.OnClickListener 
             con_yout_remove.setVisibility(View.GONE);
             relative_pro_conv_merch.setVisibility(View.GONE);
             relative_pro_edit.setVisibility(View.GONE);
+            relative_pro_text.setVisibility(View.VISIBLE);
             ly_logout_adv.setVisibility(View.GONE);
+            // Initialize Firebase Auth
+            mAuth = FirebaseAuth.getInstance();
+            ContactsRef = FirebaseDatabase.getInstance().getReference().child("Contacts");
+            FirebaseUser firebaseUser = mAuth.getCurrentUser();
+            if(firebaseUser!=null) {
+                senderUserID = firebaseUser.getUid();
+                Log.e("senderUserID",senderUserID);
+
+            }
+            if(hashMapAccountSt2!=null) {
+                if (hashMapAccountSt2.get("name")!=null) {
+                    receiverUserEmail = hashMapAccountSt2.get("name");
+                        Log.e("receiverUserEmail", receiverUserEmail);
+                        getReciverUserId(receiverUserEmail);
+
+                }
+
+            }
+            if(mAuth.getCurrentUser()!=null) {
+                senderUserID = mAuth.getCurrentUser().getUid();
+            }
+
+
         }else {
-            //get user from shared preference
+            //get user from shared preference My account
             SetUserDetailsFromSharedPref();
+            relative_pro_text.setVisibility(View.GONE);
 
         }
 
@@ -296,8 +342,30 @@ public class MyAccountFragment extends Fragment implements View.OnClickListener 
         return view;
     }
 
+    private void getReciverUserId(String receiverUserEmail) {
+        DatabaseReference rootRef = FirebaseDatabase.getInstance().getReference("Users");
+        rootRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot node : dataSnapshot.getChildren()) {
+                    // you will get all cities
+                    String stgUserEmail = node.getKey();
+                    if (!receiverUserEmail.equals(stgUserEmail)) // or whatever city you need
+                        continue;
 
-    private void getGovernoratesApi() {
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError error) {
+                // Failed, how to handle?
+
+            }
+
+        });
+
+    }
+
+        private void getGovernoratesApi() {
 
         ArrayList<Governorates> mGovernorates = new ArrayList<>();
 
@@ -619,8 +687,10 @@ public class MyAccountFragment extends Fragment implements View.OnClickListener 
                 et_pro_storeDisc.setText(hashMapAccountSt2.get("description"));
 
             }
-            if (hashMapAccountSt2.get("lat") != null&& hashMapAccountSt2.get("lng") != null ) {
-                convertLatLngToAdd(hashMapAccountSt2.get("lat"), hashMapAccountSt2.get("lng"));
+            if (hashMapAccountSt2.get("lat") != null&&hashMapAccountSt2.get("lng") != null ) {
+                if (!hashMapAccountSt2.get("lat").isEmpty() &&!hashMapAccountSt2.get("lng").isEmpty()) {
+                    convertLatLngToAdd(hashMapAccountSt2.get("lat"), hashMapAccountSt2.get("lng"));
+                }
             }
             if (hashMapAccountSt2.get("facebookUrl") != null) {
                 et_pro_facebook.setText(hashMapAccountSt2.get("facebookUrl"));
@@ -642,6 +712,9 @@ public class MyAccountFragment extends Fragment implements View.OnClickListener 
             if (user.getToken() != null && !user.getToken().isEmpty()) {
                 token = user.getToken();
             }
+//            if (user.getFirebase_token() != null && !user.getFirebase_token().isEmpty()) {
+//                firebase_token = user.getFirebase_token();
+//            }
 
             if (user.getImage() != null && !user.getImage().isEmpty()) {
                 //Loading image using Picasso
@@ -786,6 +859,13 @@ public class MyAccountFragment extends Fragment implements View.OnClickListener 
                     editMerchantProfile();
                 }else {
                     editProfile();
+                }
+                break;
+            case R.id.relative_pro_text:
+                if(firebase_token!=null) {
+                //    handleCustomAccessToken(firebase_token);
+                    AcceptChatRequest();
+                    Toast.makeText(getActivity(), "chat", Toast.LENGTH_SHORT).show();
                 }
                 break;
             case R.id.btn_pro_logout:
@@ -974,6 +1054,22 @@ public class MyAccountFragment extends Fragment implements View.OnClickListener 
 
 
         }
+
+    }
+
+    private void AcceptChatRequest() {
+        ContactsRef.child(senderUserID).child(receiverUserEmail)
+                .child("Contacts").setValue("Saved")
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            ContactsRef.child(receiverUserEmail).child(senderUserID)
+                                    .child("Contacts").setValue("Saved");
+
+                        }
+                    }
+                });
 
     }
 

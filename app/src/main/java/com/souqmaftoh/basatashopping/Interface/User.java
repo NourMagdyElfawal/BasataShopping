@@ -122,6 +122,24 @@ public class User {
 
 
     }
+    public User(String token, String name, String email, String image, Boolean is_merchant, String market_name, String address, String lat, String lng, String phone, String description, String facebookUrl, String instagramUrl, String youtubeUrl) {
+        this.token=token;
+        this.name = name;
+        this.email = email;
+        this.image = image;
+        this.is_merchant = is_merchant;
+        this.market_name = market_name;
+        this.address = address;
+        this.lat = lat;
+        this.lng = lng;
+        this.phone = phone;
+        this.description = description;
+        this.facebookUrl=facebookUrl;
+        this.instagramUrl=instagramUrl;
+        this.youtubeUrl=youtubeUrl;
+
+
+    }
 
 
     // Getter Methods

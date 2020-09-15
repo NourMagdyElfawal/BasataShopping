@@ -601,12 +601,12 @@ public class ItemDetailsFragment extends Fragment implements BottomNavigationVie
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.imgV_call:
-                if(advertiser.getPhone()!=null){
+                if(advertiser.getPhone()!=null&&!advertiser.getPhone().isEmpty()){
                     Intent call = new Intent(Intent.ACTION_DIAL);
                     call.setData(Uri.parse("tel:" + advertiser.getPhone()));
                     startActivity(call);
                 }else {
-                    Toast.makeText(mainActivity, "لا يوجد رقم هاتف", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "لا يوجد رقم هاتف", Toast.LENGTH_SHORT).show();
                 }
                 break;
 
