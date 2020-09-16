@@ -352,6 +352,7 @@ public class ItemDetailsFragment extends Fragment implements BottomNavigationVie
                             String lng=jsonadvertiser.getString("lng");
                             String phone=jsonadvertiser.getString("phone");
                             String description=jsonadvertiser.getString("description");
+                            String firebase_id=jsonadvertiser.getString("firebase_id");
                             JSONObject social_links=jsonadvertiser.getJSONObject("social_links");
 //                            String[] arr_social_links = new String[social_links.length()];
 //                            for(int i = 0; i < social_links.length(); i++)
@@ -370,7 +371,7 @@ public class ItemDetailsFragment extends Fragment implements BottomNavigationVie
                                 youtubeUrl = social_links.getString("youtube");
                             }
 
-                             advertiser=new Advertiser(name,image,market_name,address,lat,lng,phone,description,facebookUrl,instagramUrl,youtubeUrl);
+                             advertiser=new Advertiser(name,image,market_name,address,lat,lng,phone,description,facebookUrl,instagramUrl,youtubeUrl,firebase_id);
 
                             //get Advertise information
                             String active=jsonadvertise.getString("active");
@@ -663,6 +664,10 @@ public class ItemDetailsFragment extends Fragment implements BottomNavigationVie
         }
         if (advertiser.getYoutubeUrl()!=null){
             hashMapAccountDetails.put("youtubeUrl",advertiser.getYoutubeUrl());
+        }
+
+        if (advertiser.getFirebase_id()!=null){
+            hashMapAccountDetails.put("firebase_id",advertiser.getFirebase_id());
         }
 
 

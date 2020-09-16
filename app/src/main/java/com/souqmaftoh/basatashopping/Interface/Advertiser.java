@@ -13,8 +13,9 @@ public class Advertiser {
     private String phone;
     private String description;
     private String facebookUrl,instagramUrl,  youtubeUrl;
+    private String firebase_id;
 
-    public Advertiser(String name, String image, String market_name, String address, String lat, String lng, String phone, String description, String facebookUrl, String instagramUrl, String youtubeUrl) {
+    public Advertiser(String name, String image, String market_name, String address, String lat, String lng, String phone, String description, String facebookUrl, String instagramUrl, String youtubeUrl, String firebase_id) {
         this.name = name;
         this.image = image;
         this.market_name = market_name;
@@ -26,7 +27,9 @@ public class Advertiser {
         this.facebookUrl=facebookUrl;
         this.instagramUrl=instagramUrl;
         this.youtubeUrl=youtubeUrl;
+        this.firebase_id=firebase_id;
     }
+
 
     public String getName() {
         return name;
@@ -116,5 +119,11 @@ public class Advertiser {
         this.youtubeUrl = youtubeUrl;
     }
 
+    public String getFirebase_id() {
+        return firebase_id;
+    }
 
+    public void setFirebase_id(String firebase_id) {
+        this.firebase_id = firebase_id;
+    }
 }

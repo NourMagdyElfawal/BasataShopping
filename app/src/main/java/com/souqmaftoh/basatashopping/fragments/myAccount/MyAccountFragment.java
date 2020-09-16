@@ -303,10 +303,10 @@ public class MyAccountFragment extends Fragment implements View.OnClickListener 
 
             }
             if(hashMapAccountSt2!=null) {
-                if (hashMapAccountSt2.get("name")!=null) {
-                    receiverUserEmail = hashMapAccountSt2.get("name");
-                        Log.e("receiverUserEmail", receiverUserEmail);
-                        getReciverUserId(receiverUserEmail);
+                if (hashMapAccountSt2.get("firebase_id")!=null) {
+                    receiverUserID = hashMapAccountSt2.get("firebase_id");
+//                        Log.e("receiverUserID", receiverUserID);
+                        getReciverUserId(receiverUserID);
 
                 }
 
@@ -342,7 +342,7 @@ public class MyAccountFragment extends Fragment implements View.OnClickListener 
         return view;
     }
 
-    private void getReciverUserId(String receiverUserEmail) {
+    private void getReciverUserId(String receiverUserID) {
         DatabaseReference rootRef = FirebaseDatabase.getInstance().getReference("Users");
         rootRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -350,7 +350,7 @@ public class MyAccountFragment extends Fragment implements View.OnClickListener 
                 for (DataSnapshot node : dataSnapshot.getChildren()) {
                     // you will get all cities
                     String stgUserEmail = node.getKey();
-                    if (!receiverUserEmail.equals(stgUserEmail)) // or whatever city you need
+                    if (!receiverUserID.equals(stgUserEmail)) // or whatever city you need
                         continue;
 
                 }
@@ -1058,13 +1058,13 @@ public class MyAccountFragment extends Fragment implements View.OnClickListener 
     }
 
     private void AcceptChatRequest() {
-        ContactsRef.child(senderUserID).child(receiverUserEmail)
+        ContactsRef.child(senderUserID).child(receiverUserID)
                 .child("Contacts").setValue("Saved")
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
-                            ContactsRef.child(receiverUserEmail).child(senderUserID)
+                            ContactsRef.child(receiverUserID).child(senderUserID)
                                     .child("Contacts").setValue("Saved");
 
                         }

@@ -291,7 +291,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                     youtubeUrl = social_links.getString("youtube");
                                 }
 
-                                User user = new User(token, name, email, image, is_merchant, market_name, address, lat, lng, phone, description,facebookUrl,instagramUrl,youtubeUrl);
+                                User user = new User(token,firebase_token, name, email, image, is_merchant, market_name, address, lat, lng, phone, description,facebookUrl,instagramUrl,youtubeUrl);
 
 
                                 SharedPrefManager.getInstance(LoginActivity.this)
@@ -304,9 +304,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
 
                             }
-                            Intent intent_log = new Intent(LoginActivity.this, MainActivity.class);
-                            intent_log.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                            startActivity(intent_log);
+//                            Intent intent_log = new Intent(LoginActivity.this, MainActivity.class);
+//                            intent_log.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+//                            startActivity(intent_log);
 
 
 
@@ -364,7 +364,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 //                            updateUI(user);
                         } else {
                             // If sign in fails, display a message to the user.
-                            Log.w("mCustomToken", "signInWithCustomToken:failure", task.getException());
+                            Log.e("mCustomToken", "signInWithCustomToken:failure", task.getException());
                             Toast.makeText(LoginActivity.this, "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
 //                            updateUI(null);
