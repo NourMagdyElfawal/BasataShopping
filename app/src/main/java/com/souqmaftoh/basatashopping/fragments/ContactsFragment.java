@@ -1,12 +1,16 @@
 package com.souqmaftoh.basatashopping.fragments;
 
+import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProviders;
 
+import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -23,8 +27,12 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.souqmaftoh.basatashopping.ChatActivity;
 import com.souqmaftoh.basatashopping.Interface.Contacts;
 import com.souqmaftoh.basatashopping.R;
+import com.souqmaftoh.basatashopping.design.DividerItemDecoration;
+
+import java.util.Objects;
 
 public class ContactsFragment extends Fragment {
 
@@ -37,6 +45,8 @@ public class ContactsFragment extends Fragment {
     private DatabaseReference ContacsRef, UsersRef;
     private FirebaseAuth mAuth;
     private String currentUserID;
+    LinearLayoutManager mLayoutManager;
+
 
 
     public static ContactsFragment newInstance(String param1, String param2) {
@@ -53,7 +63,12 @@ public class ContactsFragment extends Fragment {
         ContactsView= inflater.inflate(R.layout.contacts_fragment, container, false);
 
         myContactsList=(RecyclerView) ContactsView.findViewById(R.id.contacts_list);
-        myContactsList.setLayoutManager(new LinearLayoutManager(getContext()));
+        mLayoutManager = new LinearLayoutManager(getActivity());
+        mLayoutManager.setOrientation(RecyclerView.VERTICAL);
+        myContactsList.setLayoutManager(mLayoutManager);
+        myContactsList.setItemAnimator(new DefaultItemAnimator());
+        Drawable dividerDrawable = ContextCompat.getDrawable(Objects.requireNonNull(getActivity()), R.drawable.divider_drawable_contacts);
+        myContactsList.addItemDecoration(new DividerItemDecoration(dividerDrawable));
         mAuth = FirebaseAuth.getInstance();
         if(mAuth.getCurrentUser()!=null) {
             currentUserID = mAuth.getCurrentUser().getUid();
@@ -131,6 +146,15 @@ public class ContactsFragment extends Fragment {
 
                                 holder.userName.setText(profileName);
                                 holder.userEmail.setText(profileEmail);
+                                holder.itemView.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        Intent chatIntent=new Intent(getContext(), ChatActivity.class);
+                                        chatIntent.putExtra("visit_user_id",userIDs);
+                                        chatIntent.putExtra("visit_user_name",profileName);
+                                        startActivity(chatIntent);
+                                    }
+                                });
                             }
                         }
                     }
