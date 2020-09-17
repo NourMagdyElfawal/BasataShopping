@@ -298,7 +298,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                         .saveUser(user);
 
                                 if(firebase_token!=null&&!firebase_token.isEmpty()){
-                                    handleCustomAccessToken(firebase_token,email);
+                                    handleCustomAccessToken(firebase_token,email,name);
 
                                 }
 
@@ -341,7 +341,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     }
 
-    private void handleCustomAccessToken(String mCustomToken, String email) {
+    private void handleCustomAccessToken(String mCustomToken, String email, String name) {
 
         mAuth.signInWithCustomToken(mCustomToken).
 
@@ -355,7 +355,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             if(user!=null) {
                                 String currentUserID = user.getUid();
                                 //check if the user exist and add it to database if not
-                                checkUserExist(currentUserID,email);
+                                checkUserExist(currentUserID,email,name);
                                 Toast.makeText(LoginActivity.this, "Authentication success.",
                                         Toast.LENGTH_SHORT).show();
 
@@ -373,7 +373,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 });
     }
 
-    private void checkUserExist(String currentUserID, String email) {
+    private void checkUserExist(String currentUserID, String email, String name) {
         DatabaseReference rootRef = FirebaseDatabase.getInstance().getReference("Users").child(currentUserID);
         rootRef.addListenerForSingleValueEvent(new ValueEventListener() {
 
@@ -392,6 +392,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             .setValue(currentUserID);
                     RootRef.child("Users").child(currentUserID).child("email")
                             .setValue(email);
+                    RootRef.child("Users").child(currentUserID).child("name")
+                            .setValue(name);
                     addFirebaseIdToDatabase(currentUserID);
                     Intent intent_log = new Intent(LoginActivity.this, MainActivity.class);
                     intent_log.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);

@@ -30,6 +30,7 @@ import com.souqmaftoh.basatashopping.Interface.Categories;
 import com.souqmaftoh.basatashopping.Interface.SubCategory;
 import com.souqmaftoh.basatashopping.Interface.User;
 import com.souqmaftoh.basatashopping.Storage.SharedPrefManager;
+import com.souqmaftoh.basatashopping.fragments.ContactsFragment;
 import com.souqmaftoh.basatashopping.fragments.ItemDetailsFragment;
 import com.souqmaftoh.basatashopping.fragments.MobileFragment.MobileFragment;
 import com.souqmaftoh.basatashopping.fragments.ItemsRecyclerFragment.ItemsRecyclerFragment;
@@ -372,7 +373,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             showFloatingActionButton();
                             return true;
                         case R.id.navigation_sms:
-                            openFragment(ChatFragment.newInstance("", ""));
+                            openFragment(ContactsFragment.newInstance("", ""));
                             showFloatingActionButton();
                             return true;
                         case R.id.navigation_notifications:
