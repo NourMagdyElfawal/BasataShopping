@@ -2,6 +2,7 @@ package com.souqmaftoh.basatashopping.fragments;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.InputType;
@@ -23,11 +24,17 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager.widget.ViewPager;
 
 import com.bumptech.glide.Glide;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.button.MaterialButton;
 import com.google.gson.Gson;
+import com.smarteist.autoimageslider.IndicatorView.animation.type.IndicatorAnimationType;
+import com.smarteist.autoimageslider.IndicatorView.draw.controller.DrawController;
+import com.smarteist.autoimageslider.SliderAnimations;
+import com.smarteist.autoimageslider.SliderView;
+import com.souqmaftoh.basatashopping.Adapter.SliderAdapter;
 import com.souqmaftoh.basatashopping.Api.RetrofitClient;
 import com.souqmaftoh.basatashopping.Fonts.LatoBLack;
 import com.souqmaftoh.basatashopping.Interface.Advertise;
@@ -68,6 +75,7 @@ public class ItemDetailsFragment extends Fragment implements BottomNavigationVie
     AlertDialog.Builder builder;
     String selected;
     private String offer_price = "";
+    private ArrayList<String> imagesUrl;
 
 
     //    List<category> historicList = new ArrayList<>();
@@ -95,6 +103,11 @@ public class ItemDetailsFragment extends Fragment implements BottomNavigationVie
     LatoBLack txtV_advertiser;
     ImageView imgV_call;
     LinearLayout advertiser_layout;
+    SliderAdapter adapter;
+    private int indexOfImage = 0;
+    ViewPager viewPager;
+
+
 
 
 
@@ -190,7 +203,7 @@ public class ItemDetailsFragment extends Fragment implements BottomNavigationVie
                              @Nullable Bundle savedInstanceState) {
         View root= inflater.inflate(R.layout.item_details_fragment, container, false);
 
-        imgV_adv=root.findViewById(R.id.imgV_adv);
+//        imgV_adv=root.findViewById(R.id.imgV_adv);
         txtV_advertiser=root.findViewById(R.id.txtV_advertiser);
         imgV_call=root.findViewById(R.id.imgV_call);
         edit_advName=root.findViewById(R.id.edit_advName);
@@ -208,6 +221,46 @@ public class ItemDetailsFragment extends Fragment implements BottomNavigationVie
         advertiser_layout=root.findViewById(R.id.advertiser_layout);
         card_AdvPriceOffer=root.findViewById(R.id.card_AdvPriceOffer);
 //        addAdvDetails();
+        //Image Slider
+         viewPager = (ViewPager) root.findViewById(R.id.pager);
+//        viewPager.generateViewId();
+//        viewPager.setId(R.id.ViewPagerIds);
+
+
+//        adapter = new SliderAdapter(getContext(),advertise.getArr_images()); //Here we are defining the Imageadapter object
+//
+//        viewPager.setAdapter(adapter); // Here we are passing and setting the adapter for the images
+//
+//        viewPager.setOnPageChangeListener(new MyPageChangeListener());
+
+
+
+
+//        SliderView sliderView = root.findViewById(R.id.imageSlider);
+//
+//        SliderAdapter adapter = new SliderAdapter(getContext());
+//
+//
+//        sliderView.setIndicatorAnimation(IndicatorAnimationType.WORM); //set indicator animation by using IndicatorAnimationType. :WORM or THIN_WORM or COLOR or DROP or FILL or NONE or SCALE or SCALE_DOWN or SLIDE and SWAP!!
+//        sliderView.setSliderTransformAnimation(SliderAnimations.SIMPLETRANSFORMATION);
+//        sliderView.setAutoCycleDirection(SliderView.AUTO_CYCLE_DIRECTION_BACK_AND_FORTH);
+//        sliderView.setIndicatorSelectedColor(Color.WHITE);
+//        sliderView.setIndicatorUnselectedColor(Color.GRAY);
+//        sliderView.setScrollTimeInSec(4); //set scroll delay in seconds :
+//        sliderView.startAutoCycle();
+//
+//        sliderView.setSliderAdapter(adapter);
+//
+//        sliderView.setOnIndicatorClickListener(new DrawController.ClickListener() {
+//            @Override
+//            public void onIndicatorClicked(int position) {
+//                Log.e("GGG", "onIndicatorClicked: " + sliderView.getCurrentPagePosition());
+//                Toast.makeText(getActivity(), "This is slider " , Toast.LENGTH_SHORT).show();
+//
+//            }
+//        });
+//
+
 
         //navigationBottom Bar
         card_telephone=root.findViewById(R.id.card_telephone);
@@ -253,12 +306,12 @@ public class ItemDetailsFragment extends Fragment implements BottomNavigationVie
     private void addAdvDetails(HashMap<String, String> hashMapItem2) {
         if(hashMapItem2 !=null) {
             Log.e("hash", String.valueOf(hashMapItem2));
-            if(hashMapItem2.get("ImageUrl")!=null) {
-                String ImageUrl = hashMapItem2.get("ImageUrl");
-                Glide.with(this)
-                        .load(ImageUrl)
-                        .into(imgV_adv);
-            }
+//            if(hashMapItem2.get("ImageUrl")!=null) {
+//                String ImageUrl = hashMapItem2.get("ImageUrl");
+//                Glide.with(this)
+//                        .load(ImageUrl)
+//                        .into(imgV_adv);
+//            }
 
             if(hashMapItem2.get("ad_key")!=null){
                 ad_key= this.hashMapItem2.get("ad_key");
@@ -313,7 +366,24 @@ public class ItemDetailsFragment extends Fragment implements BottomNavigationVie
     }
 
 
+    private class MyPageChangeListener implements ViewPager.OnPageChangeListener {
+        @Override
+        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
+        }
+
+        @Override
+        public void onPageSelected(int position) {
+            indexOfImage = position;
+            if(String.valueOf(indexOfImage)!=null)
+                Log.e("index", String.valueOf(indexOfImage));
+        }
+
+        @Override
+        public void onPageScrollStateChanged(int state) {
+
+        }
+    }
 
     private void getAdApi(String ad_key) {
 
@@ -389,12 +459,15 @@ public class ItemDetailsFragment extends Fragment implements BottomNavigationVie
                             String item_condition=jsonadvertise.getString("item_condition");
                             String status=jsonadvertise.getString("status");
                             JSONArray images=jsonadvertise.getJSONArray("images");
-                            String[] arr_images = new String[images.length()];
-                            for(int i = 0; i < images.length(); i++)
-                                arr_images[i] = images.getString(i);
+                            int lenImg = images.length();
+                            ArrayList<String> imagesUrl = new ArrayList<>();
+                            for(int i = 0; i < lenImg; i++) {
+                                JSONObject json = images.getJSONObject(i);
+                                imagesUrl.add(json.getString("url"));
 
+                            }
                             advertise=new Advertise(active,offer,title,main_image,price,descriptionAdv,category,sub_category_id,sub_category,
-                                    is_favorite,rate,rate_users,item_condition,status,arr_images);
+                                    is_favorite,rate,rate_users,item_condition,status,imagesUrl);
                             if(advertise!= null&&advertiser!=null){
                                 setAdDetails();
                             }
@@ -430,15 +503,25 @@ public class ItemDetailsFragment extends Fragment implements BottomNavigationVie
 
     private void setAdDetails() {
 
-            if(advertise.getMain_image()!=null) {
-                String ImageUrl = advertise.getMain_image();
-                Glide.with(this)
-                        .load(ImageUrl)
-                        .into(imgV_adv);
-                hashMapEditAd.put("main_image",advertise.getMain_image());
+//            if(advertise.getMain_image()!=null) {
+//                String ImageUrl = advertise.getMain_image();
+//                Glide.with(this)
+//                        .load(ImageUrl)
+//                        .into(imgV_adv);
+//                hashMapEditAd.put("main_image",advertise.getMain_image());
+//            }
+        if(advertise.getArr_images()!=null) {
+              imagesUrl=advertise.getArr_images();
+            String[] imagesUrlArr=new String[imagesUrl.size()];
+            imagesUrlArr =imagesUrl.toArray(imagesUrlArr);
+            if(imagesUrlArr!=null) {
+                adapter = new SliderAdapter(getContext(), imagesUrlArr); //Here we are defining the Imageadapter object
+
+                viewPager.setAdapter(adapter); // Here we are passing and setting the adapter for the images
+
+                viewPager.setOnPageChangeListener(new MyPageChangeListener());
             }
-
-
+        }
             if(advertiser.getName()!=null){
                 txtV_advertiser.setText(advertiser.getName());
             }else {

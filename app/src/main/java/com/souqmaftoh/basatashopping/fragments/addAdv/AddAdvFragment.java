@@ -693,10 +693,10 @@ public class AddAdvFragment extends Fragment implements BottomNavigationView.OnN
             }
 
 //            Bitmap bm = BitmapFactory.decodeFile(String.valueOf(selectedImage));
-            for (int i = 0; i < 10; i++) {
-                encodedImages.add(i,encodedImage);
+//            for (int i = 0; i < 10; i++) {
+                encodedImages.add(encodedImage);
 
-            }
+//            }
             Log.e("encodedImages", String.valueOf(encodedImages));
             items.add(new addAdvImageModelClass(selectedImage));
             adapter.notifyDataSetChanged();
@@ -812,9 +812,6 @@ public class AddAdvFragment extends Fragment implements BottomNavigationView.OnN
 //        int sub_category= Integer.parseInt(et_advName.getText().toString());
         String main_image=encodedImage;
 //        String item_condition="new";
-
-
-
         Call call= RetrofitClient.
                 getInstance()
                 .getApi()
@@ -829,14 +826,26 @@ public class AddAdvFragment extends Fragment implements BottomNavigationView.OnN
                         try {
                             JSONObject jsonObject = new JSONObject(new Gson().toJson(response.body()));
                             String message = jsonObject.getString("message");
-                            if (message != null) {
-                                Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+                            JSONObject data = jsonObject.getJSONObject("data");
+                            String ad_key = data.getString("ad_key");
 
-                                Intent intent_log =new Intent(getActivity(), MainActivity.class);
-                                intent_log.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                startActivity(intent_log);
+                                if (message != null) {
+                                Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+//                                Toast.makeText(getActivity(), ad_key, Toast.LENGTH_SHORT).show();
+
+//                                Intent intent_log =new Intent(getActivity(), MainActivity.class);
+//                                intent_log.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |Intent.FLAG_ACTIVITY_CLEAR_TASK);
+//                                startActivity(intent_log);
+                                
+                                if(ad_key!=null&&!ad_key.isEmpty()){
+                                    addAdImageApi(ad_key,encodedImages);
+                                }
+
+
 
                             }
+
+
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -882,7 +891,83 @@ public class AddAdvFragment extends Fragment implements BottomNavigationView.OnN
             }
         });
     }
+//
+    private void addAdImageApi(String ad_key, ArrayList<String> encodedImages) {
 
+
+        int size = encodedImages.size();
+        Log.e("size", String.valueOf(size));
+
+        for (int i = 0; i < size; i++) {
+
+
+            Call call = RetrofitClient.
+                    getInstance()
+                    .getApi()
+                    .add_ad_image(ad_key, encodedImages.get(i));
+            call.enqueue(new Callback() {
+                @Override
+                public void onResponse(@NotNull Call call, @NotNull Response response) {
+                    if (response != null) {
+
+                        if (response.body() != null) {
+                            Log.e("gson:add_ad_image", new Gson().toJson(response.body()));
+                            try {
+                                JSONObject jsonObject = new JSONObject(new Gson().toJson(response.body()));
+                                String message = jsonObject.getString("message");
+
+                                if (message != null) {
+//                                    Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+//                                Toast.makeText(getActivity(), ad_key, Toast.LENGTH_SHORT).show();
+                                    Log.e("add_image_msg",message);
+//
+//                                if(ad_key!=null&&!ad_key.isEmpty()){
+//                                    addAdImageApi(ad_key,encodedImage);
+//                                }
+
+
+                                }
+
+
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+
+                        } else if (response.errorBody() != null) {
+                            try {
+                                Log.e("gson_Error:add_ad_image", response.errorBody().string());
+                                if (response.errorBody().string().equalsIgnoreCase("Unauthenticated.")) {
+                                    Intent i = new Intent(getActivity(), LoginActivity.class);
+                                    startActivity(i);
+
+                                }
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
+
+
+                        if (response.isSuccessful()) {
+                            Log.e("res:add_ad_image", "isSuccessful");
+                        }
+
+                    }
+                }
+
+
+                @Override
+                public void onFailure(Call call, Throwable t) {
+//                Toast.makeText(RegistrationActivityOne.this, t, Toast.LENGTH_SHORT).show();
+                    Log.e("add_ad_image:onFailure", String.valueOf(t));
+
+                }
+            });
+        }
+        Intent intent_log = new Intent(getActivity(), MainActivity.class);
+        intent_log.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent_log);
+
+    }
 
 
 }

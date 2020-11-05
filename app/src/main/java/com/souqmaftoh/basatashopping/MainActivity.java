@@ -16,7 +16,6 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -27,20 +26,15 @@ import com.google.gson.Gson;
 import com.robertlevonyan.views.customfloatingactionbutton.FloatingActionButton;
 import com.souqmaftoh.basatashopping.Api.RetrofitClient;
 import com.souqmaftoh.basatashopping.Interface.Categories;
-import com.souqmaftoh.basatashopping.Interface.SubCategory;
 import com.souqmaftoh.basatashopping.Interface.User;
 import com.souqmaftoh.basatashopping.Storage.SharedPrefManager;
-import com.souqmaftoh.basatashopping.fragments.ContactsFragment;
+import com.souqmaftoh.basatashopping.fragments.contacts.ContactsFragment;
 import com.souqmaftoh.basatashopping.fragments.ItemDetailsFragment;
 import com.souqmaftoh.basatashopping.fragments.MobileFragment.MobileFragment;
 import com.souqmaftoh.basatashopping.fragments.ItemsRecyclerFragment.ItemsRecyclerFragment;
 import com.souqmaftoh.basatashopping.fragments.myAccount.MyAccountFragment;
-import com.souqmaftoh.basatashopping.fragments.accessories.AccessoriesFragment;
 import com.souqmaftoh.basatashopping.fragments.addAdv.AddAdvFragment;
-import com.souqmaftoh.basatashopping.fragments.chat.ChatFragment;
 import com.souqmaftoh.basatashopping.fragments.notification.NotificationFragment;
-import com.souqmaftoh.basatashopping.fragments.other.OthersFragment;
-import com.souqmaftoh.basatashopping.fragments.tablets.TabletsFragment;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
@@ -54,8 +48,6 @@ import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-
-import static androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 

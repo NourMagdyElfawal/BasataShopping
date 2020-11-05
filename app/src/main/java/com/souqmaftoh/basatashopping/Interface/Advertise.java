@@ -1,18 +1,20 @@
 package com.souqmaftoh.basatashopping.Interface;
 
+import java.util.ArrayList;
+
 public class Advertise {
 
     private String active,  offer,  title,  main_image,  price,  descriptionAdv;
     private String category,  sub_category_id,  sub_category,  is_favorite,  rate;
     private String rate_users,  item_condition,  status;
-    private String[] arr_images;
+    private ArrayList<String> arr_images;
 
     public Advertise(String title, int price, String description, String main_image, int sub_category) {
     }
 
     public Advertise(String active, String offer, String title, String main_image, String price, String descriptionAdv,
                      String category, String sub_category_id, String sub_category, String is_favorite, String rate,
-                     String rate_users, String item_condition, String status, String[] arr_images) {
+                     String rate_users, String item_condition, String status, ArrayList<String> arr_images) {
 
         this.active=active;
         this.offer=offer;
@@ -41,6 +43,14 @@ public class Advertise {
 
     public String getOffer() {
         return offer;
+    }
+
+    public ArrayList<String> getArr_images() {
+        return arr_images;
+    }
+
+    public void setArr_images(ArrayList<String> arr_images) {
+        this.arr_images = arr_images;
     }
 
     public void setOffer(String offer) {
@@ -143,11 +153,4 @@ public class Advertise {
         this.status = status;
     }
 
-    public String[] getArr_images() {
-        return arr_images;
-    }
-
-    public void setArr_images(String[] arr_images) {
-        this.arr_images = arr_images;
-    }
 }

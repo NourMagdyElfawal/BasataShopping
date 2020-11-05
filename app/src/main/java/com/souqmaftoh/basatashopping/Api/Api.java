@@ -142,6 +142,31 @@ public interface Api {
             @Field("main_image") String main_image
 
     );
+
+    @Headers({
+            "Accept: application/json",
+    })
+    @FormUrlEncoded
+    @POST("add_ad_image")
+    Call<Object> add_ad_image(
+            @Field("ad_key") String ad_key,
+            @Field("image") String image
+
+    );
+
+    @Headers({
+            "Accept: application/json",
+    })
+    @FormUrlEncoded
+    @POST("remove_ad_image")
+    Call<Object> remove_ad_image(
+            @Field("ad_key") String ad_key,
+            @Field("image_id") String image_id,
+            @Field("image") String image
+
+    );
+
+
     @Headers({
             "Accept: application/json",
     })

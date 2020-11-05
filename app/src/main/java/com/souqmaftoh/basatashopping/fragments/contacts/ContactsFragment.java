@@ -1,4 +1,4 @@
-package com.souqmaftoh.basatashopping.fragments;
+package com.souqmaftoh.basatashopping.fragments.contacts;
 
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProviders;
