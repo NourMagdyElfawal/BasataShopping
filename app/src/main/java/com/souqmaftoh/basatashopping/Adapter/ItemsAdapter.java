@@ -90,6 +90,11 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsViewHolder> {
     public interface Callback {
         void onEmptyViewRetryClick();
     }
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
+
 
     public class ViewHolder extends ItemsViewHolder {
 

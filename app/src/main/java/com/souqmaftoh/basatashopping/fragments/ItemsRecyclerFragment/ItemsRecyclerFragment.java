@@ -1,6 +1,7 @@
 package com.souqmaftoh.basatashopping.fragments.ItemsRecyclerFragment;
 
 
+import android.content.DialogInterface;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
@@ -17,6 +18,9 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
@@ -32,6 +36,7 @@ import com.souqmaftoh.basatashopping.Api.RetrofitClient;
 import com.souqmaftoh.basatashopping.Interface.Items;
 import com.souqmaftoh.basatashopping.R;
 import com.souqmaftoh.basatashopping.design.DividerItemDecoration;
+import com.souqmaftoh.basatashopping.fragments.addAdv.AddAdvFragment;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
@@ -73,6 +78,11 @@ public class ItemsRecyclerFragment extends Fragment {
     private String mParam2,fragmentName;
     private boolean flag=false;
     int subCategoryId;
+    AlertDialog.Builder builder;
+    String selected;
+    String itemCond;
+
+
 
     public ItemsRecyclerFragment() {
         // Required empty public constructor
@@ -126,31 +136,47 @@ public class ItemsRecyclerFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.items_recycler_fragment, container, false);
+        Toolbar toolbar = view.findViewById(R.id.toolbar);
+        ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
+        ((AppCompatActivity)getActivity()).setTitle("حالة المنتج");
+        toolbar.setNavigationIcon(R.drawable.ic_list_black_24dp);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                choseItemCondition();
+                }
+        });
 
-
-//        getMyAdsApi();
         // Spinner element
         final Spinner spinner = (Spinner) view.findViewById(R.id.spinner_nav);
         Button button=(Button)view.findViewById(R.id.button);
 
-        // Spinner click listener
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            public void onItemSelected(AdapterView<?> parent, View view,
-                                       int position, long id) {
-// TODO check the search spinner
-                String items=spinner.getSelectedItem().toString();
-                Log.e("Selected item : ",items);
-                Log.e("Selected position : ", String.valueOf(position));
-                String orderBy;
-                switch (position) {
-                    case 0:
-                        setUpListOfItemsByDefault();
-                        break;
+
+//        getMyAdsApi();
+
+        if(flag){
+            spinner.setVisibility(View.GONE);
+            setUpListOfMyItems();
+        }else {
+            spinner.setVisibility(View.VISIBLE);
+            // Spinner click listener
+            spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                public void onItemSelected(AdapterView<?> parent, View view,
+                                           int position, long id) {
+                    String items=spinner.getSelectedItem().toString();
+                    Log.e("Selected item : ",items);
+                    Log.e("Selected position : ", String.valueOf(position));
+                    String orderBy;
+                    switch (position) {
+                        case 0:
+                            itemCond="all";
+                            setUpListOfItemsByDefault(itemCond);
+                            break;
 
                         case 1:
                             orderBy="price_desc";
-                        setUpListOfItems(orderBy);
-                        break;
+                            setUpListOfItems(orderBy);
+                            break;
 
                         case 2:
                             orderBy="price_asc";
@@ -162,7 +188,7 @@ public class ItemsRecyclerFragment extends Fragment {
                         case 3:
                             orderBy="rate_desc";
                             setUpListOfItems(orderBy);
-                        break;
+                            break;
 
                         case 4:
                             orderBy="rate_asc";
@@ -170,48 +196,87 @@ public class ItemsRecyclerFragment extends Fragment {
                             break;
 
 
-                }
+                    }
 
                 }
 
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-                setUpListOfItemsByDefault();
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
+//                setUpListOfItemsByDefault();
 
-            }
-        });
+                }
+            });
 
-        // Spinner Drop down elements
-        List<String> categories = new ArrayList<String>();
-        categories.add("الاحدث");
-        categories.add("السعر: من الأعلى للأقل");
-        categories.add("السعر: من الأقل للأعلى");
-        categories.add("التقييم: من الأعلى للأقل");
-        categories.add("التقييم: من الأقل للأعلى");
+            // Spinner Drop down elements
+            List<String> categories = new ArrayList<String>();
+            categories.add("الاحدث               ");
+            categories.add("السعر: من الأعلى للأقل");
+            categories.add("السعر: من الأقل للأعلى");
+            categories.add("التقييم: من الأعلى للأقل");
+            categories.add("التقييم: من الأقل للأعلى");
 
-        // Creating adapter for spinner
-        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_item, categories);
+            // Creating adapter for spinner
+            ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_item, categories);
 
-        // Drop down layout style - list view with radio button
-        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            // Drop down layout style - list view with radio button
+            dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
-        // attaching data adapter to spinner
-        spinner.setAdapter(dataAdapter);
+            // attaching data adapter to spinner
+            spinner.setAdapter(dataAdapter);
+
+        }
 
 
 
         ButterKnife.bind(this,view);
 
-        if(flag){
-            setUpListOfMyItems();
-        }else {
-            setUpListOfItemsByDefault();
-        }
 
 
 //        Objects.requireNonNull(((AppCompatActivity) Objects.requireNonNull(getActivity())).getSupportActionBar()).hide();
 
         return view;
+    }
+
+    private void choseItemCondition() {
+        CharSequence[] array = {"جديد", "مستعمل", "الجميع"};
+
+        builder = new AlertDialog.Builder(Objects.requireNonNull(getActivity()));
+        builder.setTitle("حاله المنتج")
+                .setSingleChoiceItems(array, -1, new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface arg0, int arg1) {
+                        // TODO Auto-generated method stub
+                        selected = array[arg1].toString();
+                    }
+                })
+                .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+
+                    }
+                })
+                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+
+                    public void onClick(DialogInterface dialog, int which) {
+                        switch (selected){
+                            case "جديد":
+                            setUpListOfItemsByDefault("new");
+                                break;
+                            case "مستعمل":
+                                setUpListOfItemsByDefault("old");
+                                break;
+                            case "الجميع":
+                                setUpListOfItemsByDefault("all");
+                                break;
+
+
+                        }
+
+
+                    }
+                });
+        builder.show();
+
     }
 
 
@@ -366,7 +431,7 @@ public class ItemsRecyclerFragment extends Fragment {
 
     }
 
-    private void setUpListOfItemsByDefault() {
+    private void setUpListOfItemsByDefault(String itemCond) {
         mLayoutManager = new LinearLayoutManager(getActivity());
         mLayoutManager.setOrientation(RecyclerView.VERTICAL);
         mRecyclerView.setLayoutManager(mLayoutManager);
@@ -376,13 +441,13 @@ public class ItemsRecyclerFragment extends Fragment {
         itemsAdapter = new ItemsAdapter(new ArrayList<>());
 
 //        prepareDemoContent();
-        getAdsApiByDefault();
+        getAdsApiByDefault(itemCond);
 
 
     }
 
 
-    private void getAdsApiByDefault() {
+    private void getAdsApiByDefault(String itemCond) {
         ArrayList<Items> mSports = new ArrayList<>();
 
         Call<Object> call= RetrofitClient.
@@ -421,7 +486,9 @@ public class ItemsRecyclerFragment extends Fragment {
                                 String active=arr[i].getString("active");
                                 String item_condition=arr[i].getString("item_condition");
                                 String status=arr[i].getString("status");
-                                mSports.add(new Items(ad_key,main_image,item_condition , title, price,offer,category,sub_category,active,status));
+                                if(item_condition.equalsIgnoreCase(itemCond)||itemCond.equalsIgnoreCase("all")){
+                                    mSports.add(new Items(ad_key,main_image,item_condition , title, price,offer,category,sub_category,active,status));
+                                }
                             }
                             itemsAdapter.addItems(mSports);
                             mRecyclerView.setAdapter(itemsAdapter);
