@@ -59,7 +59,7 @@ import retrofit2.Response;
 public class ItemsRecyclerFragment extends Fragment {
 
     private ItemsRecyclerViewModel mViewModel;
-    @BindView(R.id.mRecyclerView)
+//    @BindView(R.id.mRecyclerView)
     RecyclerView mRecyclerView;
     MyItemsAdapter mSportAdapter;
     ItemsAdapter itemsAdapter;
@@ -115,13 +115,14 @@ public class ItemsRecyclerFragment extends Fragment {
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
-            if(getArguments().getString("fragment")!=null) {
-                if (getArguments().getString("fragment").equalsIgnoreCase("myacc")) {
-                    flag = true;
-
+            String myacc=getArguments().getString("fragment");
+            if (myacc!=null){
+                    if(myacc.equalsIgnoreCase("myacc")) {
+                        flag = true;
+                    }
                 }else {
                     flag = false;
-                }
+
             }
 
             subCategoryId = getArguments().getInt("subCategoryId");
@@ -154,6 +155,7 @@ public class ItemsRecyclerFragment extends Fragment {
         // Spinner element
         final Spinner spinner = (Spinner) view.findViewById(R.id.spinner_nav);
         Button button=(Button)view.findViewById(R.id.button);
+        mRecyclerView=view.findViewById(R.id.mRecyclerView);
 
 
 //        getMyAdsApi();
@@ -232,7 +234,7 @@ public class ItemsRecyclerFragment extends Fragment {
 
 
 
-        ButterKnife.bind(this,view);
+//        ButterKnife.bind(this,view);
 
         return view;
     }
@@ -541,7 +543,7 @@ public class ItemsRecyclerFragment extends Fragment {
 
 
     private void setUpListOfMyItems() {
-        mLayoutManager = new LinearLayoutManager(mActivity);
+        mLayoutManager = new LinearLayoutManager(getActivity());
         mLayoutManager.setOrientation(RecyclerView.VERTICAL);
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
