@@ -1,6 +1,8 @@
 package com.souqmaftoh.basatashopping.fragments.ItemsRecyclerFragment;
 
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -81,6 +83,8 @@ public class ItemsRecyclerFragment extends Fragment {
     AlertDialog.Builder builder;
     String selected;
     String itemCond;
+    private Activity mActivity;
+
 
 
 
@@ -137,8 +141,8 @@ public class ItemsRecyclerFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.items_recycler_fragment, container, false);
         Toolbar toolbar = view.findViewById(R.id.toolbar);
-        ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
-        ((AppCompatActivity)getActivity()).setTitle("حالة المنتج");
+        ((AppCompatActivity)mActivity).setSupportActionBar(toolbar);
+        ((AppCompatActivity)mActivity).setTitle("حالة المنتج");
         toolbar.setNavigationIcon(R.drawable.ic_list_black_24dp);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -230,17 +234,13 @@ public class ItemsRecyclerFragment extends Fragment {
 
         ButterKnife.bind(this,view);
 
-
-
-//        Objects.requireNonNull(((AppCompatActivity) Objects.requireNonNull(getActivity())).getSupportActionBar()).hide();
-
         return view;
     }
 
     private void choseItemCondition() {
         CharSequence[] array = {"جديد", "مستعمل", "الجميع"};
 
-        builder = new AlertDialog.Builder(Objects.requireNonNull(getActivity()));
+        builder = new AlertDialog.Builder(mActivity);
         builder.setTitle("حاله المنتج")
                 .setSingleChoiceItems(array, -1, new DialogInterface.OnClickListener() {
 
@@ -280,81 +280,6 @@ public class ItemsRecyclerFragment extends Fragment {
     }
 
 
-//    private void SearchdsApi() {
-//
-//        ArrayList<Items> mSports = new ArrayList<>();
-//
-//
-//        Call<Object> call= RetrofitClient.
-//                getInstance()
-//                .getApi()
-//                .search_ads(subCategoryId);
-//        call.enqueue(new Callback<Object>() {
-//            @Override
-//            public void onResponse(@NotNull Call<Object> call, @NotNull Response<Object> response) {
-//                Log.e("gson:search_ads", new Gson().toJson(response.body()) );
-//
-//                if(response!=null) {
-//
-//                    if (response.body() != null) {
-//                        Log.e("res:search_ads", "isSuccessful");
-//                        try {
-//                            JSONObject jsonObject = new JSONObject(new Gson().toJson(response.body()));
-//                            String message = jsonObject.getString("message");
-//                            if (message != null&&!message.isEmpty()) {
-//                                Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
-//                            }
-//                            JSONObject jsonData  = jsonObject.getJSONObject("data");
-//                            JSONArray arrJson = jsonData.getJSONArray("ads");
-//                            JSONObject[] arr=new JSONObject[arrJson.length()];
-//
-//                            for(int i = 0; i < arrJson.length(); i++) {
-//                                arr[i] = arrJson.getJSONObject(i);
-//                                Log.e("tag", String.valueOf(arr[i]));
-//                                String ad_key=arr[i].getString("ad_key");
-//                                String title=arr[i].getString("title");
-//                                String offer=arr[i].getString("offer");
-//                                String main_image=arr[i].getString("main_image");
-//                                String price=arr[i].getString("price");
-//                                String category=arr[i].getString("category");
-//                                String sub_category=arr[i].getString("sub_category");
-//                                String active=arr[i].getString("active");
-//                                String item_condition=arr[i].getString("item_condition");
-//                                String status=arr[i].getString("status");
-//                                mSports.add(new Items(ad_key,main_image,item_condition , title, price,offer,category,sub_category,active,status));
-//                            }
-//                            mSportAdapter.addItems(mSports);
-//                            mRecyclerView.setAdapter(mSportAdapter);
-//
-//
-//
-//                        } catch (JSONException e) {
-//                            e.printStackTrace();
-//                        }
-////
-//                    }
-//
-//                } else if (response.errorBody() != null) {
-//                    try {
-//                        Log.e("gson:search_ads_error", response.errorBody().string());
-//                        Toast.makeText(getActivity(), response.errorBody().string(), Toast.LENGTH_SHORT).show();
-//                    } catch (IOException e) {
-//                        e.printStackTrace();
-//                    }
-//                }
-//            }
-//
-//
-//
-//            @Override
-//            public void onFailure(Call<Object> call, Throwable t) {
-//                Log.e("search_ads:onFailure", String.valueOf(t));
-//
-//            }
-//        });
-//
-//    }
-//
 
     private void getMyAdsApi() {
 
@@ -378,7 +303,7 @@ public class ItemsRecyclerFragment extends Fragment {
                             JSONObject jsonObject = new JSONObject(new Gson().toJson(response.body()));
                             String message = jsonObject.getString("message");
                             if (message != null&&!message.isEmpty()) {
-                                Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+                                Toast.makeText(mActivity, message, Toast.LENGTH_SHORT).show();
                             }
                             JSONObject jsonData  = jsonObject.getJSONObject("data");
                             JSONArray arrJson = jsonData.getJSONArray("ads");
@@ -413,7 +338,7 @@ public class ItemsRecyclerFragment extends Fragment {
                 } else if (response.errorBody() != null) {
                     try {
                         Log.e("gson:get_my_ads_error", response.errorBody().string());
-                        Toast.makeText(getActivity(), response.errorBody().string(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(mActivity, response.errorBody().string(), Toast.LENGTH_SHORT).show();
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -432,11 +357,11 @@ public class ItemsRecyclerFragment extends Fragment {
     }
 
     private void setUpListOfItemsByDefault(String itemCond) {
-        mLayoutManager = new LinearLayoutManager(getActivity());
+        mLayoutManager = new LinearLayoutManager(mActivity);
         mLayoutManager.setOrientation(RecyclerView.VERTICAL);
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        Drawable dividerDrawable = ContextCompat.getDrawable(Objects.requireNonNull(getActivity()), R.drawable.divider_drawable);
+        Drawable dividerDrawable = ContextCompat.getDrawable(Objects.requireNonNull(getContext()), R.drawable.divider_drawable);
         mRecyclerView.addItemDecoration(new DividerItemDecoration(dividerDrawable));
         itemsAdapter = new ItemsAdapter(new ArrayList<>());
 
@@ -467,7 +392,7 @@ public class ItemsRecyclerFragment extends Fragment {
                             JSONObject jsonObject = new JSONObject(new Gson().toJson(response.body()));
                             String message = jsonObject.getString("message");
                             if (message != null&&!message.isEmpty()) {
-                                Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+                                Toast.makeText(mActivity, message, Toast.LENGTH_SHORT).show();
                             }
                             JSONObject jsonData  = jsonObject.getJSONObject("data");
                             JSONArray arrJson = jsonData.getJSONArray("data");
@@ -504,7 +429,7 @@ public class ItemsRecyclerFragment extends Fragment {
                 } else if (response.errorBody() != null) {
                     try {
                         Log.e("gson:search_ads_error", response.errorBody().string());
-                        Toast.makeText(getActivity(), response.errorBody().string(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(mActivity, response.errorBody().string(), Toast.LENGTH_SHORT).show();
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -526,7 +451,7 @@ public class ItemsRecyclerFragment extends Fragment {
 
 
     private void setUpListOfItems(String orderBy) {
-        mLayoutManager = new LinearLayoutManager(getActivity());
+        mLayoutManager = new LinearLayoutManager(mActivity);
         mLayoutManager.setOrientation(RecyclerView.VERTICAL);
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -560,7 +485,7 @@ public class ItemsRecyclerFragment extends Fragment {
                             JSONObject jsonObject = new JSONObject(new Gson().toJson(response.body()));
                             String message = jsonObject.getString("message");
                             if (message != null&&!message.isEmpty()) {
-                                Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+                                Toast.makeText(mActivity, message, Toast.LENGTH_SHORT).show();
                             }
                             JSONObject jsonData  = jsonObject.getJSONObject("data");
                             JSONArray arrJson = jsonData.getJSONArray("data");
@@ -595,7 +520,7 @@ public class ItemsRecyclerFragment extends Fragment {
                 } else if (response.errorBody() != null) {
                     try {
                         Log.e("gson:search_ads_error", response.errorBody().string());
-                        Toast.makeText(getActivity(), response.errorBody().string(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(mActivity, response.errorBody().string(), Toast.LENGTH_SHORT).show();
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -616,7 +541,7 @@ public class ItemsRecyclerFragment extends Fragment {
 
 
     private void setUpListOfMyItems() {
-        mLayoutManager = new LinearLayoutManager(getActivity());
+        mLayoutManager = new LinearLayoutManager(mActivity);
         mLayoutManager.setOrientation(RecyclerView.VERTICAL);
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -656,6 +581,25 @@ public class ItemsRecyclerFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
         mViewModel = ViewModelProviders.of(this).get(ItemsRecyclerViewModel.class);
         // TODO: Use the ViewModel
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
+        mActivity = getActivity();
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mActivity = null;
+    }
+
+    private void doAction() {
+        if (mActivity == null) {
+            return;
+        }
     }
 
 }

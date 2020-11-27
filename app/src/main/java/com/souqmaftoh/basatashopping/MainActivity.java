@@ -17,6 +17,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdSize;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -57,6 +61,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private BottomNavigationView bottomNavigation;
     private FirebaseAuth mAuth;
     ImageView imgV_myAccount;
+    AdView mAdView;
 
 
     @Override
@@ -70,6 +75,26 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         viewPager =findViewById(R.id.viewpager);
         getCategoryApi(viewPager);
 //        setupViewPager(viewPager);
+
+////admob banner
+//        MobileAds.initialize(this, new OnInitializationCompleteListener() {
+//            @Override
+//            public void onInitializationComplete(InitializationStatus initializationStatus) {
+//                Log.e("admob","ready");
+//            }
+//        });
+
+        mAdView = findViewById(R.id.advertise);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
+
+//        AdView adView = new AdView(this);
+//
+//        adView.setAdSize(AdSize.BANNER);
+//
+//        adView.setAdUnitId("ca-app-pub-3940256099942544/6300978111");
+
+
 
         tabLayout = findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
@@ -516,4 +541,7 @@ class ViewPagerAdapter extends FragmentPagerAdapter {
     public CharSequence getPageTitle(int position) {
         return mFragmentTitleList.get(position);
     }
+
+
+
 }

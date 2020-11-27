@@ -1,5 +1,7 @@
 package com.souqmaftoh.basatashopping.fragments;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
@@ -76,6 +78,7 @@ public class ItemDetailsFragment extends Fragment implements BottomNavigationVie
     String selected;
     private String offer_price = "";
     private ArrayList<String> imagesUrl;
+    private Activity mActivity;
 
 
     //    List<category> historicList = new ArrayList<>();
@@ -469,7 +472,7 @@ public class ItemDetailsFragment extends Fragment implements BottomNavigationVie
 
             if(advertise.getMain_image()!=null) {
                 String ImageUrl = advertise.getMain_image();
-                Glide.with(this)
+                Glide.with(mActivity)
                         .load(ImageUrl)
                         .into(imgV_adv);
                 hashMapEditAd.put("main_image",advertise.getMain_image());
@@ -1331,6 +1334,23 @@ public class ItemDetailsFragment extends Fragment implements BottomNavigationVie
         });
 
     }
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
 
+        mActivity = getActivity();
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mActivity = null;
+    }
+
+    private void doAction() {
+        if (mActivity == null) {
+            return;
+        }
+    }
 
 }

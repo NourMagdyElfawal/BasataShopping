@@ -9,7 +9,9 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProviders;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -180,6 +182,7 @@ public class MyAccountFragment extends Fragment implements View.OnClickListener 
     private FirebaseAuth mAuth;
     private DatabaseReference ContactsRef;
     private String receiverUserID, senderUserID,receiverUserEmail;
+    Activity activity;
 
 
 
@@ -544,7 +547,7 @@ public class MyAccountFragment extends Fragment implements View.OnClickListener 
 //        regions.add("infinix");
 
         // Creating adapter for spinner
-        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, regions);
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(activity, android.R.layout.simple_spinner_item, regions);
 
         // Drop down layout style - list view with radio button
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -1779,6 +1782,16 @@ public class MyAccountFragment extends Fragment implements View.OnClickListener 
             startActivity(intent_log);
 
         }
+    }
+    @Override
+    public void onAttach(@NotNull Context context) {
+        super.onAttach(context);
+
+
+        if (context instanceof Activity){
+            activity=(Activity) context;
+        }
+
     }
 
 }

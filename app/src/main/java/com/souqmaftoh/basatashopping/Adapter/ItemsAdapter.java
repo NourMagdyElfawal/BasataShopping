@@ -147,7 +147,6 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsViewHolder> {
             }
 
             if (mSport.getSubTitle() != null) {
-                addressTextView.setText(mSport.getSubTitle());
                 hashMapItem.put("SubTitle",mSport.getSubTitle());
             }
 
@@ -157,6 +156,15 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsViewHolder> {
             }
 
             if (mSport.getItem_condition() != null) {
+                if(mSport.getItem_condition().equalsIgnoreCase("new"))
+                {
+                    addressTextView.setText("جديد");
+
+                }else
+                {
+                    addressTextView.setText("مستعمل");
+
+                }
                 hashMapItem.put("Item_condition",mSport.getItem_condition());
 
             }
