@@ -749,6 +749,10 @@ public class AddAdvFragment extends Fragment implements BottomNavigationView.OnN
                             String message = jsonObject.getString("message");
                             if (message != null) {
                                 Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+                                if(ad_key!=null&&!ad_key.isEmpty()){
+                                    addAdImageApi(ad_key,encodedImages);
+                                }
+
 
                                 Intent intent_log =new Intent(getActivity(), MainActivity.class);
                                 intent_log.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |Intent.FLAG_ACTIVITY_CLEAR_TASK);

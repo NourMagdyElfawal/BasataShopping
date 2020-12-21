@@ -76,6 +76,7 @@ import com.souqmaftoh.basatashopping.R;
 import com.souqmaftoh.basatashopping.RegistrationActivityOne;
 import com.souqmaftoh.basatashopping.Storage.SharedPrefManager;
 import com.souqmaftoh.basatashopping.fragments.ItemsRecyclerFragment.ItemsRecyclerFragment;
+import com.souqmaftoh.basatashopping.fragments.contacts.ContactsFragment;
 import com.souqmaftoh.basatashopping.fragments.mapFragment.MapFragment;
 import com.squareup.picasso.Picasso;
 
@@ -296,6 +297,31 @@ public class MyAccountFragment extends Fragment implements View.OnClickListener 
             relative_pro_edit.setVisibility(View.GONE);
             relative_pro_text.setVisibility(View.VISIBLE);
             ly_logout_adv.setVisibility(View.GONE);
+
+            //remove click listener
+            et_pro_name.setOnClickListener(null);
+            et_pro_email.setOnClickListener(null);
+            et_pro_storeName.setOnClickListener(null);
+            et_pro_address.setOnClickListener(null);
+            et_pro_location.setOnClickListener(null);
+            et_pro_phone.setOnClickListener(null);
+            et_pro_storeDisc.setOnClickListener(null);
+            et_pro_facebook.setOnClickListener(null);
+            et_pro_youtube.setOnClickListener(null);
+            et_pro_instagram.setOnClickListener(null);
+
+            et_pro_name.setFocusable(false);
+            et_pro_email.setFocusable(false);
+            et_pro_storeName.setFocusable(false);
+            et_pro_address.setFocusable(false);
+            et_pro_location.setFocusable(false);
+            et_pro_phone.setFocusable(false);
+            et_pro_storeDisc.setFocusable(false);
+            et_pro_facebook.setFocusable(false);
+            et_pro_youtube.setFocusable(false);
+            et_pro_instagram.setFocusable(false);
+
+
             // Initialize Firebase Auth
             mAuth = FirebaseAuth.getInstance();
             ContactsRef = FirebaseDatabase.getInstance().getReference().child("Contacts");
@@ -868,7 +894,7 @@ public class MyAccountFragment extends Fragment implements View.OnClickListener 
                 if(firebase_token!=null) {
                 //    handleCustomAccessToken(firebase_token);
                     AcceptChatRequest();
-                    Toast.makeText(getActivity(), "chat", Toast.LENGTH_SHORT).show();
+                  //  Toast.makeText(getActivity(), "", Toast.LENGTH_SHORT).show();
                 }
                 break;
             case R.id.btn_pro_logout:
@@ -1069,6 +1095,20 @@ public class MyAccountFragment extends Fragment implements View.OnClickListener 
                         if (task.isSuccessful()) {
                             ContactsRef.child(receiverUserID).child(senderUserID)
                                     .child("Contacts").setValue("Saved");
+
+
+                            ContactsFragment contactsFragment= new ContactsFragment();
+//                            Bundle args = new Bundle();
+//                            args.putSerializable("hashMapAccountDetails",hashMapAccountDetails);
+//                            myAccountFragment.setArguments(args);
+
+
+                            Objects.requireNonNull(getActivity()).getSupportFragmentManager().beginTransaction()
+                                    .replace(R.id.item_details_container, contactsFragment, "AccountFragment")
+                                    .addToBackStack(null)
+                                    .commit();
+
+
 
                         }
                     }

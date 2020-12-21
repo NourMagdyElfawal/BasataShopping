@@ -106,7 +106,7 @@
                 android:background="@android:color/darker_gray"/>
 
             <LinearLayout
-                android:visibility="invisible"
+                android:visibility="visible"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:weightSum="6"
@@ -123,13 +123,14 @@
 
 
                 <ImageView
-                    android:id="@+id/imageView6"
+                    android:id="@+id/img_offer"
+                    android:visibility="invisible"
                     android:layout_width="0dp"
                     android:layout_height="30dp"
                     android:layout_marginTop="10dp"
                     android:layout_marginBottom="10dp"
                     android:layout_weight=".5"
-                    android:background="@drawable/profile" />
+                    android:background="@drawable/ic_discount" />
                 <TextView
                     android:layout_weight="1.5"
                     android:layout_width="0dp"
@@ -137,8 +138,9 @@
 
                 <ImageView
                     android:id="@+id/imageView5"
+                    android:visibility="invisible"
                     android:layout_width="0dp"
-                    android:layout_height="30dp"
+                    android:layout_height="23dp"
                     android:layout_marginTop="10dp"
                     android:layout_marginBottom="10dp"
                     android:layout_weight=".5"
@@ -151,6 +153,7 @@
 
                 <ImageView
                     android:id="@+id/imageView3"
+                    android:visibility="invisible"
                     android:layout_width="0dp"
                     android:layout_height="30dp"
                     android:layout_marginTop="10dp"

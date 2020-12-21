@@ -256,17 +256,20 @@ public class ItemDetailsFragment extends Fragment implements BottomNavigationVie
 
         }
         if(visitor){
-            advertiser_layout.setVisibility(View.GONE);
+//            advertiser_layout.setVisibility(View.GONE);
+            txtV_advertiser.setOnClickListener(null);
             btn_Edit_Choices.setVisibility(View.GONE);
             ratingBar.setVisibility(View.GONE);
             ratingBarIndicat.setVisibility(View.VISIBLE);
 
         }else {
-            advertiser_layout.setVisibility(View.VISIBLE);
+            txtV_advertiser.setOnClickListener(this);
         }
         btn_Edit_Choices.setOnClickListener(this);
         imgV_call.setOnClickListener(this);
-        txtV_advertiser.setOnClickListener(this);
+
+        mainActivity.hideFloatingActionButton();
+
         return root;
     }
 
@@ -329,6 +332,8 @@ public class ItemDetailsFragment extends Fragment implements BottomNavigationVie
 
 
         }
+
+
 
     }
 
@@ -471,6 +476,9 @@ public class ItemDetailsFragment extends Fragment implements BottomNavigationVie
     private void setAdDetails() {
 
             if(advertise.getMain_image()!=null) {
+                if (mActivity == null) {
+                    return;
+                }
                 String ImageUrl = advertise.getMain_image();
                 Glide.with(mActivity)
                         .load(ImageUrl)
@@ -494,7 +502,6 @@ public class ItemDetailsFragment extends Fragment implements BottomNavigationVie
             if(advertiser.getName()!=null){
                 txtV_advertiser.setText(advertiser.getName());
             }else {
-                //TODO remove advertiser name and call icon  TEST
                 advertiser_layout.setVisibility(View.GONE);
 //                txtV_advertiser.setText("");
 

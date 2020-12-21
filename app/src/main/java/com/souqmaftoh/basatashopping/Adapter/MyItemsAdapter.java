@@ -104,6 +104,9 @@ public class MyItemsAdapter extends RecyclerView.Adapter<ItemsViewHolder> {
         @BindView(R.id.category_my_ads)
         TextView categoryTextView;
 
+        @BindView(R.id.img_offer)
+        ImageView img_offer;
+
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -154,10 +157,11 @@ public class MyItemsAdapter extends RecyclerView.Adapter<ItemsViewHolder> {
 
             }
 
-            if (mSport.getOffer() != null) {
+            if (mSport.getOffer() != null&&!mSport.getOffer().isEmpty()) {
+                img_offer.setVisibility(View.VISIBLE);
                 hashMapItem.put("Offer",mSport.getOffer());
-
             }
+
 
 
             if (mSport.getSub_category() != null) {
