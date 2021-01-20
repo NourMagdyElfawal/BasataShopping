@@ -21,6 +21,8 @@ import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.initialization.InitializationStatus;
+import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -61,13 +63,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private BottomNavigationView bottomNavigation;
     private FirebaseAuth mAuth;
     ImageView imgV_myAccount;
-    AdView mAdView;
+    AdView mAdView,mAdViewBottom;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        //TODO check ads  size and appearance
+        //TODO check addAdv btn disappear
+        //TODO check offer color
+        //TODO check the chat
 
         imgV_myAccount = findViewById(R.id.imgV_myAccount);
         imgV_myAccount.setOnClickListener(this);
@@ -85,9 +91,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //        });
 
         mAdView = findViewById(R.id.advertise);
+        mAdViewBottom = findViewById(R.id.advertise_bottom);
+
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
-
+        mAdViewBottom.loadAd(adRequest);
 //        AdView adView = new AdView(this);
 //
 //        adView.setAdSize(AdSize.BANNER);
