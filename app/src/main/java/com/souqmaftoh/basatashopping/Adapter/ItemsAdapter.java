@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -110,6 +111,10 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsViewHolder> {
         @BindView(R.id.category_my_ads)
         TextView categoryTextView;
 
+        @BindView(R.id.img_offer)
+        ImageView img_offer;
+
+
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -121,6 +126,8 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsViewHolder> {
             titleTextView.setText("");
             addressTextView.setText("");
             categoryTextView.setText("");
+            img_offer.setImageDrawable(null);
+
         }
 
         public void onBind(int position) {
@@ -169,7 +176,10 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsViewHolder> {
 
             }
 
-            if (mSport.getOffer() != null) {
+            if (mSport.getOffer() != null&&!mSport.getOffer().isEmpty()) {
+                if (img_offer != null) {
+                    img_offer.setVisibility(View.VISIBLE);
+                }
                 hashMapItem.put("Offer",mSport.getOffer());
 
             }

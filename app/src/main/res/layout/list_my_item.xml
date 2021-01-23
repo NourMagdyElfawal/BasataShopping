@@ -109,7 +109,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:weightSum="6"
-                android:visibility="invisible"
                 android:id="@+id/layout_icons"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -123,13 +122,14 @@
 
 
                 <ImageView
-                    android:id="@+id/imageView6"
+                    android:id="@+id/img_offer"
+                    android:visibility="gone"
                     android:layout_width="0dp"
                     android:layout_height="30dp"
                     android:layout_marginTop="10dp"
                     android:layout_marginBottom="10dp"
                     android:layout_weight=".5"
-                    android:background="@drawable/profile" />
+                    android:background="@drawable/ic_discount" />
                 <TextView
                     android:layout_weight="1.5"
                     android:layout_width="0dp"
@@ -137,6 +137,7 @@
 
                 <ImageView
                     android:id="@+id/imageView5"
+                    android:visibility="invisible"
                     android:layout_width="0dp"
                     android:layout_height="30dp"
                     android:layout_marginTop="10dp"
@@ -151,6 +152,7 @@
 
                 <ImageView
                     android:id="@+id/imageView3"
+                    android:visibility="invisible"
                     android:layout_width="0dp"
                     android:layout_height="30dp"
                     android:layout_marginTop="10dp"

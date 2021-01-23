@@ -268,7 +268,7 @@ public class ItemDetailsFragment extends Fragment implements BottomNavigationVie
         btn_Edit_Choices.setOnClickListener(this);
         imgV_call.setOnClickListener(this);
 
-        mainActivity.hideFloatingActionButton();
+//        mainActivity.hideFloatingActionButton();
 
         return root;
     }

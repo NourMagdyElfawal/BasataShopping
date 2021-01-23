@@ -70,9 +70,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        //TODO check ads  size and appearance
         //TODO check addAdv btn disappear
-        //TODO check offer color
         //TODO check the chat
 
         imgV_myAccount = findViewById(R.id.imgV_myAccount);

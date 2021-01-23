@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -118,6 +119,8 @@ public class MyItemsAdapter extends RecyclerView.Adapter<ItemsViewHolder> {
             titleTextView.setText("");
             addressTextView.setText("");
             categoryTextView.setText("");
+            img_offer.setImageDrawable(null);
+
         }
 
         public void onBind(int position) {
@@ -158,7 +161,9 @@ public class MyItemsAdapter extends RecyclerView.Adapter<ItemsViewHolder> {
             }
 
             if (mSport.getOffer() != null&&!mSport.getOffer().isEmpty()) {
-                img_offer.setVisibility(View.VISIBLE);
+                if (img_offer != null) {
+                    img_offer.setVisibility(View.VISIBLE);
+                }
                 hashMapItem.put("Offer",mSport.getOffer());
             }
 
@@ -204,6 +209,7 @@ public class MyItemsAdapter extends RecyclerView.Adapter<ItemsViewHolder> {
                     AppCompatActivity activity = (AppCompatActivity) view.getContext();
                     ItemDetailsFragment itemDetailsFragment = new ItemDetailsFragment();
                     Bundle args = new Bundle();
+                    Log.e("hashMapItem", String.valueOf(hashMapItem));
                     args.putSerializable("hashMapItem",hashMapItem);
                     args.putString("ad_key",mSport.getmAdKey());
                     itemDetailsFragment.setArguments(args);
