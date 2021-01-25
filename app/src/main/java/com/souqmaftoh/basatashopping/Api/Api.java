@@ -313,6 +313,16 @@ public interface Api {
 
             );
 
+
+    @Headers({
+            "Accept: application/json",
+    })
+    @GET("search_ads")
+    Call<Object> search_ads_title(
+            @Query("title") String title
+
+    );
+
     @Headers({
             "Accept: application/json",
     })

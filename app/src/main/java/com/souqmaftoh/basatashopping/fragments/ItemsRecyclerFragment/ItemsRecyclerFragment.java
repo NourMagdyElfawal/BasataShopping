@@ -84,6 +84,7 @@ public class ItemsRecyclerFragment extends Fragment {
     String selected;
     String itemCond;
     private Activity mActivity;
+    String title, myacc;
 
 
 
@@ -114,13 +115,18 @@ public class ItemsRecyclerFragment extends Fragment {
 
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-            String myacc=getArguments().getString("fragment");
-            if (myacc!=null){
-                    if(myacc.equalsIgnoreCase("myacc")) {
+            title = getArguments().getString("title");
+             myacc=getArguments().getString("fragment");
+
+            if (myacc!=null) {
+                if (!myacc.isEmpty()) {
+                    flag = true;
+                }
+            } else if(title!=null) {
+                    if(!title.isEmpty()) {
                         flag = true;
                     }
-                }else {
+            } else {
                     flag = false;
 
             }
@@ -130,6 +136,81 @@ public class ItemsRecyclerFragment extends Fragment {
 
         }
     }
+
+    private void getAdsByTitleApi(String title) {
+            ArrayList<Items> mSports = new ArrayList<>();
+
+            Call<Object> call= RetrofitClient.
+                    getInstance()
+                    .getApi()
+                    .search_ads_title(title);
+            call.enqueue(new Callback<Object>() {
+                @Override
+                public void onResponse(@NotNull Call<Object> call, @NotNull Response<Object> response) {
+                    Log.e("gson:search_ads_title", new Gson().toJson(response.body()) );
+
+                    if(response!=null) {
+
+                        if (response.body() != null) {
+                            Log.e("res:search_ads_title", "isSuccessful");
+                            try {
+                                JSONObject jsonObject = new JSONObject(new Gson().toJson(response.body()));
+                                String message = jsonObject.getString("message");
+                                if (message != null&&!message.isEmpty()) {
+                                }
+                                JSONObject jsonData  = jsonObject.getJSONObject("data");
+                                JSONArray arrJson = jsonData.getJSONArray("data");
+                                JSONObject[] arr=new JSONObject[arrJson.length()];
+
+                                for(int i = 0; i < arrJson.length(); i++) {
+                                    arr[i] = arrJson.getJSONObject(i);
+                                    Log.e("tag", String.valueOf(arr[i]));
+                                    String ad_key=arr[i].getString("ad_key");
+                                    String title=arr[i].getString("title");
+                                    String offer=arr[i].getString("offer");
+                                    String main_image=arr[i].getString("main_image");
+                                    String price=arr[i].getString("price");
+                                    String category=arr[i].getString("category");
+                                    String sub_category=arr[i].getString("sub_category");
+                                    String active=arr[i].getString("active");
+                                    String item_condition=arr[i].getString("item_condition");
+                                    String status=arr[i].getString("status");
+                                    mSports.add(new Items(ad_key,main_image,item_condition , title, price,offer,category,sub_category,active,status));
+                                }
+                                mSportAdapter.addItems(mSports);
+                                mRecyclerView.setAdapter(mSportAdapter);
+
+
+
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+//
+                        }
+
+                    } else if (response.errorBody() != null) {
+                        try {
+                            Log.e("gson:search_ads_error", response.errorBody().string());
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+
+
+
+                @Override
+                public void onFailure(Call<Object> call, Throwable t) {
+                    Log.e("search_ads:onFailure", String.valueOf(t));
+
+                }
+            });
+
+
+        }
+
+
+
 
 
     public static ItemsRecyclerFragment newInstance() {
@@ -142,15 +223,6 @@ public class ItemsRecyclerFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.items_recycler_fragment, container, false);
         Toolbar toolbar = view.findViewById(R.id.toolbar);
-        ((AppCompatActivity)mActivity).setSupportActionBar(toolbar);
-        ((AppCompatActivity)mActivity).setTitle("حالة المنتج");
-        toolbar.setNavigationIcon(R.drawable.ic_list_black_24dp);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                choseItemCondition();
-                }
-        });
 
         // Spinner element
         final Spinner spinner = (Spinner) view.findViewById(R.id.spinner_nav);
@@ -162,8 +234,22 @@ public class ItemsRecyclerFragment extends Fragment {
 
         if(flag){
             spinner.setVisibility(View.GONE);
-            setUpListOfMyItems();
+            if(title!=null){
+                setUpListOfSearchItems(title);
+            }else if(myacc!=null){
+                setUpListOfMyItems();
+            }
         }else {
+            ((AppCompatActivity)mActivity).setSupportActionBar(toolbar);
+            ((AppCompatActivity)mActivity).setTitle("حالة المنتج");
+            toolbar.setNavigationIcon(R.drawable.ic_list_black_24dp);
+            toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    choseItemCondition();
+                }
+            });
+
             spinner.setVisibility(View.VISIBLE);
             // Spinner click listener
             spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -556,6 +642,23 @@ public class ItemsRecyclerFragment extends Fragment {
         getMyAdsApi();
 
     }
+
+
+    private void setUpListOfSearchItems(String title) {
+        mLayoutManager = new LinearLayoutManager(getActivity());
+        mLayoutManager.setOrientation(RecyclerView.VERTICAL);
+        mRecyclerView.setLayoutManager(mLayoutManager);
+        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+        Drawable dividerDrawable = ContextCompat.getDrawable(Objects.requireNonNull(getActivity()), R.drawable.divider_drawable);
+        mRecyclerView.addItemDecoration(new DividerItemDecoration(dividerDrawable));
+        mSportAdapter = new MyItemsAdapter(new ArrayList<>());
+
+//        prepareDemoContent();
+
+        getAdsByTitleApi(title);
+
+    }
+
 
 
 

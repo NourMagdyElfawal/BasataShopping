@@ -12,10 +12,14 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdSize;
@@ -32,6 +36,7 @@ import com.google.gson.Gson;
 import com.robertlevonyan.views.customfloatingactionbutton.FloatingActionButton;
 import com.souqmaftoh.basatashopping.Api.RetrofitClient;
 import com.souqmaftoh.basatashopping.Interface.Categories;
+import com.souqmaftoh.basatashopping.Interface.Items;
 import com.souqmaftoh.basatashopping.Interface.User;
 import com.souqmaftoh.basatashopping.Storage.SharedPrefManager;
 import com.souqmaftoh.basatashopping.fragments.contacts.ContactsFragment;
@@ -50,6 +55,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -62,8 +68,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private ViewPager viewPager;
     private BottomNavigationView bottomNavigation;
     private FirebaseAuth mAuth;
-    ImageView imgV_myAccount;
+    ImageView imgV_myAccount,img_lens;
     AdView mAdView,mAdViewBottom;
+    EditText edit_search;
 
 
     @Override
@@ -72,6 +79,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
         //TODO check addAdv btn disappear
         //TODO check the chat
+        //TODO search
+
+
+        edit_search=findViewById(R.id.edit_search);
+        img_lens=findViewById(R.id.img_lens);
+
+        img_lens.setOnClickListener(this);
+
+
 
         imgV_myAccount = findViewById(R.id.imgV_myAccount);
         imgV_myAccount.setOnClickListener(this);
@@ -434,8 +450,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 openFragment(MyAccountFragment.newInstance("", ""));
                 showFloatingActionButton();
                 break;
+
+            case R.id.img_lens:
+                String title=edit_search.getText().toString();
+                ItemsRecyclerFragment itemsRecyclerFragment= new ItemsRecyclerFragment();
+                Bundle args = new Bundle();
+                args.putString("title", title);
+                itemsRecyclerFragment.setArguments(args);
+                openFragment(itemsRecyclerFragment);
+                showFloatingActionButton();
+                break;
         }
     }
+
 
 
 
