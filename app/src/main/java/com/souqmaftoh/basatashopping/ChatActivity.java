@@ -28,6 +28,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.souqmaftoh.basatashopping.Adapter.MessageAdapter;
 import com.souqmaftoh.basatashopping.Interface.Messages;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -51,6 +53,8 @@ public class ChatActivity extends AppCompatActivity {
     private LinearLayoutManager linearLayoutManager;
     private MessageAdapter messageAdapter;
     private RecyclerView userMessagesList;
+    DatabaseReference ref;
+    ChildEventListener listener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,14 +66,18 @@ public class ChatActivity extends AppCompatActivity {
         setSupportActionBar(ChatToolBar);
 
         ActionBar actionBar = getSupportActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setDisplayShowCustomEnabled(true);
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setDisplayShowCustomEnabled(true);
+
+        }
 
         LayoutInflater layoutInflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View actionBarView = layoutInflater.inflate(R.layout.custom_chat_bar, null);
+        assert actionBar != null;
         actionBar.setCustomView(actionBarView);
 
-        userName=findViewById(R.id.custom_profile_name);
+//        userName=findViewById(R.id.custom_profile_name);
         SendMessageButton = findViewById(R.id.send_message_btn);
         MessageInputText =  findViewById(R.id.input_message);
 
@@ -91,16 +99,19 @@ public class ChatActivity extends AppCompatActivity {
 
 
 
-
-        messageReceiverID=getIntent().getExtras().get("visit_user_id").toString();
-        messageReceiverName=getIntent().getExtras().get("visit_user_name").toString();
+        if(getIntent().getExtras()!=null) {
+            messageReceiverID = getIntent().getExtras().get("visit_user_id").toString();
+            messageReceiverName = getIntent().getExtras().get("visit_user_name").toString();
 
 //        Toast.makeText(this, messageReceiverID, Toast.LENGTH_SHORT).show();
 //        Toast.makeText(this, messageReceiverName, Toast.LENGTH_SHORT).show();
-        userName.setText(messageReceiverName);
-
+            if(messageReceiverName!=null)
+            actionBar.setTitle(messageReceiverName);
+        }
         mAuth = FirebaseAuth.getInstance();
-        messageSenderID = mAuth.getCurrentUser().getUid();
+        if(mAuth.getCurrentUser()!=null) {
+            messageSenderID = mAuth.getCurrentUser().getUid();
+        }
         RootRef = FirebaseDatabase.getInstance().getReference();
 
     }
@@ -108,18 +119,17 @@ public class ChatActivity extends AppCompatActivity {
     protected void onStart()
     {
         super.onStart();
-
-        RootRef.child("Messages").child(messageSenderID).child(messageReceiverID)
-                .addChildEventListener(new ChildEventListener() {
+        ref = RootRef.child("Messages").child(messageSenderID).child(messageReceiverID);
+        listener= new ChildEventListener() {
                     @Override
-                    public void onChildAdded(DataSnapshot dataSnapshot, String s)
+                    public void onChildAdded(@NotNull DataSnapshot dataSnapshot, String s)
                     {
                         Messages messages = dataSnapshot.getValue(Messages.class);
 
                         messagesList.add(messages);
 
                         messageAdapter.notifyDataSetChanged();
-
+                        if(userMessagesList.getAdapter()!=null)
                         userMessagesList.smoothScrollToPosition(userMessagesList.getAdapter().getItemCount());
                     }
 
@@ -142,8 +152,18 @@ public class ChatActivity extends AppCompatActivity {
                     public void onCancelled(DatabaseError databaseError) {
 
                     }
-                });
+                };
+
+        ref.addChildEventListener(listener);
     }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+            ref.removeEventListener(listener);
+            messagesList.clear();
+    }
+
 
     private void SendMessage() {
         String messageText = MessageInputText.getText().toString();

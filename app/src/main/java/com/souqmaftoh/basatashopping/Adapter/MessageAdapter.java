@@ -25,6 +25,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
     private List<Messages> userMessagesList;
     private FirebaseAuth mAuth;
     private DatabaseReference usersRef;
+    String messageSenderId;
 
     public MessageAdapter(List<Messages> userMessagesList){
         this.userMessagesList=userMessagesList;
@@ -58,7 +59,9 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
     @Override
     public void onBindViewHolder(@NonNull final MessageViewHolder messageViewHolder, int i)
     {
-        String messageSenderId = mAuth.getCurrentUser().getUid();
+        if(mAuth.getCurrentUser()!=null) {
+             messageSenderId = mAuth.getCurrentUser().getUid();
+        }
         Messages messages = userMessagesList.get(i);
 
         String fromUserID = messages.getFrom();
@@ -120,8 +123,22 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
 
 
     @Override
+    public long getItemId(int i) {
+        return i;
+    }
+
+    @Override
+    public int getItemViewType(int i) {
+        return i;
+    }
+
+    @Override
     public int getItemCount() {
-        return userMessagesList.size() ;
+//        if (userMessagesList != null && userMessagesList.size() > 0) {
+            return userMessagesList.size();
+//        } else {
+//            return 1;
+//        }
     }
 
 

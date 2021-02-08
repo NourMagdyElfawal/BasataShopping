@@ -65,6 +65,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 import com.souqmaftoh.basatashopping.Api.RetrofitClient;
+import com.souqmaftoh.basatashopping.ChatActivity;
 import com.souqmaftoh.basatashopping.Fonts.LatoBLack;
 import com.souqmaftoh.basatashopping.Interface.Governorates;
 import com.souqmaftoh.basatashopping.Interface.Regions;
@@ -1096,6 +1097,10 @@ public class MyAccountFragment extends Fragment implements View.OnClickListener 
                             ContactsRef.child(receiverUserID).child(senderUserID)
                                     .child("Contacts").setValue("Saved");
 
+                            Intent chatIntent=new Intent(getContext(), ChatActivity.class);
+                            chatIntent.putExtra("visit_user_id",receiverUserID);
+                            chatIntent.putExtra("visit_user_name",user.getEmail());
+                            startActivity(chatIntent);
 
 //                            ContactsFragment contactsFragment= new ContactsFragment();
 ////                            Bundle args = new Bundle();

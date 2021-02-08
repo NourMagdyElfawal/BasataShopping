@@ -32,6 +32,8 @@ import com.souqmaftoh.basatashopping.Interface.Contacts;
 import com.souqmaftoh.basatashopping.R;
 import com.souqmaftoh.basatashopping.design.DividerItemDecoration;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.Objects;
 
 public class ContactsFragment extends Fragment {
@@ -103,7 +105,7 @@ public class ContactsFragment extends Fragment {
 
                 UsersRef.child(userIDs).addValueEventListener(new ValueEventListener() {
                     @Override
-                    public void onDataChange(DataSnapshot dataSnapshot)
+                    public void onDataChange(@NotNull DataSnapshot dataSnapshot)
                     {
                         if (dataSnapshot.exists())
                         {
