@@ -79,7 +79,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
         //TODO check addAdv btn disappear
         //TODO check the chat
-        //TODO search
 
 
         edit_search=findViewById(R.id.edit_search);

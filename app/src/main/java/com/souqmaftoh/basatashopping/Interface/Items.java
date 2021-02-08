@@ -15,8 +15,12 @@ public class Items {
         @SerializedName("title")
         private String mTitle;
 
+    @SerializedName("price")
+    private int price;
 
-        @SerializedName("item_condition")
+
+
+    @SerializedName("item_condition")
         private String item_condition;
         @SerializedName("offer")
         private String offer;
@@ -26,6 +30,11 @@ public class Items {
         private String active;
         @SerializedName("status")
         private String status;
+    @SerializedName("owner_name")
+    private String owner_name;
+    @SerializedName("description")
+    private String description;
+
 
 
     public Items(String mImageUrl, String mInfo, String mSubTitle, String mTitle) {
@@ -50,9 +59,23 @@ public class Items {
         this.status=status;
 
     }
+    public Items(String mAdKey, String mImageUrl, String item_condition, String mTitle, int price,
+                 String sub_category, String status,String owner_name,String description) {
+        this.mAdKey=mAdKey;
+        this.mImageUrl = mImageUrl;
+        this.item_condition=item_condition;
+        this.mTitle = mTitle;
+        this.price = price;
+        this.mSubTitle = owner_name;
+        this.sub_category=sub_category;
+        this.status=status;
+        this.description=description;
 
 
-        public String getmAdKey() {
+    }
+
+
+    public String getmAdKey() {
             return mAdKey;
         }
 
@@ -131,5 +154,29 @@ public class Items {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public int getPrice() {
+        return price;
+    }
+
+    public void setPrice(int price) {
+        this.price = price;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getOwner_name() {
+        return owner_name;
+    }
+
+    public void setOwner_name(String owner_name) {
+        this.owner_name = owner_name;
     }
 }

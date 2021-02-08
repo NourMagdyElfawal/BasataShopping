@@ -417,6 +417,12 @@ public interface Api {
             @Field("firebase_id") String firebase_id
     );
 
+    @Headers({
+            "Accept: application/json",
+    })
+    @GET("get_my_favorites")
+    Call<Object> get_my_favorites();
+
 }
 
 

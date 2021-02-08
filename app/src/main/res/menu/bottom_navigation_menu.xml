@@ -11,7 +11,7 @@
     <item
         android:id="@+id/navigation_notifications"
         android:icon="@drawable/notification"
-        android:title="تنبيهاتي" />
+        android:title="المغضلة" />
 
     <item
         android:id="@+id/navigation_stores"

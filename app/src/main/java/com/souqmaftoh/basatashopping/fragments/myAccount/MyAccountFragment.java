@@ -334,7 +334,7 @@ public class MyAccountFragment extends Fragment implements View.OnClickListener 
             if(hashMapAccountSt2!=null) {
                 if (hashMapAccountSt2.get("firebase_id")!=null) {
                     receiverUserID = hashMapAccountSt2.get("firebase_id");
-//                        Log.e("receiverUserID", receiverUserID);
+                        Log.e("receiverUserID", receiverUserID);
                         getReciverUserId(receiverUserID);
 
                 }
@@ -1097,18 +1097,18 @@ public class MyAccountFragment extends Fragment implements View.OnClickListener 
                                     .child("Contacts").setValue("Saved");
 
 
-                            ContactsFragment contactsFragment= new ContactsFragment();
-//                            Bundle args = new Bundle();
-//                            args.putSerializable("hashMapAccountDetails",hashMapAccountDetails);
-//                            myAccountFragment.setArguments(args);
-
-
-                            Objects.requireNonNull(getActivity()).getSupportFragmentManager().beginTransaction()
-                                    .replace(R.id.item_details_container, contactsFragment, "AccountFragment")
-                                    .addToBackStack(null)
-                                    .commit();
-
-
+//                            ContactsFragment contactsFragment= new ContactsFragment();
+////                            Bundle args = new Bundle();
+////                            args.putSerializable("hashMapAccountDetails",hashMapAccountDetails);
+////                            myAccountFragment.setArguments(args);
+//
+//
+//                            Objects.requireNonNull(getActivity()).getSupportFragmentManager().beginTransaction()
+//                                    .replace(R.id.item_details_container, contactsFragment, "AccountFragment")
+//                                    .addToBackStack(null)
+//                                    .commit();
+//
+//
 
                         }
                     }
