@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,6 +30,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.souqmaftoh.basatashopping.ChatActivity;
 import com.souqmaftoh.basatashopping.Interface.Contacts;
+import com.souqmaftoh.basatashopping.Interface.Messages;
 import com.souqmaftoh.basatashopping.R;
 import com.souqmaftoh.basatashopping.design.DividerItemDecoration;
 
@@ -44,7 +46,7 @@ public class ContactsFragment extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    private DatabaseReference ContacsRef, UsersRef;
+    private DatabaseReference ContacsRef, UsersRef,MessagesRef;
     private FirebaseAuth mAuth;
     private String currentUserID;
     LinearLayoutManager mLayoutManager;
@@ -69,7 +71,7 @@ public class ContactsFragment extends Fragment {
         mLayoutManager.setOrientation(RecyclerView.VERTICAL);
         myContactsList.setLayoutManager(mLayoutManager);
         myContactsList.setItemAnimator(new DefaultItemAnimator());
-        Drawable dividerDrawable = ContextCompat.getDrawable(Objects.requireNonNull(getActivity()), R.drawable.divider_drawable_contacts);
+        Drawable dividerDrawable = ContextCompat.getDrawable(Objects.requireNonNull(getActivity()), R.drawable.divider_drawable);
         myContactsList.addItemDecoration(new DividerItemDecoration(dividerDrawable));
         mAuth = FirebaseAuth.getInstance();
         if(mAuth.getCurrentUser()!=null) {
@@ -79,6 +81,8 @@ public class ContactsFragment extends Fragment {
             ContacsRef = FirebaseDatabase.getInstance().getReference().child("Contacts").child(currentUserID);
         }
         UsersRef = FirebaseDatabase.getInstance().getReference().child("Users");
+        MessagesRef = FirebaseDatabase.getInstance().getReference().child("Messages");
+
 
 
         return ContactsView;
@@ -143,8 +147,12 @@ public class ContactsFragment extends Fragment {
 //                            else
                             if (dataSnapshot.hasChild("email"))
                             {
-                                String profileName = dataSnapshot.child("name").getValue().toString();
-                                String profileEmail = dataSnapshot.child("email").getValue().toString();
+                                String profileName = dataSnapshot.child("name").getValue(String.class);
+                                String profileEmail = dataSnapshot.child("email").getValue(String.class);
+                                String receiverId=dataSnapshot.child("id").getValue(String.class);
+
+                                getLastMessage(receiverId,holder);
+
 
                                 holder.userName.setText(profileName);
                                 holder.userEmail.setText(profileEmail);
@@ -182,12 +190,44 @@ public class ContactsFragment extends Fragment {
         adapter.startListening();
     }
 
+    private void getLastMessage(String receiverId, ContactsViewHolder holder) {
+        DatabaseReference ref = MessagesRef.child(currentUserID).child(receiverId);
+
+
+        ref.orderByChild(currentUserID).limitToLast(1).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NotNull DataSnapshot dataSnapshot)
+            {
+
+                for(DataSnapshot child: dataSnapshot.getChildren()) {
+                    String message = child.child("message").getValue().toString();
+
+                //                if (dataSnapshot.exists()) {
+//                    Log.e("last_message", String.valueOf(dataSnapshot));
+////                    if (dataSnapshot.hasChild("message")) {
+//                        Log.e("last_mes", String.valueOf(dataSnapshot.child("message").getValue()));
+//                        Object lastMessage = dataSnapshot.child("messageID");
+////                    String message = dataSnapshot.child("message").getValue().toString();
+                    if (message != null) {
+                        Log.e("last_message", message);
+                        holder.lastMessage.setText(message);
+                    }
+                }
+//                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
 
 
 
     public static class ContactsViewHolder extends RecyclerView.ViewHolder
     {
-        TextView userName, userEmail;
+        TextView userName, userEmail,lastMessage;
 //        CircleImageView profileImage;
 //        ImageView onlineIcon;
 
@@ -198,6 +238,7 @@ public class ContactsFragment extends Fragment {
 
             userName = itemView.findViewById(R.id.user_profile_name);
             userEmail = itemView.findViewById(R.id.user_email);
+            lastMessage=itemView.findViewById(R.id.user_last_message);
 //            profileImage = itemView.findViewById(R.id.users_profile_image);
 //            onlineIcon = (ImageView) itemView.findViewById(R.id.user_online_status);
         }

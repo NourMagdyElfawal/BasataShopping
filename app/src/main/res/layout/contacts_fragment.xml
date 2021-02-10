@@ -7,9 +7,15 @@
     android:background="#f2f2f2"
     tools:context=".fragments.contacts.ContactsFragment">
 
+
+     <include
+    android:id="@+id/chat_toolbar"
+    layout="@layout/app_bar_layout">
+    </include>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/contacts_list"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginBottom="50dp"
         android:layout_marginEnd="8dp"
@@ -17,8 +23,9 @@
         android:layout_marginTop="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="@id/chat_toolbar"
+        app:layout_constraintTop_toBottomOf="@id/chat_toolbar"
+
         >
 
     </androidx.recyclerview.widget.RecyclerView>

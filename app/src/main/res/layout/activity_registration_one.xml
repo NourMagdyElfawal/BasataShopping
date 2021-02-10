@@ -220,6 +220,7 @@
                 android:layout_height="wrap_content"
                 app:layout_constraintBottom_toTopOf="@id/card_spin_sub"
                 app:cardCornerRadius="15dp"
+                android:visibility="gone"
                 android:layout_margin="3dp">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
@@ -266,6 +267,7 @@
                 android:layout_height="wrap_content"
                 app:layout_constraintBottom_toTopOf="@id/card_spin_con"
                 app:cardCornerRadius="15dp"
+                android:visibility="gone"
                 android:layout_margin="3dp">
 
                 <androidx.constraintlayout.widget.ConstraintLayout

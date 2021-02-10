@@ -1,7 +1,7 @@
 package com.souqmaftoh.basatashopping.Interface;
 
 public class Messages {
-    private String from,message,type;
+    private String from,message,type,messageID,to;
 
     public Messages(){
 
@@ -14,9 +14,35 @@ public class Messages {
 
     }
 
+    public Messages(String messageID,String from,String to, String message, String type){
+        this.messageID=messageID;
+        this.to=to;
+        this.from=from;
+        this.message=message;
+        this.type=type;
+
+    }
+
+
 
     public String getFrom() {
         return from;
+    }
+
+    public String getMessageID() {
+        return messageID;
+    }
+
+    public void setMessageID(String messageID) {
+        this.messageID = messageID;
+    }
+
+    public String getTo() {
+        return to;
+    }
+
+    public void setTo(String to) {
+        this.to = to;
     }
 
     public void setFrom(String from) {
